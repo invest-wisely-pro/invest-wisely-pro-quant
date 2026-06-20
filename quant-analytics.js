@@ -905,7 +905,6 @@ function _updateFrontierStats(curr, maxS, minV) {
       </div>
     </div>
     ${curr && maxS ? `
-    if (window.refreshIcons) window.refreshIcons();
     <div class="quant-note ${curr.sharpe < maxS.sharpe * 0.85 ? 'quant-note-warn' : 'quant-note-ok'}">
       ${curr.sharpe < maxS.sharpe * 0.85
         ? `<i data-lucide="alert-triangle" class="lucide-sm"></i> Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong> vs <strong>${fmtS(maxS.sharpe)}</strong> del portafoglio Max Sharpe — esiste un'allocazione più efficiente tra le asset class selezionate.`
@@ -2235,7 +2234,6 @@ function _renderOptResult() {
           { l: 'Sortino ratio',      v: sortino.toFixed(2), c: sortino > 0.7 ? 'var(--green)' : 'var(--text)' },
           { l: 'Rendimento reale*',  v: fmt(r.mu - (state.inflBottom || 2) / 100) + '/a', c: 'var(--teal)' },
         ].map(k => `
-        if (window.refreshIcons) window.refreshIcons();
           <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center">
             <div class="tabular-nums" style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
             <div class="tabular-nums" style="font-size:16px;font-weight:700;color:${k.c}">${k.v}</div>
@@ -2243,7 +2241,7 @@ function _renderOptResult() {
       </div>
       <div style="font-size:10.5px;color:var(--text3);margin-top:6px">* Rendimento reale = atteso − inflazione attesa (${state.inflBottom?.toFixed(1) || '2.0'}%). Il "Rendimento atteso" è nominale (lordo di inflazione): applicando al Simulatore, l'inflazione viene scontata una sola volta nella proiezione.${_optState.returnBasis === 'historical' ? ' <strong style="color:var(--orange)">Base storica attiva</strong>: il Simulatore userà i rendimenti forward-looking (più prudenti), quindi mostrerà un rendimento atteso inferiore a quello qui sopra — i pesi però restano identici.' : ''}</div>
       <div style="font-size:10.5px;color:var(--text3);margin-top:5px;line-height:1.55;background:var(--bg);border-radius:var(--radius-sm);padding:7px 10px;border:1px solid var(--border)">
-        ⓘ <strong>Ottimizzazione parametrica:</strong> Markowitz lavora su rendimenti attesi forward-looking, volatilità e correlazioni <em>modellate</em> — non su una serie storica di prezzi. I risultati non sono un backtest: indicano l'allocazione efficiente secondo i parametri del modello, non ciò che sarebbe accaduto storicamente. Per asset come trend following e carry (incluso il Carry Commodities) questo è l'unico approccio possibile, poiché non esiste una serie storica mensile reale.
+        <span class="info-i">i</span> <strong>Ottimizzazione parametrica:</strong> Markowitz lavora su rendimenti attesi forward-looking, volatilità e correlazioni <em>modellate</em> — non su una serie storica di prezzi. I risultati non sono un backtest: indicano l'allocazione efficiente secondo i parametri del modello, non ciò che sarebbe accaduto storicamente. Per asset come trend following e carry (incluso il Carry Commodities) questo è l'unico approccio possibile, poiché non esiste una serie storica mensile reale.
       </div>
     </div>
 
@@ -2282,7 +2280,6 @@ function _renderOptResult() {
             const constraintBadge = onMin && b.min > 0 ? `<span style="color:var(--orange);font-size:10.5px"><i data-lucide="alert-triangle" class="lucide-sm"></i> vincolato a min ${(b.min*100).toFixed(0)}%</span>` :
                                     onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px"><i data-lucide="alert-triangle" class="lucide-sm"></i> vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
                                     `<span style="color:var(--text3);font-size:10.5px">libero (range ${(b.min*100).toFixed(0)}–${(b.max*100).toFixed(0)}%)</span>`;
-  if (window.refreshIcons) window.refreshIcons();
             return `
               <tr>
                 <td style="text-align:left">${row.label}</td>

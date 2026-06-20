@@ -1825,7 +1825,7 @@ function render() {
     lb.innerText = 'Nascondi'; lb.style.background = 'var(--bg)'; lb.style.color = 'var(--blue)'; ld.style.display = 'block';
     const lC = (t, g, n, col) => { const gain = Math.max(0, g - tI), tax = gain * txF; return `<div class="liq-card"><div class="liq-card-title">${t}</div><div class="liq-row"><span style="color:var(--text2)">Lordo Nominale</span><strong>${fmt(g)}</strong></div><div class="liq-row"><span style="color:var(--text2)">Capitale versato</span><span>${fmt(tI)}</span></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txF * 100).toFixed(1)}%)</span><span>−${fmt(tax)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:${col}">Netto Nominale</strong><strong style="color:${col};font-size:15px">${fmt(n)}</strong></div></div>`; };
     ld.innerHTML = `<div class="grid-3" style="gap:14px">${lC('Pessimistico', vW[years], nP, 'var(--orange)')}${lC('Scenario Base', vN[years], nB, 'var(--blue)')}${lC('Ottimistico', vB[years], nO, 'var(--green)')}</div><div style="font-size:11.5px;color:var(--text3);margin-top:12px">Aliquota ponderata finale: <strong>${(txF * 100).toFixed(1)}%</strong> (solo sulla plusvalenza).</div>`;
-  } else { lb.innerText = '<i data-lucide="wallet" class="lucide-sm"></i> Simula Vendita Totale (Netto)'; lb.style.background = 'var(--blue-dim)'; lb.style.color = 'var(--blue)'; ld.style.display = 'none'; }
+  } else { lb.innerHTML = '<i data-lucide="wallet" class="lucide-sm"></i> Simula Vendita Totale (Netto)'; lb.style.background = 'var(--blue-dim)'; lb.style.color = 'var(--blue)'; ld.style.display = 'none'; if (window.refreshIcons) window.refreshIcons(); }
 
   // Frazione media di plusvalenza sul valore finale (approx. per prelievi parziali proporzionali)
   const gainFrac = tI > 0 && vN[years] > tI ? Math.min(1, (vN[years] - tI) / vN[years]) : 0;
@@ -3263,7 +3263,7 @@ function renderCustomBuilder() {
         </select>
         <input class="custom-pct-input" type="number" min="0" max="100" step="5" value="${sl.pct}" placeholder="%" onchange="updCustomPct(${i},+this.value)">
         <span class="tabular-nums" style="font-size:11px;color:var(--text3);">%</span>
-        <button class="dbtn" onclick="delCustomSlot(${i})"><i data-lucide="x" class="lucide-sm"></i></button>
+        <button class="dbtn" onclick="delCustomSlot(${i})" title="Rimuovi asset class"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
       </div>`).join('')}</div>
     <div class="custom-total ${totalOk&&notionalOk?'ok':!totalOk?'err':'warn'}">
       Totale nominale: ${total.toFixed(1)}%

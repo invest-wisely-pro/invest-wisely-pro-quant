@@ -535,7 +535,7 @@ function renderPenKPI(r) {
     <div class="mcard">
       <div class="ml">Tasso di sostituzione</div>
       <div class="mv" style="color:${tsCol}">${(tassoSost*100).toFixed(1)}%</div>
-      <div class="ms">INPS lorda / RAL finale · ${penState.contYears + yearsToRet} anni di contributi${(penState.contYears + yearsToRet) >= 42 ? ' <span title="Tasso elevato perché assume una carriera lunga e SENZA interruzioni fino a età avanzata (coefficiente alto). Con carriera standard (~38 anni, età di vecchiaia) il tasso scende tipicamente al 60-70% lordo. Interruzioni, part-time o anni non coperti lo riducono.">ⓘ</span>' : ''}</div>
+      <div class="ms">INPS lorda / RAL finale · ${penState.contYears + yearsToRet} anni di contributi${(penState.contYears + yearsToRet) >= 42 ? ' <span title="Tasso elevato perché assume una carriera lunga e SENZA interruzioni fino a età avanzata (coefficiente alto). Con carriera standard (~38 anni, età di vecchiaia) il tasso scende tipicamente al 60-70% lordo. Interruzioni, part-time o anni non coperti lo riducono."><span class="info-i">i</span></span>' : ''}</div>
     </div>
     <div class="mcard">
       <div class="ml">Montante INPS al pensionamento</div>
