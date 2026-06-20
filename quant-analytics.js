@@ -16,7 +16,7 @@ const AC_KEYS_EF = [
   'eq_sviluppati','eq_usa','eq_europa','eq_em','eq_small_value',
   'reits','fat_valore','fat_momentum','fat_qualita','fat_low_vol',
   'fat_size','fat_investment','fat_dividendi','fat_multifat',
-  'fat_carry_bond','fat_carry_fx','fat_trend',
+  'fat_carry_bond','fat_carry_fx','fat_carry_comm','fat_trend',
   'ob_usa_st','ob_usa_it','ob_usa_lt','ob_usa_ult',
   'ob_eu_st','ob_eu_it','ob_eu_lt',
   'ob_glob_gov','ob_glob_agg','ob_infl',
@@ -31,7 +31,7 @@ const AC_CAT_EF = {
   eq_sviluppati:'eq', eq_usa:'eq', eq_europa:'eq', eq_em:'eq', eq_small_value:'eq', reits:'eq',
   fat_valore:'fat', fat_momentum:'fat', fat_qualita:'fat', fat_low_vol:'fat',
   fat_size:'fat', fat_investment:'fat', fat_dividendi:'fat', fat_multifat:'fat',
-  fat_carry_bond:'carry', fat_carry_fx:'carry', fat_trend:'trend',
+  fat_carry_bond:'carry', fat_carry_fx:'carry', fat_carry_comm:'carry', fat_trend:'trend',
   ob_usa_st:'ob_usa', ob_usa_it:'ob_usa', ob_usa_lt:'ob_usa', ob_usa_ult:'ob_usa',
   ob_eu_st:'ob_eu', ob_eu_it:'ob_eu', ob_eu_lt:'ob_eu',
   ob_glob_gov:'ob_glob', ob_glob_agg:'ob_glob', ob_infl:'ob_glob',
@@ -194,6 +194,10 @@ const CORR_MATRIX = (() => {
     ['fat_carry_fx','fat_carry_bond', 0.35],
     ['fat_carry_bond','eq_sviluppati',0.10],
     ['fat_carry_bond','ob_glob_agg',  0.30],
+    ['fat_carry_comm','eq_sviluppati',0.10],  // commodity carry: decorrelato dalle azioni (diversificatore)
+    ['fat_carry_comm','fat_carry_fx', 0.15],  // poco correlato anche con le altre carry
+    ['fat_carry_comm','commodities',  0.35],  // legame con le materie prime, ma è strategia di curva
+    ['fat_carry_comm','ob_infl',      0.25],  // sensibile all'inflazione
     ['fat_multifat','eq_sviluppati',  0.82],  // multi-fattore ≈ azionario con tilt
     ['fat_multifat','fat_valore',     0.80],
     ['fat_multifat','fat_momentum',   0.55],
@@ -445,13 +449,33 @@ function getCurrentPortfolioPoint(ter) {
       isCurrent: true,
     };
   }
-  // Custom
+  // Custom — espandi i composite (Efficient Core) nei sottostanti atomici,
+  // altrimenti getCov restituisce NaN (vol undefined) → triangolo sparisce.
   const slots = (state.customPortfolio?.slots||[]).filter(s=>s.ac&&ASSET_CLASSES[s.ac]&&s.pct>0);
   if (!slots.length) return null;
-  const total = slots.reduce((s,sl)=>s+(+sl.pct||0),0);
-  if (total<=0) return null;
-  const keys = slots.map(s=>s.ac);
-  const weights = slots.map(s=>(+s.pct||0)/total);
+  const rawTotal = slots.reduce((s,sl)=>s+(+sl.pct||0),0);
+  if (rawTotal<=0) return null;
+
+  // Espansione: i composite vengono scomposti con pesi notional corretti,
+  // poi normalizzati a somma 1 (come fa expandCustomSlots ma leggero).
+  const expandedMap = {};
+  for (const sl of slots) {
+    const pctNorm = (+sl.pct||0) / rawTotal; // peso normalizzato dello slot
+    const ac = ASSET_CLASSES[sl.ac];
+    if (ac && ac.isComposite && Array.isArray(ac.composite)) {
+      const notional = ac.composite.reduce((a,c) => a + c.w, 0);
+      for (const comp of ac.composite) {
+        expandedMap[comp.ac] = (expandedMap[comp.ac] || 0) + pctNorm * (comp.w / notional);
+      }
+    } else {
+      expandedMap[sl.ac] = (expandedMap[sl.ac] || 0) + pctNorm;
+    }
+  }
+  // Rinormalizza a somma 1 (la leva è già catturata dai pesi > somma originale)
+  const expSum = Object.values(expandedMap).reduce((a,b)=>a+b,0);
+  const keys = Object.keys(expandedMap);
+  const weights = keys.map(k => expandedMap[k] / (expSum||1));
+
   const mu  = portfolioMu(weights, keys, ter);
   const vol = Math.sqrt(Math.max(0, portfolioVar(weights, keys)));
   return { mu, vol, sharpe: (mu-RF_RATE)/(vol||0.001), label:'Il tuo portafoglio', isCurrent:true };
@@ -647,12 +671,32 @@ function _syncEFStateFromSimulator() {
   _efState.ter   = state.ter || 0.20;
   _efState.value = state.w || 100000;
 
-  // Se portafoglio custom, usa le sue asset class
+  // Se portafoglio custom, usa le sue asset class.
+  // I composite (Efficient Core 90/60) vanno espansi nei sottostanti atomici:
+  // ec_glob_core non ha vol/mu propri → computeEfficientFrontier produrrebbe NaN.
   if (state.portfolio === 'custom') {
     const slots = (state.customPortfolio?.slots||[]).filter(s=>s.ac&&ASSET_CLASSES[s.ac]&&s.pct>0);
     if (slots.length) {
-      _efState.assets = slots.map(s=>s.ac);
-      return;
+      const expanded = [];
+      for (const sl of slots) {
+        const ac = ASSET_CLASSES[sl.ac];
+        if (ac && ac.isComposite && Array.isArray(ac.composite)) {
+          // Scomponi: aggiungi i sottostanti (deduplicando)
+          for (const comp of ac.composite) {
+            if (ASSET_CLASSES[comp.ac] && !expanded.includes(comp.ac)) {
+              expanded.push(comp.ac);
+            }
+          }
+        } else {
+          if (!expanded.includes(sl.ac)) expanded.push(sl.ac);
+        }
+      }
+      if (expanded.length >= 2) { _efState.assets = expanded; return; }
+      if (expanded.length === 1) {
+        const partner = expanded[0].startsWith('eq') ? 'ob_glob_agg' : 'eq_sviluppati';
+        _efState.assets = [expanded[0], partner];
+        return;
+      }
     }
   }
   // Per i preset: usa le ASSET CLASS REALI della loro composizione (PRESET_COMPOSITION),
@@ -724,12 +768,12 @@ function _renderFrontierView() {
   if (maxS) specialPoints.push({
     x: +(maxS.vol*100).toFixed(2),
     y: +(maxS.mu*100).toFixed(2),
-    label: '★ Max Sharpe',
+    label: 'Max Sharpe',
   });
   if (minV) specialPoints.push({
     x: +(minV.vol*100).toFixed(2),
     y: +(minV.mu*100).toFixed(2),
-    label: '▼ Min Varianza',
+    label: 'Min Varianza',
   });
 
   const datasets = [
@@ -738,13 +782,11 @@ function _renderFrontierView() {
       data: frontierData,
       type: 'scatter',
       showLine: true,
-      borderColor: 'rgba(26,115,232,0.9)',
+      borderColor: 'rgba(158,27,50,0.9)',
       backgroundColor: frontierData.map(p => {
         const t = (p.sharpe - minSh) / (maxSh - minSh + 0.001);
-        const r = Math.round(26  + (26-217)*t*0 + (0)*t);
-        const g = Math.round(115 + (115-48)*0   + (200-115)*t);
-        const b = Math.round(232 - (232-37)*t);
-        return `rgba(${Math.round(lerp(217,26,t))},${Math.round(lerp(48,115,t))},${Math.round(lerp(37,232,t))},0.85)`;
+        // Gradiente istituzionale: Sharpe basso (negative #c92a2a) -> alto (positive #0e7a44)
+        return `rgba(${Math.round(lerp(201,14,t))},${Math.round(lerp(42,122,t))},${Math.round(lerp(42,68,t))},0.85)`;
       }),
       pointRadius: 5,
       pointHoverRadius: 8,
@@ -756,8 +798,8 @@ function _renderFrontierView() {
       label: 'Punti Ottimali',
       data: specialPoints,
       type: 'scatter',
-      backgroundColor: ['rgba(251,140,0,1)','rgba(46,125,50,1)'],
-      borderColor: ['rgba(251,140,0,1)','rgba(46,125,50,1)'],
+      backgroundColor: ['rgba(89,89,89,1)','rgba(14,122,68,1)'],
+      borderColor: ['rgba(89,89,89,1)','rgba(14,122,68,1)'],
       pointRadius: 10,
       pointHoverRadius: 13,
       showLine: false,
@@ -769,8 +811,8 @@ function _renderFrontierView() {
       label: 'Il tuo portafoglio',
       data: [{ x: +(curr.vol*100).toFixed(2), y: +(curr.mu*100).toFixed(2) }],
       type: 'scatter',
-      backgroundColor: 'rgba(217,48,37,1)',
-      borderColor: 'rgba(217,48,37,1)',
+      backgroundColor: 'rgba(201,42,42,1)',
+      borderColor: 'rgba(201,42,42,1)',
       pointRadius: 12,
       pointStyle: 'triangle',
       pointHoverRadius: 15,
@@ -810,8 +852,8 @@ function _renderFrontierView() {
             },
           },
           backgroundColor: 'rgba(32,33,36,0.9)',
-          titleColor: '#fff',
-          bodyColor: '#e8eaed',
+          titleColor: '#ffffff',
+          bodyColor: '#ececec',
           padding: 10,
           cornerRadius: 8,
         },
@@ -844,35 +886,37 @@ function _updateFrontierStats(curr, maxS, minV) {
   el.innerHTML = `
     <div class="quant-stat-grid">
       <div class="quant-stat-card" style="border-left:3px solid var(--red)">
-        <div class="qsc-title">▲ Il tuo portafoglio<br><small>${portLabel}</small></div>
+        <div class="qsc-title"><i data-lucide="triangle" class="lucide-sm"></i> Il tuo portafoglio<br><small>${portLabel}</small></div>
         <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(curr?.mu)}/a</strong></div>
         <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(curr?.vol)}/a</strong></div>
         <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(curr?.sharpe)}</strong></div>
       </div>
       <div class="quant-stat-card" style="border-left:3px solid var(--orange)">
-        <div class="qsc-title">★ Max Sharpe</div>
+        <div class="qsc-title"><i data-lucide="star" class="lucide-sm"></i> Max Sharpe</div>
         <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(maxS?.mu)}/a</strong></div>
         <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(maxS?.vol)}/a</strong></div>
         <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(maxS?.sharpe)}</strong></div>
       </div>
       <div class="quant-stat-card" style="border-left:3px solid var(--green)">
-        <div class="qsc-title">▼ Min Varianza</div>
+        <div class="qsc-title"><i data-lucide="shield" class="lucide-sm"></i> Min Varianza</div>
         <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(minV?.mu)}/a</strong></div>
         <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(minV?.vol)}/a</strong></div>
         <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(minV?.sharpe)}</strong></div>
       </div>
     </div>
     ${curr && maxS ? `
+    if (window.refreshIcons) window.refreshIcons();
     <div class="quant-note ${curr.sharpe < maxS.sharpe * 0.85 ? 'quant-note-warn' : 'quant-note-ok'}">
       ${curr.sharpe < maxS.sharpe * 0.85
-        ? `⚠️ Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong> vs <strong>${fmtS(maxS.sharpe)}</strong> del portafoglio Max Sharpe — esiste un'allocazione più efficiente tra le asset class selezionate.`
-        : `✓ Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong>, vicino al massimo ottimale (<strong>${fmtS(maxS.sharpe)}</strong>) — allocazione efficiente.`
+        ? `<i data-lucide="alert-triangle" class="lucide-sm"></i> Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong> vs <strong>${fmtS(maxS.sharpe)}</strong> del portafoglio Max Sharpe — esiste un'allocazione più efficiente tra le asset class selezionate.`
+        : `<i data-lucide="check" class="lucide-sm"></i> Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong>, vicino al massimo ottimale (<strong>${fmtS(maxS.sharpe)}</strong>) — allocazione efficiente.`
       }
       ${curr.leverage && curr.leverage > 1.0
-        ? `<br><span style="font-size:11px;color:var(--text3)">ℹ️ Il tuo portafoglio usa leva (esposizione ×${curr.leverage.toFixed(2)}): la frontiera mostra portafogli non a leva, quindi il confronto di Sharpe è solo indicativo. La leva sposta il punto lungo la Capital Market Line, non sulla frontiera.</span>`
+        ? `<br><span style="font-size:11px;color:var(--text3)"><span class="info-i">i</span> Il tuo portafoglio usa leva (esposizione ×${curr.leverage.toFixed(2)}): la frontiera mostra portafogli non a leva, quindi il confronto di Sharpe è solo indicativo. La leva sposta il punto lungo la Capital Market Line, non sulla frontiera.</span>`
         : ''}
     </div>` : ''}
   `;
+  if (window.refreshIcons) window.refreshIcons();
 }
 
 // ── VaR / CVaR ───────────────────────────────────────────────────────────
@@ -886,8 +930,28 @@ function _renderVaRView() {
     const slots = (state.customPortfolio?.slots||[]).filter(s=>s.ac&&ASSET_CLASSES[s.ac]&&s.pct>0);
     if (!slots.length) { el.innerHTML='<p style="color:var(--text3)">Configura prima il portafoglio Custom.</p>'; return; }
     const total = slots.reduce((s,sl)=>s+(+sl.pct||0),0);
-    const keys  = slots.map(s=>s.ac);
-    const weights = slots.map(s=>(+s.pct||0)/total);
+    // FIX: espansione composite (Efficient Core 90/60 USA/Globale) nei sottostanti atomici.
+    // ec_us_core / ec_glob_core non sono in AC_KEYS_EF e non hanno vol/mu propri:
+    // passarli direttamente a portfolioVar/portfolioMu produceva covarianza=0 e mu=0
+    // per quella porzione, rendendo VaR/CVaR silenziosamente errati.
+    // Stessa logica di espansione usata in getCurrentPortfolioPoint e _syncEFStateFromSimulator.
+    const expandedMap = {};
+    for (const sl of slots) {
+      const pctNorm = (+sl.pct||0) / total;
+      const ac = ASSET_CLASSES[sl.ac];
+      if (ac && ac.isComposite && Array.isArray(ac.composite)) {
+        const notional = ac.composite.reduce((a,c) => a + c.w, 0);
+        for (const comp of ac.composite) {
+          if (ASSET_CLASSES[comp.ac])
+            expandedMap[comp.ac] = (expandedMap[comp.ac]||0) + pctNorm * (comp.w / notional);
+        }
+      } else {
+        expandedMap[sl.ac] = (expandedMap[sl.ac]||0) + pctNorm;
+      }
+    }
+    const expSum = Object.values(expandedMap).reduce((a,b)=>a+b, 0);
+    const keys    = Object.keys(expandedMap);
+    const weights = keys.map(k => expandedMap[k] / (expSum||1));
     mu  = portfolioMu(weights, keys, 0);
     vol = Math.sqrt(Math.max(0, portfolioVar(weights, keys)));
   } else {
@@ -902,7 +966,15 @@ function _renderVaRView() {
   const horizon = _efState.horizon || 1;
 
   const r = computeVaRCVaR(mu, vol, horizon, value, ter);
-  const portLabel = key==='custom'?'Custom':(PORT[key]?.label||key);
+  // Per i custom con Efficient Core: segnala che il calcolo usa i sottostanti atomici
+  const _hasComposite = key === 'custom' &&
+    (state.customPortfolio?.slots||[]).some(s => { const ac = ASSET_CLASSES[s.ac]; return ac && ac.isComposite; });
+  // Leva presente: preset Efficient Core / Return Stacking, o custom con composite.
+  // Il VaR normalizza i pesi al 100%, quindi sottostima il rischio amplificato dalla leva.
+  const _varLeveraged = _hasComposite || key === 'ec_us_9060' || key === 'ec_glob_9060' || key === 'return_stack';
+  const portLabel = key==='custom'
+    ? ('Custom' + (_hasComposite ? ' <span style="font-size:10px;color:var(--text3);font-weight:400">(Efficient Core espanso nei sottostanti)</span>' : ''))
+    : (PORT[key]?.label||key);
   // fmt/fmtP: null = "nessuna perdita attesa" (VaR negativo su orizzonte lungo)
   const fmt  = v => v === null ? '<span style="color:var(--green);font-size:11px">nessuna perdita attesa</span>'
                                : v >= 0 ? '−€'+Math.round(v).toLocaleString('it-IT')
@@ -933,7 +1005,9 @@ function _renderVaRView() {
       <strong>Orizzonte:</strong> ${horizon} anno/i · <strong>TER:</strong> ${ter.toFixed(2)}% ·
       <strong>Rendimento netto:</strong> ${((mu-ter/100)*100).toFixed(1)}%/a · <strong>Volatilità:</strong> ${(vol*100).toFixed(1)}%/a
     </div>
-
+    ${_varLeveraged ? `<div style="font-size:11.5px;color:var(--orange);background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:14px;line-height:1.55">
+      <i data-lucide="zap" class="lucide-sm"></i> <strong>Portafoglio a leva:</strong> il VaR/CVaR espande i sottostanti ma normalizza i pesi al 100%, quindi <strong>sottostima il rischio reale</strong> amplificato dalla leva (notional &gt;100%). Per una stima corretta del rischio di questo portafoglio usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong>, che modellano leva e costo di finanziamento.
+    </div>` : ''}
     <div class="tbl-outer" style="margin-bottom:20px">
       <table>
         <thead>
@@ -954,6 +1028,7 @@ function _renderVaRView() {
                 const pct = (v/value*100).toFixed(1);
                 const isExtreme = row.label.includes('99.9');
                 return `<td style="font-weight:600;color:${isExtreme?'var(--red)':m.color}">${fmt(v)}<br><small style="font-weight:400;color:var(--text3)">${fmtP(v,value)}</small></td>`;
+  if (window.refreshIcons) window.refreshIcons();
               }).join('')}
             </tr>
           `).join('')}
@@ -1003,7 +1078,7 @@ window.quantSetHorizon = function(h) {
 window.quantSyncFromSimulator = function() {
   _syncEFStateFromSimulator();
   renderQuantTab();
-  _flashQuantToast('✓ Parametri importati dal Simulatore');
+  _flashQuantToast('<i data-lucide="check" class="lucide-sm"></i> Parametri importati dal Simulatore');
 };
 
 function _flashQuantToast(msg) {
@@ -1014,7 +1089,7 @@ function _flashQuantToast(msg) {
   el.textContent = msg;
   el.style.cssText = `
     position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    background:#1e8e3e;color:#fff;font-size:13px;font-weight:600;
+    background:var(--positive);color:#fff;font-size:13px;font-weight:600;
     padding:10px 20px;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.18);
     z-index:9999;pointer-events:none;font-family:'DM Sans',sans-serif;
   `;
@@ -1067,7 +1142,7 @@ function _populateAssetSelector() {
 
   el.onchange = function() {
     _efState.assets = Array.from(el.selectedOptions).map(o=>o.value);
-    if (_efState.assets.length < 2) { _flashQuantToast('⚠️ Seleziona almeno 2 asset class'); return; }
+    if (_efState.assets.length < 2) { _flashQuantToast('<i data-lucide="alert-triangle" class="lucide-sm"></i> Seleziona almeno 2 asset class'); return; }
     renderQuantTab();
   };
 }
@@ -1083,8 +1158,8 @@ function _populateAssetSelector() {
     .quant-stat-card .qsc-row:last-child { border-bottom:none; }
     .quant-stat-card strong { color:var(--text); font-weight:600; }
     .quant-note { font-size:12.5px; padding:10px 14px; border-radius:var(--radius-sm); line-height:1.6; }
-    .quant-note-warn { background:var(--orange-dim); border:1px solid rgba(227,116,0,.3); color:var(--text2); }
-    .quant-note-ok   { background:var(--green-dim);  border:1px solid rgba(30,142,62,.3);  color:var(--text2); }
+    .quant-note-warn { background:var(--orange-dim); border:1px solid var(--border-color); color:var(--text2); }
+    .quant-note-ok   { background:var(--green-dim);  border:1px solid var(--border-color);  color:var(--text2); }
   `;
   document.head.appendChild(s);
 })();
@@ -1134,6 +1209,7 @@ const FACTOR_LOADINGS = {
   // ── Carry / Trend (esposizione equity ridotta) ──────────────────────
   fat_carry_bond:  { MKT: 0.05, SMB:  0.00, HML:  0.00, RMW:  0.00, CMA:  0.00, MOM:  0.00 },
   fat_carry_fx:    { MKT: 0.10, SMB:  0.00, HML:  0.00, RMW:  0.00, CMA:  0.00, MOM:  0.00 },
+  fat_carry_comm:  { MKT: 0.08, SMB:  0.00, HML:  0.00, RMW:  0.00, CMA:  0.00, MOM:  0.10 },
   fat_trend:       { MKT: 0.05, SMB:  0.00, HML:  0.00, RMW:  0.00, CMA:  0.00, MOM:  0.15 },
   // ── Bond, real assets, cash (esposizione ~0 ai fattori equity) ──────
   ob_usa_st:       { MKT: 0.00, SMB: 0, HML: 0, RMW: 0, CMA: 0, MOM: 0 },
@@ -1153,17 +1229,17 @@ const FACTOR_LOADINGS = {
 
 // Metadati fattori per UI
 const FACTOR_META = {
-  MKT: { name: 'Market Beta',           short: 'MKT', color: '#1a73e8',
+  MKT: { name: 'Market Beta',           short: 'MKT', color: '#9e1b32',
          desc: 'Esposizione al mercato azionario globale. β=1 = correlazione perfetta col mercato. Premio storico ~6%/a (Sharpe 1964, CAPM).' },
-  SMB: { name: 'Size (Small minus Big)', short: 'SMB', color: '#9334e6',
+  SMB: { name: 'Size (Small minus Big)', short: 'SMB', color: '#1f6feb',
          desc: 'Premio delle small caps vs large (Banz 1981). β>0 = tilt small. Storico ~1.5–2%/a, compresso post-pubblicazione.' },
-  HML: { name: 'Value (High minus Low)', short: 'HML', color: '#1e8e3e',
+  HML: { name: 'Value (High minus Low)', short: 'HML', color: '#0e7a44',
          desc: 'Premio del valore (book-to-market alto) vs growth (Fama-French 1992). β>0 = tilt value. Storico ~2–3%/a.' },
-  RMW: { name: 'Profitability (Robust minus Weak)', short: 'RMW', color: '#e37400',
+  RMW: { name: 'Profitability (Robust minus Weak)', short: 'RMW', color: '#b5651d',
          desc: 'Premio della redditività operativa (Novy-Marx 2013, FF 2015). β>0 = aziende con margini robusti. Storico ~2.5%/a.' },
-  CMA: { name: 'Investment (Conservative minus Aggressive)', short: 'CMA', color: '#00897b',
+  CMA: { name: 'Investment (Conservative minus Aggressive)', short: 'CMA', color: '#6f42c1',
          desc: 'Premio aziende che investono poco vs aggressive (FF 2015). β>0 = capex contenuto. Storico ~1.5%/a.' },
-  MOM: { name: 'Momentum (Up minus Down)', short: 'MOM', color: '#d93025',
+  MOM: { name: 'Momentum (Up minus Down)', short: 'MOM', color: '#0b7285',
          desc: 'Momentum 12-1 mesi (Jegadeesh-Titman 1993, Carhart 1997). Premio ~2.5%/a, ma crash risk in mercati a U-turn.' },
 };
 
@@ -1179,7 +1255,7 @@ function computeFactorExposure(weights, acKeys) {
 }
 
 // ── Decomposizione del rendimento atteso ───────────────────────────────────
-function decomposeReturn(exposure, weights, acKeys, ter) {
+function decomposeReturn(exposure, weights, acKeys, ter, finCost) {
   const contributions = {
     MKT: exposure.MKT * FACTOR_PREMIA.MKT,
     SMB: exposure.SMB * FACTOR_PREMIA.SMB,
@@ -1191,7 +1267,7 @@ function decomposeReturn(exposure, weights, acKeys, ter) {
   const fromFactors    = Object.values(contributions).reduce((s, v) => s + v, 0);
   const baseline       = FACTOR_PREMIA.RF;
   const totalExplained = baseline + fromFactors;
-  const actualMu       = portfolioMu(weights, acKeys, ter);
+  const actualMu       = portfolioMu(weights, acKeys, ter) - (finCost || 0); // costo finanziamento leva (composite)
   const alpha          = actualMu - totalExplained;
   return { baseline, contributions, alpha, actualMu, fromFactors, totalExplained };
 }
@@ -1246,14 +1322,21 @@ function _portfolioToAssetClasses(portKey, p) {
 // ── Ottiene pesi del portafoglio corrente (custom o predefinito) ──────────
 function _getCurrentPortfolioWeights() {
   if (state.portfolio === 'custom') {
-    const slots = (state.customPortfolio?.slots || [])
+    const raw = (state.customPortfolio?.slots || [])
       .filter(s => s.ac && ASSET_CLASSES[s.ac] && s.pct > 0);
-    if (!slots.length) return null;
-    const total = slots.reduce((s, sl) => s + (+sl.pct || 0), 0);
+    if (!raw.length) return null;
+    // Espandi le asset class composite (Efficient Core) nei componenti atomici:
+    // i compositi NON hanno mu/vol/factor loadings propri, quindi vanno scomposti
+    // o produrrebbero NaN nella decomposizione fattoriale, frontiera e VaR.
+    const exp = (typeof expandCustomSlots === 'function')
+      ? expandCustomSlots(state.customPortfolio.slots)
+      : { slots: raw, total: raw.reduce((s, sl) => s + (+sl.pct || 0), 0), finCostTotal: 0 };
+    const total = exp.slots.reduce((s, sl) => s + (+sl.pct || 0), 0) || 1;
     return {
-      keys:    slots.map(s => s.ac),
-      weights: slots.map(s => (+s.pct || 0) / total),
+      keys:    exp.slots.map(s => s.ac),
+      weights: exp.slots.map(s => (+s.pct || 0) / total),
       label:   'Custom',
+      finCost: exp.finCostTotal || 0,
     };
   }
   const p = PORT[state.portfolio];
@@ -1291,18 +1374,18 @@ function _renderFactorWaterfall(decomp) {
   if (_factorChart) { _factorChart.destroy(); _factorChart = null; }
 
   const items = [
-    { label: 'Risk-Free', value: decomp.baseline,         color: '#5f6368' },
+    { label: 'Risk-Free', value: decomp.baseline,         color: '#595959' },
     { label: 'MKT',       value: decomp.contributions.MKT, color: FACTOR_META.MKT.color },
     { label: 'SMB',       value: decomp.contributions.SMB, color: FACTOR_META.SMB.color },
     { label: 'HML',       value: decomp.contributions.HML, color: FACTOR_META.HML.color },
     { label: 'RMW',       value: decomp.contributions.RMW, color: FACTOR_META.RMW.color },
     { label: 'CMA',       value: decomp.contributions.CMA, color: FACTOR_META.CMA.color },
     { label: 'MOM',       value: decomp.contributions.MOM, color: FACTOR_META.MOM.color },
-    { label: 'Alpha',     value: decomp.alpha,             color: '#9334e6' },
+    { label: 'Alpha',     value: decomp.alpha,             color: '#7a1224' },
   ];
   let cum = 0;
   const bars = items.map(it => { const start = cum; cum += it.value; return { ...it, start, end: cum }; });
-  bars.push({ label: 'TOTALE', value: cum, color: '#1a73e8', start: 0, end: cum });
+  bars.push({ label: 'TOTALE', value: cum, color: '#9e1b32', start: 0, end: cum });
 
   const ctx = canvas.getContext('2d');
   _factorChart = new Chart(ctx, {
@@ -1335,7 +1418,7 @@ function _renderFactorWaterfall(decomp) {
             },
           },
           backgroundColor: 'rgba(32,33,36,0.92)',
-          titleColor: '#fff', bodyColor: '#e8eaed',
+          titleColor: '#ffffff', bodyColor: '#ececec',
           padding: 10, cornerRadius: 8,
         },
       },
@@ -1366,7 +1449,7 @@ function _renderFactorView() {
   }
   const { keys, weights, label } = portfolio;
   const exposure = computeFactorExposure(weights, keys);
-  const decomp   = decomposeReturn(exposure, weights, keys, _efState.ter);
+  const decomp   = decomposeReturn(exposure, weights, keys, _efState.ter, portfolio.finCost || 0);
   const fmt      = v => (v >= 0 ? '+' : '') + (v * 100).toFixed(2) + '%';
   const fmtBeta  = v => (v >= 0 ? '+' : '') + v.toFixed(2);
 
@@ -1408,7 +1491,7 @@ function _renderFactorView() {
     </div>
 
     <!-- Esposizioni fattoriali con barre -->
-    <div class="sec-label" style="margin-bottom:12px">Esposizione Fattoriale (β del portafoglio)</div>
+    <div class="sec-label" data-info-id="info-quant-factor" style="margin-bottom:12px">Esposizione Fattoriale (β del portafoglio)</div>
     <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px">
       ${['MKT','SMB','HML','RMW','CMA','MOM'].map(f => {
         const meta = FACTOR_META[f];
@@ -1421,7 +1504,7 @@ function _renderFactorView() {
           <div style="margin-bottom:14px;font-size:12.5px">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;flex-wrap:wrap">
               <span><strong style="color:${meta.color}">${meta.name}</strong> <span style="color:var(--text3)">(β = ${fmtBeta(beta)})</span></span>
-              <span style="font-family:'DM Mono',monospace;color:${contrib >= 0 ? meta.color : 'var(--red)'};font-weight:600">${fmt(contrib)}/a</span>
+              <span class="tabular-nums" style="color:${contrib >= 0 ? meta.color : 'var(--red)'};font-weight:600">${fmt(contrib)}/a</span>
             </div>
             <div style="position:relative;height:8px;background:var(--border2);border-radius:4px;overflow:hidden">
               <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(0,0,0,.25)"></div>
@@ -1457,7 +1540,7 @@ function _renderFactorView() {
                 const c = Math.abs(v) < 0.05 ? 'var(--text3)' :
                           v >  0.3 ? FACTOR_META[f].color :
                           v >  0   ? 'var(--text2)' : 'var(--red)';
-                return `<td style="color:${c};font-family:'DM Mono',monospace;font-weight:${Math.abs(v) >= 0.3 ? 600 : 400}">${fmtBeta(v)}</td>`;
+                return `<td class="tabular-nums" style="color:${c};font-weight:${Math.abs(v) >= 0.3 ? 600 : 400}">${fmtBeta(v)}</td>`;
               }).join('')}
             </tr>
           `).join('')}
@@ -1530,13 +1613,13 @@ window.FACTOR_PREMIA         = FACTOR_PREMIA;
 // ════════════════════════════════════════════════════════════════════════════
 
 const OBJ_META = {
-  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '⭐', color: '#1a73e8',
+  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '<i data-lucide="star" class="lucide-sm"></i>', color: '#9e1b32',
                    desc: 'Massimizza (μ−RF)/σ — miglior rendimento per unità di rischio totale.' },
-  min_variance:  { label: 'Minima Varianza',       icon: '🛡️', color: '#1e8e3e',
+  min_variance:  { label: 'Minima Varianza',       icon: '<i data-lucide="shield" class="lucide-sm"></i>', color: '#0e7a44',
                    desc: 'Minimizza σ — portafoglio difensivo a varianza ridotta.' },
-  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '📉', color: '#e37400',
+  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '<i data-lucide="trending-down" class="lucide-sm"></i>', color: '#595959',
                    desc: 'Massimizza (μ−RF)/σ_down — penalizza solo la volatilità negativa (downside).' },
-  risk_parity:   { label: 'Risk Parity',           icon: '⚖️', color: '#9334e6',
+  risk_parity:   { label: 'Risk Parity',           icon: '<i data-lucide="scale" class="lucide-sm"></i>', color: '#7a1224',
                    desc: 'Ogni asset contribuisce in egual misura al rischio totale (equal risk contribution).' },
 };
 
@@ -1792,7 +1875,28 @@ function _initOptimizerFromCurrent() {
   // Usa asset class dalla composizione corrente come default
   if (state.portfolio === 'custom') {
     const slots = (state.customPortfolio?.slots || []).filter(s => s.ac && ASSET_CLASSES[s.ac] && s.pct > 0);
-    if (slots.length) _optState.assets = slots.map(s => s.ac);
+    if (slots.length) {
+      // FIX: i composite (Efficient Core 90/60 USA/Globale) non sono in AC_KEYS_EF
+      // e non hanno vol/mu propri → getCov restituisce 0 → matrice degenere → NaN.
+      // Si espandono nei sottostanti atomici (stessa logica di getCurrentPortfolioPoint).
+      const expanded = [];
+      for (const sl of slots) {
+        const ac = ASSET_CLASSES[sl.ac];
+        if (ac && ac.isComposite && Array.isArray(ac.composite)) {
+          for (const comp of ac.composite) {
+            if (ASSET_CLASSES[comp.ac] && !expanded.includes(comp.ac))
+              expanded.push(comp.ac);
+          }
+        } else if (!expanded.includes(sl.ac)) {
+          expanded.push(sl.ac);
+        }
+      }
+      if (expanded.length >= 2) _optState.assets = expanded;
+      else if (expanded.length === 1) {
+        const partner = expanded[0].startsWith('eq') ? 'ob_glob_agg' : 'eq_sviluppati';
+        _optState.assets = [expanded[0], partner];
+      }
+    }
   }
   if (!_optState.assets.length) {
     // Default ragionevole: 4-5 asset diversificati
@@ -1810,6 +1914,38 @@ function _renderOptimizerView() {
   const el = document.getElementById('quantOptimizerContent');
   if (!el) return;
   _initOptimizerFromCurrent();
+
+  // Blocco per portafogli a leva: preset Efficient Core / Return Stacking e custom
+  // con composite. L'optimizer lavora con somma pesi = 100% e non può modellare
+  // esposizione notional > 100% né il costo di finanziamento della leva.
+  const _OPT_LEVERAGED_PRESETS = { ec_us_9060: 1, ec_glob_9060: 1, return_stack: 1 };
+  const _optCompositeSlots = state.portfolio === 'custom'
+    ? (state.customPortfolio?.slots||[])
+        .filter(s => { const ac = ASSET_CLASSES[s.ac]; return ac && ac.isComposite && s.pct > 0; })
+    : [];
+  const _optIsLeveraged = !!_OPT_LEVERAGED_PRESETS[state.portfolio] || _optCompositeSlots.length > 0;
+  if (_optIsLeveraged) {
+    const names = _OPT_LEVERAGED_PRESETS[state.portfolio]
+      ? `<strong>${PORT[state.portfolio]?.label || state.portfolio}</strong>`
+      : _optCompositeSlots.map(s => `<strong>${ASSET_CLASSES[s.ac].label}</strong>`).join(', ');
+    el.innerHTML = `
+      <div style="background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:20px 24px;margin:8px 0;line-height:1.7">
+        <div style="font-size:13.5px;font-weight:700;color:var(--text-muted);margin-bottom:8px"><i data-lucide="zap" class="lucide-sm"></i> Optimizer non disponibile per questo portafoglio</div>
+        <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">
+          Il portafoglio ${names} opera con <strong>leva implicita</strong>
+          (esposizione notional &gt;100%). L'optimizer di Markowitz lavora con pesi che sommano
+          al 100% e non può modellare la leva né il suo costo di finanziamento: i risultati
+          sarebbero riferiti ai sottostanti senza leva, un portafoglio diverso da quello selezionato.
+        </div>
+        <div style="font-size:12px;color:var(--text3)">
+          Usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong> per analizzare
+          questo portafoglio — modellano correttamente la leva e il costo di finanziamento.
+          Nota: anche la <strong>Frontiera Efficiente</strong> e il <strong>VaR/CVaR</strong> di questa scheda espandono i composite nei sottostanti ma <strong>normalizzano i pesi al 100%</strong>, quindi non riflettono il rischio amplificato dalla leva (notional &gt;100%): per quei portafogli il rischio reale è superiore a quanto mostrato qui. Il riferimento corretto resta il Simulatore.
+        </div>
+      </div>`;
+    if (window.refreshIcons) window.refreshIcons();
+    return;
+  }
 
   el.innerHTML = `
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
@@ -1834,7 +1970,7 @@ function _renderOptimizerView() {
           <label for="optEnableMaxEq" style="cursor:pointer">Limita totale azionario a max</label>
           <input type="number" id="optMaxEquityInput" min="0" max="100" step="5"
             value="${Math.round(_optState.maxEquity * 100)}"
-            style="width:60px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;text-align:right"
+            class="tabular-nums" style="width:60px;padding:4px 6px;border:1px solid var(--border-color);border-radius:var(--radius);font-size:12px;text-align:right"
             ${_optState.enableMaxEquity ? '' : 'disabled'}> %
         </div>
         <div style="font-size:11px;color:var(--text3)">Si applica alla somma di tutte le asset class azionarie (eq + fattori).</div>
@@ -1842,7 +1978,7 @@ function _renderOptimizerView() {
 
       <!-- Pannello DESTRO: obiettivo + run -->
       <div class="sec" style="margin-bottom:0;padding:14px">
-        <div class="sec-label" style="margin-bottom:10px">4. Funzione obiettivo</div>
+        <div class="sec-label" data-info-id="info-quant-optimizer" style="margin-bottom:10px">4. Funzione obiettivo</div>
         <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
           ${Object.entries(OBJ_META).map(([key, m]) => `
             <button class="gbtn ${_optState.objective === key ? 'a-blue' : ''}"
@@ -1858,7 +1994,7 @@ function _renderOptimizerView() {
           <span style="color:var(--text2)">TER applicato:</span>
           <input type="number" id="optTerInput" min="0" max="3" step="0.05"
             value="${_optState.ter.toFixed(2)}"
-            style="width:70px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;text-align:right"> %
+            style="width:70px;padding:4px 6px;border:1px solid var(--border);border-radius:var(--radius);font-size:12px;text-align:right"> %
         </div>
 
         <div style="margin-bottom:14px;font-size:12.5px">
@@ -1877,14 +2013,14 @@ function _renderOptimizerView() {
           </div>
           <div style="font-size:10.5px;color:var(--text3);margin-top:6px;line-height:1.5">
             ${_optState.returnBasis === 'forward'
-              ? '⚠️ Rendimenti forward conservativi + volatilità storiche → Sharpe più bassi ma realistici per il futuro.'
-              : 'ℹ️ Coerenza rendimento-volatilità storica → Sharpe più alti, ma i CAGR passati sono spesso non ripetibili (tassi in calo 1981-2021, de-rating valutazioni).'}
+              ? '<i data-lucide="alert-triangle" class="lucide-sm"></i> Rendimenti forward conservativi + volatilità storiche → Sharpe più bassi ma realistici per il futuro.'
+              : '<span class="info-i">i</span> Coerenza rendimento-volatilità storica → Sharpe più alti, ma i CAGR passati sono spesso non ripetibili (tassi in calo 1981-2021, de-rating valutazioni).'}
           </div>
         </div>
 
         <button id="optRunBtn" onclick="optRunOptimization()"
           style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-          🚀 Esegui Ottimizzazione
+          <i data-lucide="rocket" class="lucide-sm"></i> Esegui Ottimizzazione
         </button>
         <div id="optStatus" style="margin-top:10px;font-size:11.5px;color:var(--text3);text-align:center;min-height:16px"></div>
       </div>
@@ -1897,6 +2033,7 @@ function _renderOptimizerView() {
       <strong>Metodologia:</strong> 8.000 portafogli casuali Dirichlet che rispettano i vincoli, seguiti da 300 iterazioni di local search adattiva (random perturbation greedy). Per Risk Parity: iterazione fixed-point con damping 0.5 e proiezione sui vincoli (max 300 iter). Rendimenti attesi e covarianze basati su dati storici 1970-2024 calibrati. Il risultato è ottimale dato il modello statistico — la realtà può differire (instabilità di Markowitz, errore di stima sui rendimenti attesi).
     </div>
   `;
+  if (window.refreshIcons) window.refreshIcons();
 
   _populateOptAssetSelector();
   _renderOptBounds();
@@ -1910,6 +2047,10 @@ function _populateOptAssetSelector() {
   if (!sel) return;
   const cats = {};
   for (const [key, ac] of Object.entries(ASSET_CLASSES)) {
+    // FIX: escludi i composite (ec_us_core, ec_glob_core): non sono in AC_KEYS_EF,
+    // non hanno vol/mu propri → getCov=0 → matrice degenere → NaN su tutto.
+    // Nell'optimizer si usano i sottostanti atomici (eq_usa, ob_usa_it, ecc.).
+    if (ac.isComposite) continue;
     if (!cats[ac.cat]) cats[ac.cat] = [];
     cats[ac.cat].push({ key, ac });
   }
@@ -1927,8 +2068,8 @@ function _populateOptAssetSelector() {
 
   sel.onchange = function() {
     const newAssets = Array.from(sel.selectedOptions).map(o => o.value);
-    if (newAssets.length < 2) { _flashOptToast('⚠️ Seleziona almeno 2 asset class', 'orange'); return; }
-    if (newAssets.length > 12) { _flashOptToast('⚠️ Massimo 12 asset class', 'orange'); return; }
+    if (newAssets.length < 2) { _flashOptToast('<i data-lucide="alert-triangle" class="lucide-sm"></i> Seleziona almeno 2 asset class', 'orange'); return; }
+    if (newAssets.length > 12) { _flashOptToast('<i data-lucide="alert-triangle" class="lucide-sm"></i> Massimo 12 asset class', 'orange'); return; }
     _optState.assets = newAssets;
     // Rimuovi bounds per asset deselezionati
     for (const k of Object.keys(_optState.bounds)) {
@@ -1961,12 +2102,12 @@ function _renderOptBounds() {
         <input type="number" min="0" max="100" step="5"
           value="${Math.round(b.min * 100)}"
           onchange="optSetBound('${k}','min',this.value)"
-          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right">
+          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;text-align:right">
         <span style="color:var(--text3);font-size:11px">max</span>
         <input type="number" min="0" max="100" step="5"
           value="${Math.round(b.max * 100)}"
           onchange="optSetBound('${k}','max',this.value)"
-          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right">
+          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:var(--radius);font-size:11px;text-align:right">
         <span style="color:var(--text3);font-size:11px">%</span>
       </div>`;
   }).join('');
@@ -2015,10 +2156,10 @@ window.optRunOptimization = function() {
   const btn = document.getElementById('optRunBtn');
   const status = document.getElementById('optStatus');
   if (!_optState.assets.length || _optState.assets.length < 2) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = '⚠️ Seleziona almeno 2 asset class'; }
+    if (status) { status.style.color = 'var(--red)'; status.innerHTML = '<i data-lucide="alert-triangle" class="lucide-sm"></i> Seleziona almeno 2 asset class'; } if (window.refreshIcons) window.refreshIcons();
     return;
   }
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Ottimizzazione in corso...'; btn.style.opacity = '0.7'; }
+  if (btn) { btn.disabled = true; btn.innerHTML = '<i data-lucide="hourglass" class="lucide-sm"></i> Ottimizzazione in corso...'; btn.style.opacity = '0.7'; } if (window.refreshIcons) window.refreshIcons();
   if (status) { status.style.color = 'var(--text3)'; status.textContent = 'Esecuzione 8.000 simulazioni + local search...'; }
 
   // Esegue in setTimeout per permettere repaint UI
@@ -2030,19 +2171,19 @@ window.optRunOptimization = function() {
       const dt = ((performance.now() - t0) / 1000).toFixed(2);
 
       if (result.error) {
-        if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ ' + result.error; }
-        if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+        if (status) { status.style.color = 'var(--red)'; status.innerHTML = '<i data-lucide="x" class="lucide-sm"></i> ' + result.error; } if (window.refreshIcons) window.refreshIcons();
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="rocket" class="lucide-sm"></i> Esegui Ottimizzazione'; btn.style.opacity = '1'; } if (window.refreshIcons) window.refreshIcons();
         return;
       }
 
       _optState.result = result;
-      if (status) { status.style.color = 'var(--green)'; status.textContent = `✓ Completato in ${dt}s`; }
-      if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (status) { status.style.color = 'var(--green)'; status.innerHTML = `<i data-lucide="check" class="lucide-sm"></i> Completato in ${dt}s`; } if (window.refreshIcons) window.refreshIcons();
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="rocket" class="lucide-sm"></i> Esegui Ottimizzazione'; btn.style.opacity = '1'; } if (window.refreshIcons) window.refreshIcons();
       _renderOptResult();
     } catch (e) {
       console.error('Optimizer error:', e);
-      if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ Errore: ' + e.message; }
-      if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (status) { status.style.color = 'var(--red)'; status.innerHTML = '<i data-lucide="x" class="lucide-sm"></i> Errore: ' + e.message; } if (window.refreshIcons) window.refreshIcons();
+      if (btn) { btn.disabled = false; btn.innerHTML = '<i data-lucide="rocket" class="lucide-sm"></i> Esegui Ottimizzazione'; btn.style.opacity = '1'; } if (window.refreshIcons) window.refreshIcons();
     }
   }, 50);
 };
@@ -2081,7 +2222,7 @@ function _renderOptResult() {
         </div>
         <button onclick="optApplyToSimulator()"
           style="margin-left:auto;padding:9px 16px;background:${objMeta.color};color:#fff;border:none;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
-          ✓ Applica al Simulatore
+          <i data-lucide="check" class="lucide-sm"></i> Applica al Simulatore
         </button>
       </div>
 
@@ -2094,12 +2235,16 @@ function _renderOptResult() {
           { l: 'Sortino ratio',      v: sortino.toFixed(2), c: sortino > 0.7 ? 'var(--green)' : 'var(--text)' },
           { l: 'Rendimento reale*',  v: fmt(r.mu - (state.inflBottom || 2) / 100) + '/a', c: 'var(--teal)' },
         ].map(k => `
+        if (window.refreshIcons) window.refreshIcons();
           <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center">
-            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
-            <div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:${k.c}">${k.v}</div>
+            <div class="tabular-nums" style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
+            <div class="tabular-nums" style="font-size:16px;font-weight:700;color:${k.c}">${k.v}</div>
           </div>`).join('')}
       </div>
-      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">* Rendimento reale = atteso − inflazione attesa (${state.inflBottom?.toFixed(1) || '2.0'}%)</div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">* Rendimento reale = atteso − inflazione attesa (${state.inflBottom?.toFixed(1) || '2.0'}%). Il "Rendimento atteso" è nominale (lordo di inflazione): applicando al Simulatore, l'inflazione viene scontata una sola volta nella proiezione.${_optState.returnBasis === 'historical' ? ' <strong style="color:var(--orange)">Base storica attiva</strong>: il Simulatore userà i rendimenti forward-looking (più prudenti), quindi mostrerà un rendimento atteso inferiore a quello qui sopra — i pesi però restano identici.' : ''}</div>
+      <div style="font-size:10.5px;color:var(--text3);margin-top:5px;line-height:1.55;background:var(--bg);border-radius:var(--radius-sm);padding:7px 10px;border:1px solid var(--border)">
+        ⓘ <strong>Ottimizzazione parametrica:</strong> Markowitz lavora su rendimenti attesi forward-looking, volatilità e correlazioni <em>modellate</em> — non su una serie storica di prezzi. I risultati non sono un backtest: indicano l'allocazione efficiente secondo i parametri del modello, non ciò che sarebbe accaduto storicamente. Per asset come trend following e carry (incluso il Carry Commodities) questo è l'unico approccio possibile, poiché non esiste una serie storica mensile reale.
+      </div>
     </div>
 
     <!-- Grafici e tabella allocazione -->
@@ -2134,16 +2279,17 @@ function _renderOptResult() {
             const b = _optState.bounds[row.key] || { min: 0, max: 1 };
             const onMin = row.w <= b.min + 0.005;
             const onMax = row.w >= b.max - 0.005;
-            const constraintBadge = onMin && b.min > 0 ? `<span style="color:var(--orange);font-size:10.5px">⚠ vincolato a min ${(b.min*100).toFixed(0)}%</span>` :
-                                    onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px">⚠ vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
+            const constraintBadge = onMin && b.min > 0 ? `<span style="color:var(--orange);font-size:10.5px"><i data-lucide="alert-triangle" class="lucide-sm"></i> vincolato a min ${(b.min*100).toFixed(0)}%</span>` :
+                                    onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px"><i data-lucide="alert-triangle" class="lucide-sm"></i> vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
                                     `<span style="color:var(--text3);font-size:10.5px">libero (range ${(b.min*100).toFixed(0)}–${(b.max*100).toFixed(0)}%)</span>`;
+  if (window.refreshIcons) window.refreshIcons();
             return `
               <tr>
                 <td style="text-align:left">${row.label}</td>
                 <td><strong style="color:var(--blue)">${(row.w * 100).toFixed(1)}%</strong></td>
                 <td style="color:var(--purple)">${(row.rc * 100).toFixed(1)}%</td>
-                <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td>
-                <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td>
+                <td class="tabular-nums" style="color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td>
+                <td class="tabular-nums" style="color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td>
                 <td>${constraintBadge}</td>
               </tr>`;
           }).join('')}
@@ -2164,8 +2310,8 @@ function _renderOptResult() {
           { l: 'Sharpe Ottimo',   v: sharpe.toFixed(2), good: null },
         ].map(k => `
           <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;text-align:center">
-            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
-            <div style="font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:${k.good == null ? 'var(--text)' : k.good ? 'var(--green)' : 'var(--red)'}">${(k.good && !k.v.startsWith('-') ? '+' : '') + k.v}</div>
+            <div class="tabular-nums" style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
+            <div class="tabular-nums" style="font-size:14px;font-weight:700;color:${k.good == null ? 'var(--text)' : k.good ? 'var(--green)' : 'var(--red)'}">${(k.good && !k.v.startsWith('-') ? '+' : '') + k.v}</div>
           </div>`).join('')}
       </div>
     </div>` : ''}
@@ -2181,7 +2327,7 @@ function _renderOptCharts(allocRows, rc) {
   if (_optRcChart) { _optRcChart.destroy(); _optRcChart = null; }
 
   // Colori coerenti per asset
-  const colors = ['#1a73e8','#9334e6','#1e8e3e','#e37400','#00897b','#d93025','#fbbc04','#5f6368','#0097a7','#673ab7','#ff7043','#4caf50'];
+  const colors = ['#9e1b32','#1f6feb','#0e7a44','#b5651d','#6f42c1','#0b7285','#c2255c','#5c6b7a','#2b8a3e','#7a1224','#d6336c','#1098ad'];
 
   // Pie chart allocazione
   const pieCanvas = document.getElementById('optPieChart');
@@ -2221,15 +2367,15 @@ function _renderOptCharts(allocRows, rc) {
           {
             label: 'Peso',
             data: allocRows.map(r => +(r.w * 100).toFixed(2)),
-            backgroundColor: 'rgba(26,115,232,0.6)',
-            borderColor: 'rgba(26,115,232,1)',
+            backgroundColor: 'rgba(158,27,50,0.6)',
+            borderColor: 'rgba(158,27,50,1)',
             borderWidth: 1,
           },
           {
             label: 'Risk Contribution',
             data: allocRows.map(r => +(r.rc * 100).toFixed(2)),
-            backgroundColor: 'rgba(147,52,230,0.6)',
-            borderColor: 'rgba(147,52,230,1)',
+            backgroundColor: 'rgba(89,89,89,0.6)',
+            borderColor: 'rgba(89,89,89,1)',
             borderWidth: 1,
           },
         ],
@@ -2255,7 +2401,13 @@ function _renderOptCharts(allocRows, rc) {
 // ── Applica portafoglio ottimale al simulatore (custom) ───────────────────
 window.optApplyToSimulator = function() {
   if (!_optState.result) return;
-  if (!confirm('Sostituire il portafoglio Custom corrente con l\'allocazione ottimizzata? Questa azione è irreversibile (puoi salvare lo stato attuale prima dal pannello Scenari Salvati).')) return;
+  // Se l'ottimizzazione è su base STORICA, il rendimento mostrato (CAGR 1970-2024)
+  // è più alto di quello che userà il Simulatore (forward-looking, più prudente).
+  // Avvisiamo l'utente così il calo del rendimento atteso è atteso, non una sorpresa.
+  const histWarn = (_optState.returnBasis === 'historical')
+    ? '\n\nNOTA: hai ottimizzato sui rendimenti STORICI (CAGR 1970-2024). Il Simulatore ricalcolerà il portafoglio con i rendimenti FORWARD-LOOKING (più prudenti), quindi il rendimento atteso mostrato sarà più basso di quello dell\'optimizer. I pesi restano identici; cambia solo l\'ipotesi di rendimento, in coerenza con tutto il resto del Simulatore.'
+    : '';
+  if (!confirm('Sostituire il portafoglio Custom corrente con l\'allocazione ottimizzata? Questa azione è irreversibile (puoi salvare lo stato attuale prima dal pannello Scenari Salvati).' + histWarn)) return;
   // Costruisci slots custom
   const slots = _optState.assets.map((k, i) => ({
     ac: k,
@@ -2271,13 +2423,13 @@ window.optApplyToSimulator = function() {
   if (typeof updateRetInfo === 'function') updateRetInfo();
   if (typeof updatePortDetailBox === 'function') updatePortDetailBox();
   if (typeof render === 'function') render();
-  _flashOptToast('✓ Portafoglio ottimale applicato al simulatore', 'green');
+  _flashOptToast('<i data-lucide="check" class="lucide-sm"></i> Portafoglio ottimale applicato al simulatore', 'green');
 };
 
 // ── Toast notification per optimizer ──────────────────────────────────────
 function _flashOptToast(msg, type) {
   type = type || 'green';
-  const colors = { green: '#1e8e3e', orange: '#e37400', red: '#d93025', blue: '#1a73e8' };
+  const colors = { green: '#0e7a44', orange: '#595959', red: '#c92a2a', blue: '#9e1b32' };
   const old = document.getElementById('optToast');
   if (old) old.remove();
   const el = document.createElement('div');

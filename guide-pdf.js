@@ -4,14 +4,14 @@
 async function downloadGuidePDF() {
   const btn = document.getElementById('guideDlBtn');
   const orig = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = '⏳ Generazione...';
+  btn.disabled = true; btn.innerHTML = '<i data-lucide="hourglass" class="lucide-sm"></i> Generazione...'; if (window.refreshIcons) window.refreshIcons();
   await new Promise(r => setTimeout(r, 60));
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210, H = 297, ML = 16, MR = 16, CW = W - ML - MR;
     let y = 0, pN = 1;
-    const BLU = [26,115,232], PUR = [147,52,230], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [251,188,4];
+    const BLU = [158,27,50], PUR = [122,18,36], GRAY = [89,89,89], DARK = [33,33,33], LBG = [244,245,247], AMBER = [89,89,89];
 
     const hdrBar = () => {
       doc.setFillColor(...LBG); doc.rect(0,0,W,12,'F');
@@ -42,11 +42,11 @@ async function downloadGuidePDF() {
       const lines = doc.splitTextToSize(pdfSafe(t), CW-8);
       const boxH = lines.length*4.4 + 10;
       chk(boxH+3);
-      doc.setFillColor(255, 248, 225); doc.rect(ML, y, CW, boxH, 'F');
+      doc.setFillColor(244, 245, 247); doc.rect(ML, y, CW, boxH, 'F');
       doc.setFillColor(...col); doc.rect(ML, y, 1.5, boxH, 'F');
       doc.setFontSize(8.4); doc.setFont('helvetica','bold'); doc.setTextColor(...col);
       doc.text(pdfSafe(title), ML+5, y+5);
-      doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(60,55,30);
+      doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(33,33,33);
       doc.text(lines, ML+5, y+10);
       y += boxH + 3; doc.setTextColor(0,0,0);
     };
@@ -57,7 +57,7 @@ async function downloadGuidePDF() {
     doc.text('Guida all\'utilizzo', ML, 24);
     doc.setFontSize(13); doc.setFont('helvetica','normal');
     doc.text(pdfSafe('Suite Patrimoniale Pro v3 — Manuale operativo completo'), ML, 33);
-    doc.setFontSize(9); doc.setTextColor(230,215,255);
+    doc.setFontSize(9); doc.setTextColor(255,255,255);
     doc.text(`Documento generato il ${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})}`, ML, 42);
     y = 65;
 
@@ -106,7 +106,7 @@ async function downloadGuidePDF() {
     li('Blend 55/45: forward live (55%) + baseline (45%) per ridurre la sensibilita al dato puntuale (shrinkage bayesiano).');
     li('Approccio a delta: lo scostamento di valutazione e applicato al baseline calibrato (non lo sostituisce), cosi il confronto storico-vs-CAPE isola il solo effetto delle valutazioni correnti.');
     li('Badge colorato: mostra il delta vs rendimento storico (es. -0.9%/a in rosso se CAPE elevato).');
-    li('CAPE USA: dataset GitHub aggiornato mensilmente. CAPE Europa: stimato da P/E MSCI Europe con correzione ciclica (CAPE_EU = 0.68 x CAPE_USA + 3.8).');
+    li('CAPE USA: dataset Shiller (datahub/GitHub) — ultimo PE10 pubblicato riscalato al prezzo S&P500 corrente con deflatore crescita utili ~6%/a; mostrato come stima. CAPE Europa: stimato via regressione ricalibrata CAPE_EU = 0.55 x CAPE_USA + 2.5, con correzione ciclica.');
     callout('Con CAPE USA ~34 (dato 2024-25), i rendimenti azionari attesi scendono di circa 0.9-1.2%/a vs baseline. Su 30 anni abbassa il valore atteso in modo apprezzabile in scenario base. Utile per pianificazione conservativa con valutazioni elevate.', BLU, 'Impatto CAPE elevato');
     h2('Soglia di Optionality');
     p('Linea tratteggiata orizzontale sul grafico. Imposta il valore patrimoniale a cui inizi ad avere "scelta" (es. 300k EUR = part-time; 600k EUR = 2 anni sabbatici). E distinta dal FIRE (liberta finanziaria totale).');
@@ -163,7 +163,7 @@ async function downloadGuidePDF() {
     callout('Abbassare il tasso di prelievo dal 4% al 3,5% puo ridurre drasticamente la probabilita di esaurire il capitale su 30 anni. Usa il pulsante "Importa dal Simulatore" per collegare le due fasi. Attiva il Rischio di Sequenza per verificare se il piano regge a un crollo nei primi anni di pensione.', BLU, 'Come modifiche incidono');
 
     h1('7 — Scheda Backtest Storico (1970-2024)');
-    p('Il tab Backtest Storico applica il piano configurato nel Simulatore (portafoglio, PAC, orizzonte, TER) ai dati mensili reali 1970-2024, partendo da 10 periodi storici chiave. Risponde alla domanda: come si sarebbe comportato questo esatto piano nel passato reale?');
+    p('Il tab Backtest Storico applica il piano configurato nel Simulatore (portafoglio, PAC, orizzonte, TER) alla serie mensile 1970-2024 (totali annui e mesi-crisi ancorati ai dati reali, distribuzione infra-annuale ricostruita), partendo da 10 periodi storici chiave. Risponde alla domanda: come si sarebbe comportato questo piano nel passato?');
     h2('10 periodi storici preconfigurati');
     li('1973 — Stagflazione OPEC: embargo petrolifero, inflazione 12%, azioni -48% in 2 anni. Il peggior inizio storico per un PAC.');
     li('1980 — Volcker shock: tassi al 20%, azioni -28%, obbligazioni devastate. Poi il piu lungo bull market della storia (1982-2000).');
@@ -205,12 +205,13 @@ async function downloadGuidePDF() {
     li('Obbligazioni governative, oro, liquidita: fungono da rifugio (flight to quality), con un lieve rally difensivo durante il crash azionario.');
     li('Trend following / Managed futures: "crisis alpha" — tendono a guadagnare nelle crisi prolungate (2008, 2022) seguendo i trend ribassisti (beta -0.20). Sono veri diversificatori.');
     li('Commodities: NON sono un rifugio. Nei crash di liquidita (2008, marzo 2020) calano insieme alle azioni per de-leveraging e calo della domanda, anche se meno in profondita (beta 0.35).');
-    li('Carry (FX e obbligazionario): soffrono nelle crisi ("raccogliere monetine davanti a uno schiacciasassi") — downside reale, inferiore all\'azionario puro ma significativo (beta 0.45).');
+    li('Carry valutario e obbligazionario: soffrono nelle crisi ("raccogliere monetine davanti a uno schiacciasassi") — downside reale, inferiore all\'azionario puro ma significativo (beta 0.45).');
+    li('Carry sulle commodities (curve/roll): a differenza degli altri carry, tende a reggere o guadagnare nei risk-off azionari grazie alla decorrelazione strutturale dalle borse (beta di crash basso, 0.10) — si comporta piu da diversificatore che da asset rischioso.');
     callout('Questa modellazione differenziata e importante per valutare correttamente portafogli che includono managed futures, commodities o carry: il loro contributo alla resilienza in crisi e molto diverso. I beta sono stime prudenti basate sull\'evidenza storica, non garanzie.', BLU, 'Beta di crash per categoria');
 
-    h1('7b — Stress Test Macro Storici — Path Mensile Esatto');
-    p('Sezione aggiuntiva del tab Backtesting: simulazione del percorso mensile preciso del portafoglio durante le 10 principali crisi macro della storia moderna (1970-2024), con i rendimenti mensili reali (ogni mese è il dato storico effettivo). Come nel Rischio di Sequenza, puoi scegliere la modalita di versamento (capitale + PAC, solo capitale, solo PAC) e la fase del piano in cui arriva la crisi (inizio, meta, fine): cosi il capitale esposto al crollo riflette quello realmente accumulato a quel punto del piano.');
-    h2('Le 10 crisi simulate con dati mensili reali');
+    h1('7b — Stress Test Macro Storici — Path Mensile Ricostruito');
+    p('Sezione aggiuntiva del tab Backtesting: simulazione del percorso mensile preciso del portafoglio durante le 10 principali crisi macro della storia moderna (1970-2024), con la serie mensile ricostruita: i totali annui e i mesi delle crisi (es. ott 1987, ott 2008, mar 2020) corrispondono ai valori storici reali, la distribuzione degli altri mesi è stimata. Come nel Rischio di Sequenza, puoi scegliere la modalita di versamento (capitale + PAC, solo capitale, solo PAC) e la fase del piano in cui arriva la crisi (inizio, meta, fine): cosi il capitale esposto al crollo riflette quello realmente accumulato a quel punto del piano.');
+    h2('Le 10 crisi simulate — path mensile ricostruito');
     li('1973-74 Stagflazione OPEC — Embargo petrolifero OPEC ottobre 1973. Inflazione USA al 12%, azioni mondiali -48% in 23 mesi. Il peggior drawdown del dopoguerra per i portafogli bilanciati. Finestra 36 mesi. L\'oro sale +162% — unico asset con rendimento reale positivo.');
     li('1980-82 Volcker Shock — Paul Volcker porta i tassi Fed al 20% per spezzare l\'inflazione a doppia cifra. Doppia recessione, azioni -27%, obbligazioni a lunga scadenza devastate. Premessa del piu lungo bull market della storia.');
     li('1990 Recessione del Golfo — L\'invasione del Kuwait (agosto 1990) raddoppia il prezzo del petrolio. Recessione USA, azioni -20%. Crisi breve: recupero entro il 1991.');
@@ -227,7 +228,7 @@ async function downloadGuidePDF() {
     li('Finestra: include alcuni mesi pre-crisi per contesto. Il drawdown e calcolato rispetto al picco della finestra mostrata.');
     li('Recovery: numero di mesi dal bottom per tornare al livello di inizio finestra (non al picco assoluto pre-crisi).');
     h2('Output per ogni crisi');
-    li('Grafico path mensile normalizzato (base 100 = inizio finestra): mostra il percorso esatto del portafoglio, con evidenza del bottom.');
+    li('Grafico path mensile normalizzato (base 100 = inizio finestra): mostra il percorso ricostruito del portafoglio, con evidenza del bottom.');
     li('Grafico drawdown mensile dal picco: barre rosse per drawdown >25%, arancioni per >10%.');
     li('10 mesi peggiori con rendimento portafoglio, breakdown per asset class (azioni/obbligazioni/oro) e drawdown cumulato.');
     li('KPI: Max Drawdown, perdita massima in euro, mese peggiore, recovery stimato, inflazione e tassi del periodo, rendimento S&P500 storico.');
@@ -397,11 +398,11 @@ async function downloadGuidePDF() {
     const total = doc.getNumberOfPages();
     for (let i=1; i<=total; i++){ doc.setPage(i); /* header already drawn via hdrBar on new pages; first page has cover instead */ }
     doc.save('guida-utilizzo-suite-patrimoniale.pdf');
-    btn.innerHTML = '✅ Scaricato!';
+    btn.innerHTML = '<i data-lucide="check" class="lucide-sm"></i> Scaricato!'; if (window.refreshIcons) window.refreshIcons();
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 2500);
   } catch (e) {
     console.error('Guide PDF error:', e);
-    btn.innerHTML = '❌ Errore generazione';
+    btn.innerHTML = '<i data-lucide="x" class="lucide-sm"></i> Errore generazione'; if (window.refreshIcons) window.refreshIcons();
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 3000);
   }
 }

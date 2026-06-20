@@ -1,6 +1,7 @@
 // ══════════════════════════════════════════════════════════════
 // HISTORICAL BACKTESTING ENGINE
-// Usa i dati mensili reali HIST_MONTHLY (1970-2024) per simulare
+// Usa la serie mensile HIST_MONTHLY (1970-2024, totali annui reali e
+// mesi-crisi ancorati ai valori storici, infra-annuale ricostruito) per simulare
 // il piano PAC su periodi storici specifici, con correlazioni
 // DINAMICHE: in anni di drawdown > 15% le correlazioni si alzano
 // verso la matrice STRESS (come osservato empiricamente).
@@ -73,16 +74,16 @@ function capeBtLabel(cape) {
 }
 
 const BT_PERIODS = {
-  1970: { label: '1970 \u2192 Stagflazione OPEC (crisi 1973-74)', color: '#e37400', bg: 'rgba(227,116,0,.08)', context: 'Inizio nel 1970: 3 anni di accumulo, poi embargo petrolifero OPEC (ottobre 1973) che colpisce un capitale gia formato. Inflazione al 12%, azioni \u221248% in 2 anni \u2014 oro +162%. Stress test: la crisi morde dopo la fase di accumulo, non subito.', crisis: [1973, 1974] },
-  1977: { label: '1977 \u2192 Volcker shock (crisi 1980-81)', color: '#d93025', bg: 'rgba(217,48,37,.08)', context: 'Inizio nel 1977: si accumula capitale, poi Paul Volcker porta i tassi al 20% per schiacciare inflazione (1980-81). Azioni \u221228%, obbligazioni devastate. Poi il piu lungo bull market della storia (1982-2000).', crisis: [1980, 1981] },
-  1984: { label: '1984 \u2192 Black Monday (crisi 1987)', color: '#9334e6', bg: 'rgba(147,52,230,.08)', context: 'Inizio nel 1984: 3 anni di accumulo, poi il Black Monday del 19 ottobre 1987 (azioni \u221222% in UN giorno) colpisce il capitale formato. Il mercato recupero entro 2 anni \u2014 crash violento ma breve.', crisis: [1987] },
-  1995: { label: '1995 \u2192 Bolla dot-com (crisi 2000-02)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nella fase espansiva pre-bolla internet. Rendimenti eccezionali 1995-1999 accumulano un grande capitale, poi il crash 2000-2002 lo falcidia. Stress test della euforia seguita dal crollo.', crisis: [2000, 2001, 2002] },
-  1997: { label: '1997 \u2192 Burst dot-com (crisi 2000-02)', color: '#d93025', bg: 'rgba(217,48,37,.08)', context: 'Inizio nel 1997: 3 anni di forte accumulo nella bolla, poi il crollo internet. Azioni \u221249% in 3 anni (2000-2002), NASDAQ \u221278%. Chi aveva accumulato vide il capitale dimezzarsi \u2014 poi recupero fino al 2007.', crisis: [2000, 2001, 2002] },
-  2004: { label: '2004 \u2192 Crisi finanziaria (crisi 2008-09)', color: '#1a73e8', bg: 'rgba(26,115,232,.08)', context: 'Inizio nel 2004: bull market 2004-2007 accumula capitale, poi il peggior crash dal 1929. Lo stress test vero: il capitale formato incontra la crisi finanziaria globale nel mezzo del piano.', crisis: [2008, 2009] },
-  2005: { label: '2005 \u2192 Lehman (crisi 2008-09)', color: '#d93025', bg: 'rgba(217,48,37,.1)', context: 'Inizio nel 2005: 3 anni di accumulo prima del crollo. S&P500 \u221257%, MSCI World \u221254% nel 2008-09, le correlazioni azioni-obbligazioni implosero. Il capitale gia formato subisce il pieno impatto \u2014 poi triplica in 10 anni.', crisis: [2008, 2009] },
-  2009: { label: '2009 \u2192 Crisi Euro sovrana (crisi 2011-12)', color: '#e37400', bg: 'rgba(227,116,0,.08)', context: 'Inizio nel 2009: si accumula nella ripresa, poi la crisi dei debiti sovrani europei (2011-2012). Spread BTP-Bund a 500bp. Draghi (whatever it takes, luglio 2012) segna il bottom. Poi bull market fino al 2022.', crisis: [2011, 2012] },
-  2017: { label: '2017 \u2192 COVID-19 (crisi 2020)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nel 2017: 3 anni di accumulo, poi il crollo COVID-19 (febbraio-marzo 2020): azioni \u221234% in 33 giorni sul capitale formato. Recovery completata in meno di 6 mesi \u2014 il crash piu veloce della storia.', crisis: [2020] },
-  2019: { label: '2019 \u2192 Inflazione & tassi (crisi 2022)', color: '#00897b', bg: 'rgba(0,137,123,.08)', context: 'Inizio nel 2019: si accumula capitale, poi il 2022 unico nella storia \u2014 azioni \u221220% E obbligazioni \u221215% contemporaneamente. Il 60/40 perde \u221217%: il peggior anno dal 1937 per portafogli bilanciati. Lo stress test colpisce il capitale formato.', crisis: [2022] },
+  1970: { label: '1970 \u2192 Stagflazione OPEC (crisi 1973-74)', color: '#9e1b32', bg: 'rgba(158,27,50,.08)', context: 'Inizio nel 1970: 3 anni di accumulo, poi embargo petrolifero OPEC (ottobre 1973) che colpisce un capitale gia formato. Inflazione al 12%, azioni \u221248% in 2 anni \u2014 oro +162%. Stress test: la crisi morde dopo la fase di accumulo, non subito.', crisis: [1973, 1974] },
+  1977: { label: '1977 \u2192 Volcker shock (crisi 1980-81)', color: '#1f6feb', bg: 'rgba(31,111,235,.08)', context: 'Inizio nel 1977: si accumula capitale, poi Paul Volcker porta i tassi al 20% per schiacciare inflazione (1980-81). Azioni \u221228%, obbligazioni devastate. Poi il piu lungo bull market della storia (1982-2000).', crisis: [1980, 1981] },
+  1984: { label: '1984 \u2192 Black Monday (crisi 1987)', color: '#0e7a44', bg: 'rgba(14,122,68,.08)', context: 'Inizio nel 1984: 3 anni di accumulo, poi il Black Monday del 19 ottobre 1987 (azioni \u221222% in UN giorno) colpisce il capitale formato. Il mercato recupero entro 2 anni \u2014 crash violento ma breve.', crisis: [1987] },
+  1995: { label: '1995 \u2192 Bolla dot-com (crisi 2000-02)', color: '#b5651d', bg: 'rgba(181,101,29,.08)', context: 'Inizio nella fase espansiva pre-bolla internet. Rendimenti eccezionali 1995-1999 accumulano un grande capitale, poi il crash 2000-2002 lo falcidia. Stress test della euforia seguita dal crollo.', crisis: [2000, 2001, 2002] },
+  1997: { label: '1997 \u2192 Burst dot-com (crisi 2000-02)', color: '#6f42c1', bg: 'rgba(111,66,193,.08)', context: 'Inizio nel 1997: 3 anni di forte accumulo nella bolla, poi il crollo internet. Azioni \u221249% in 3 anni (2000-2002), NASDAQ \u221278%. Chi aveva accumulato vide il capitale dimezzarsi \u2014 poi recupero fino al 2007.', crisis: [2000, 2001, 2002] },
+  2004: { label: '2004 \u2192 Crisi finanziaria (crisi 2008-09)', color: '#0b7285', bg: 'rgba(11,114,133,.08)', context: 'Inizio nel 2004: bull market 2004-2007 accumula capitale, poi il peggior crash dal 1929. Lo stress test vero: il capitale formato incontra la crisi finanziaria globale nel mezzo del piano.', crisis: [2008, 2009] },
+  2005: { label: '2005 \u2192 Lehman (crisi 2008-09)', color: '#c2255c', bg: 'rgba(194,37,92,.08)', context: 'Inizio nel 2005: 3 anni di accumulo prima del crollo. S&P500 \u221257%, MSCI World \u221254% nel 2008-09, le correlazioni azioni-obbligazioni implosero. Il capitale gia formato subisce il pieno impatto \u2014 poi triplica in 10 anni.', crisis: [2008, 2009] },
+  2009: { label: '2009 \u2192 Crisi Euro sovrana (crisi 2011-12)', color: '#5c6b7a', bg: 'rgba(92,107,122,.08)', context: 'Inizio nel 2009: si accumula nella ripresa, poi la crisi dei debiti sovrani europei (2011-2012). Spread BTP-Bund a 500bp. Draghi (whatever it takes, luglio 2012) segna il bottom. Poi bull market fino al 2022.', crisis: [2011, 2012] },
+  2017: { label: '2017 \u2192 COVID-19 (crisi 2020)', color: '#2b8a3e', bg: 'rgba(43,138,62,.08)', context: 'Inizio nel 2017: 3 anni di accumulo, poi il crollo COVID-19 (febbraio-marzo 2020): azioni \u221234% in 33 giorni sul capitale formato. Recovery completata in meno di 6 mesi \u2014 il crash piu veloce della storia.', crisis: [2020] },
+  2019: { label: '2019 \u2192 Inflazione & tassi (crisi 2022)', color: '#7a1224', bg: 'rgba(122,18,36,.08)', context: 'Inizio nel 2019: si accumula capitale, poi il 2022 unico nella storia \u2014 azioni \u221220% E obbligazioni \u221215% contemporaneamente. Il 60/40 perde \u221217%: il peggior anno dal 1937 per portafogli bilanciati. Lo stress test colpisce il capitale formato.', crisis: [2022] },
 };
 
 // Inflazione storica annua (CPI USA approssimato) per periodo, per deflatare
@@ -153,13 +154,14 @@ function initBacktest() {
       btState.w = state.w;
       document.getElementById('sBtPac').value = state.pac;
       document.getElementById('lBtPac').textContent = '€' + fmtN(state.pac) + '/m';
-      document.getElementById('sBtW').value = Math.min(state.w, 5000000);
+      document.getElementById('sBtW').value = Math.min(state.w, +document.getElementById('sBtW').max);
       document.getElementById('lBtW').textContent = fmt(state.w);
       // Sincronizza i campi numerici digitabili affiancati agli slider
       document.getElementById('sBtPac').dispatchEvent(new Event('input', { bubbles: true }));
       document.getElementById('sBtW').dispatchEvent(new Event('input', { bubbles: true }));
       document.getElementById('btSyncBanner').style.display = 'block';
-      document.getElementById('btSyncBanner').innerHTML = `↩ Importati dal Simulatore: portafoglio <strong>${getPortLabel(state.portfolio)}</strong> · PAC <strong>€${fmtN(state.pac)}/m</strong> · Capitale iniziale <strong>${fmt(state.w)}</strong>`;
+      document.getElementById('btSyncBanner').innerHTML = `<i data-lucide="corner-down-left" class="lucide-sm"></i> Importati dal Simulatore: portafoglio <strong>${getPortLabel(state.portfolio)}</strong> · PAC <strong>€${fmtN(state.pac)}/m</strong> · Capitale iniziale <strong>${fmt(state.w)}</strong>`;
+      if (window.refreshIcons) window.refreshIcons();
     }
     // Aggiorna stress test macro se già inizializzato
     try {
@@ -258,10 +260,15 @@ function simulateBacktest(portKey, startYear, pacMonthly, w0, skipEvents, useCap
   const btPics = (!skipEvents && Array.isArray(state.pics)) ? state.pics : [];
   const btExps = (!skipEvents && Array.isArray(state.exps)) ? state.exps : [];
   
-  const eqW = getEquityWeight(portKey, state.age);
+  // Pesi: per lifecycle scorrono col glidepath durante la finestra storica
+  // (l'investitore invecchia anche nel backtest); per gli altri sono costanti.
   const goldW = getGoldWeight(portKey);
   const cashW = getCashWeight(portKey);
-  const obW = Math.max(0, 1 - eqW - goldW - cashW);
+  const wAt = (mIdx) => {
+    const e = getEquityWeight(portKey, state.age + mIdx / 12);
+    return { eqW: e, obW: Math.max(0, 1 - e - goldW - cashW) };
+  };
+  const { eqW, obW } = wAt(0); // pesi iniziali (per le sezioni informative)
 
   const terRate = state.ter / 100 / 12; // mensile
 
@@ -322,8 +329,9 @@ function simulateBacktest(portKey, startYear, pacMonthly, w0, skipEvents, useCap
     if (eqCumRet > eqPeak) eqPeak = eqCumRet;
     const currentEqDraw = eqPeak > 0 ? (eqCumRet - eqPeak) / eqPeak : 0;
 
-    // Rendimento portafoglio mensile con pesi
-    let portRet = eqW * eqAdj + obW * obRet + goldW * goldRet + cashW * cashRet;
+    // Rendimento portafoglio mensile con pesi (glidepath per lifecycle)
+    const { eqW: eqW_m, obW: obW_m } = wAt(m);
+    let portRet = eqW_m * eqAdj + obW_m * obRet + goldW * goldRet + cashW * cashRet;
     portRet -= terRate;
 
     // PAC mensile — metodo midpoint (coerente con project() nel simulatore principale)
@@ -433,7 +441,8 @@ function simulateBacktest(portKey, startYear, pacMonthly, w0, skipEvents, useCap
       const idx2 = startIdx + m2;
       if (idx2 >= HIST_MONTHLY.length) break;
       const row2 = calibrateHistRow(HIST_MONTHLY[idx2]);
-      const pr2 = eqW * row2[0] + obW * row2[1] + goldW * row2[2] + cashW * 0.002 - terRate;
+      const { eqW: eqW2, obW: obW2 } = wAt(m2);
+      const pr2 = eqW2 * row2[0] + obW2 * row2[1] + goldW * row2[2] + cashW * 0.002 - terRate;
       twrCum2 *= (1 + pr2);
       nM2++;
     }
@@ -457,12 +466,20 @@ function simulateBacktest(portKey, startYear, pacMonthly, w0, skipEvents, useCap
 // in HIST_MONTHLY (che copre solo azioni/obbligazioni/oro). Senza blocco, questi
 // asset verrebbero simulati implicitamente come obbligazionario (obW = residuo),
 // perdendo completamente il crisis alpha / la decorrelazione che ne giustificano l'uso.
+// Stesso blocco per asset compositi a leva (Efficient Core 90/60 USA/Globale):
+// isComposite+finCost > 0 indica esposizione notional >100%; il backtest storico
+// ignorerebbe la leva e il costo di finanziamento, producendo risultati fuorvianti.
 function customPortfolioIsNonBacktestable() {
   if (state.portfolio !== 'custom') return false;
   const NON_BT_CATS = new Set(['trend', 'carry']);
   return (state.customPortfolio?.slots || []).some(sl => {
     const ac = ASSET_CLASSES[sl.ac];
-    return Number(sl.pct) > 0 && ac && NON_BT_CATS.has(ac.cat);
+    if (!ac || !(Number(sl.pct) > 0)) return false;
+    // Categoria non backtestabile (trend following, carry, managed futures)
+    if (NON_BT_CATS.has(ac.cat)) return true;
+    // Asset composito a leva (efficient core 90/60 USA o Globale)
+    if (ac.isComposite && ac.finCost > 0) return true;
+    return false;
   });
 }
 
@@ -484,12 +501,12 @@ function runBacktest() {
     const box = document.getElementById('btContextBox');
     box.style.background = 'var(--orange-dim, rgba(230,138,0,.08))';
     box.style.border = '1px solid rgba(230,138,0,.35)';
-    box.style.color = 'var(--orange, #b8860b)';
+    box.style.color = 'var(--text-muted)';
     const isCustomMF = portKey === 'custom' && customPortfolioIsNonBacktestable();
     box.innerHTML = isCustomMF
-      ? `Il portafoglio custom include <strong>Trend Following / Managed Futures</strong> o <strong>Carry</strong>, ` +
+      ? `Il portafoglio custom include <strong>Trend Following / Managed Futures</strong>, <strong>Carry</strong> o <strong>Efficient Core (leva)</strong>, ` +
         `asset privi di serie storica coerente in questo modello (i dati storici coprono solo azioni, obbligazioni e oro). ` +
-        `Senza blocco questi asset verrebbero modellati erroneamente come obbligazionario, producendo risultati fuorvianti. ` +
+        `Il backtest ignorerebbe la leva e i costi di finanziamento, producendo risultati fuorvianti. ` +
         `Usa le schede <strong>Simulatore</strong>, <strong>Monte Carlo</strong> o <strong>Frontiera Efficiente</strong>.`
       : `Il backtest storico non è applicabile a <strong>${lbl}</strong>. ` +
         `Questa strategia usa leva (esposizione &gt;100%) e/o managed futures, ` +
@@ -597,7 +614,7 @@ function runBacktest() {
     data: {
       labels,
       datasets: [
-        { label: btState.showReal ? 'Valore Reale' : 'Valore Nominale', data: displayVals, borderColor: period.color, borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: labels.map((yr, i) => crisisYearsSet.has(i) ? '#d93025' : period.color), fill: true, backgroundColor: period.bg, tension: .3 },
+        { label: btState.showReal ? 'Valore Reale' : 'Valore Nominale', data: displayVals, borderColor: period.color, borderWidth: 2.5, pointRadius: 3, pointBackgroundColor: labels.map((yr, i) => crisisYearsSet.has(i) ? '#c92a2a' : period.color), fill: true, backgroundColor: period.bg, tension: .3 },
         { label: 'Totale Versato', data: result.annualInvested, borderColor: 'rgba(0,0,0,.3)', borderWidth: 1.5, borderDash: [4,3], pointRadius: 0, fill: false, tension: .3 },
       ]
     },
@@ -606,7 +623,7 @@ function runBacktest() {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true },
-        tooltip: { callbacks: { title: c => 'Anno ' + c[0].label, label: c => ' ' + c.dataset.label + ': ' + fmt(c.raw) }, backgroundColor: '#fff', borderColor: '#dadce0', borderWidth: 1, titleColor: '#202124', bodyColor: '#5f6368', padding: 10 },
+        tooltip: { callbacks: { title: c => 'Anno ' + c[0].label, label: c => ' ' + c.dataset.label + ': ' + fmt(c.raw) }, backgroundColor: '#ffffff', borderColor: '#d9d9d9', borderWidth: 1, titleColor: '#212121', bodyColor: '#595959', padding: 10 },
         annotation: {
           // Annotate crisis years if Chart.js annotation plugin available
         }
@@ -624,6 +641,7 @@ function runBacktest() {
   
   document.getElementById('btDrawdownSec').style.display = 'block';
   document.getElementById('btDrawdownInfo').innerHTML = buildCorrInfo(period, portKey, result);
+  if (window.refreshIcons) window.refreshIcons();
   
   chartBtDD = new Chart(document.getElementById('chBtDD'), {
     type: 'bar',
@@ -632,7 +650,7 @@ function runBacktest() {
       datasets: [{
         label: 'Drawdown dal massimo (%)',
         data: ddVals.map(d => +d.toFixed(1)),
-        backgroundColor: ddVals.map(d => d < -25 ? 'rgba(217,48,37,.75)' : d < -10 ? 'rgba(227,116,0,.6)' : 'rgba(30,142,62,.4)'),
+        backgroundColor: ddVals.map(d => d < -25 ? 'rgba(201,42,42,.75)' : d < -10 ? 'rgba(89,89,89,.6)' : 'rgba(14,122,68,.4)'),
         borderRadius: 2,
       }]
     },
@@ -663,11 +681,11 @@ function buildCorrInfo(period, portKey, result) {
   
   return `<strong>Correlazioni Dinamiche — ${portLabel}</strong><br>
     In periodi di crisi (${crisisStr}), le correlazioni storicamente osservate <strong>divergono significativamente</strong> da quelle medie.<br>
-    <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:11.5px">
+    <div class="tabular-nums" style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-size:11.5px">
       <span>Az.↔Ob.: regime normale <strong style="color:var(--green)">${corrStatic.toFixed(2)}</strong> → crisi <strong style="color:var(--red)">${corrStress.toFixed(2)}</strong></span>
       <span>Az.↔Oro: normale <strong style="color:var(--green)">${CORR_PAIR('eq','real').toFixed(2)}</strong> → crisi <strong style="color:var(--orange)">${CORR_PAIR_STRESS('eq','real').toFixed(2)}</strong></span>
     </div>
-    <div style="margin-top:6px;font-size:11.5px;color:var(--text3)">⚠️ Nel 2022 azioni e obbligazioni hanno correlato positivamente (+0.6) per la prima volta dagli anni '70: il 60/40 non ha diversificato come atteso. Nell'agosto 2024 la correlazione è tornata negativa (flight-to-quality). Le correlazioni statiche usate nei modelli parametrici sottostimano il rischio in mercati stressati.</div>`;
+    <div style="margin-top:6px;font-size:11.5px;color:var(--text3)"><i data-lucide="alert-triangle" class="lucide-sm"></i> Nel 2022 azioni e obbligazioni hanno correlato positivamente (+0.6) per la prima volta dagli anni '70: il 60/40 non ha diversificato come atteso. Nell'agosto 2024 la correlazione è tornata negativa (flight-to-quality). Le correlazioni statiche usate nei modelli parametrici sottostimano il rischio in mercati stressati.</div>`;
 }
 
 // ── Sequence of Returns Risk: stessa crisi a inizio / metà / fine piano ─────
@@ -679,11 +697,17 @@ function runSequenceRiskStress() {
   if (!cfg) return;
 
   const portKey = btState.port === 'sim' ? state.portfolio : btState.port;
-  // Preset con leva / managed futures non backtestabili
-  if ({ ec_us_9060:1, ec_glob_9060:1, return_stack:1 }[portKey]) {
+  // Preset con leva / managed futures non backtestabili; stessa esclusione per
+  // portafoglio custom con Efficient Core, Trend Following o Carry.
+  const isCustomNonBT = portKey === 'custom' &&
+    (typeof customPortfolioIsNonBacktestable === 'function') &&
+    customPortfolioIsNonBacktestable();
+  if ({ ec_us_9060:1, ec_glob_9060:1, return_stack:1 }[portKey] || isCustomNonBT) {
     document.getElementById('btSeqRiskResults').style.display = 'block';
     document.getElementById('btSeqRiskContext').innerHTML =
-      'Lo stress test di sequenza non è disponibile per i portafogli con leva o managed futures (privi di serie storica coerente).';
+      isCustomNonBT
+        ? 'Lo stress test di sequenza non è disponibile per i portafogli custom con Efficient Core (leva), Trend Following o Carry (privi di serie storica coerente).'
+        : 'Lo stress test di sequenza non è disponibile per i portafogli con leva o managed futures (privi di serie storica coerente).';
     document.getElementById('btSeqRiskCards').innerHTML = '';
     document.getElementById('btSeqRiskNote').innerHTML = '';
     if (chartBtSeq) { chartBtSeq.destroy(); chartBtSeq = null; }
@@ -788,7 +812,7 @@ function runSequenceRiskStress() {
     const ddColor = s.r.maxDD < -0.3 ? 'var(--red)' : s.r.maxDD < -0.15 ? 'var(--orange)' : 'var(--green)';
     // Perdita in euro = drawdown applicato al capitale esposto al crollo
     const lossEur = Math.round(s.w0 * s.r.maxDD);
-    const row = (label, val, color) => `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">${label}</span><strong style="font-family:'DM Mono',monospace${color?`;color:${color}`:''}">${val}</strong></div>`;
+    const row = (label, val, color) => `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">${label}</span><strong class="tabular-nums" style="${color?`;color:${color}`:''}">${val}</strong></div>`;
     return `<div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)">
       <div style="font-size:13px;font-weight:700;margin-bottom:4px">${s.label}</div>
       <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${s.desc}</div>
@@ -802,7 +826,7 @@ function runSequenceRiskStress() {
   // Grafico: traiettoria del valore in EURO reali per i tre stadi (dati del simulatore)
   if (chartBtSeq) chartBtSeq.destroy();
   const ctx = document.getElementById('chBtSeqRisk');
-  const colors = ['#1e8e3e', '#e37400', '#d93025'];
+  const colors = ['#9e1b32','#1f6feb','#0e7a44','#b5651d','#6f42c1','#0b7285','#c2255c','#5c6b7a','#2b8a3e','#7a1224','#d6336c','#1098ad'];
   const maxLen = Math.max(...results.map(s => s.r.annualValues.length));
   chartBtSeq = new Chart(ctx, {
     type: 'line',
@@ -855,12 +879,12 @@ function runAllBacktests() {
     const box = document.getElementById('btContextBox');
     box.style.background = 'var(--orange-dim, rgba(230,138,0,.08))';
     box.style.border = '1px solid rgba(230,138,0,.35)';
-    box.style.color = 'var(--orange, #b8860b)';
+    box.style.color = 'var(--text-muted)';
     const isCustomMF2 = portKey === 'custom' && customPortfolioIsNonBacktestable();
     box.innerHTML = isCustomMF2
-      ? `Il portafoglio custom include <strong>Trend Following / Managed Futures</strong> o <strong>Carry</strong>, ` +
+      ? `Il portafoglio custom include <strong>Trend Following / Managed Futures</strong>, <strong>Carry</strong> o <strong>Efficient Core (leva)</strong>, ` +
         `asset privi di serie storica coerente in questo modello (i dati storici coprono solo azioni, obbligazioni e oro). ` +
-        `Senza blocco questi asset verrebbero modellati erroneamente come obbligazionario, producendo risultati fuorvianti. ` +
+        `Il backtest ignorerebbe la leva e i costi di finanziamento, producendo risultati fuorvianti. ` +
         `Usa le schede <strong>Simulatore</strong>, <strong>Monte Carlo</strong> o <strong>Frontiera Efficiente</strong>.`
       : `Il backtest storico non è applicabile a <strong>${lbl}</strong>: ` +
         `usa leva e/o managed futures, asset senza serie storica coerente in questo modello. ` +
@@ -922,29 +946,30 @@ function runAllBacktests() {
         const cl = r.capeStart ? capeBtLabel(r.capeStart) : null;
         const cpPct = r.capeStart ? capeHistPercentile(r.capeStart) : null;
         const capeCell = r.capeStart
-          ? `<span style="font-family:'DM Mono',monospace;font-weight:700;color:${cl.col}">${r.capeStart.toFixed(1)}</span><br><span style="font-size:10px;color:var(--text3)">${cpPct}° pct. · ${cl.txt}</span>`
+          ? `<span class="tabular-nums" style="font-weight:700;color:${cl.col}">${r.capeStart.toFixed(1)}</span><br><span style="font-size:10px;color:var(--text3)">${cpPct}° pct. · ${cl.txt}</span>`
           : '—';
         const cagrDelta = (r.cagrNoCape != null && Math.abs(r.twr - r.cagrNoCape) > 0.001)
           ? `<br><span style="font-size:10px;color:var(--text3)" title="Delta rispetto al TWR storico non aggiustato">${r.twr >= r.cagrNoCape ? '+' : ''}${((r.twr - r.cagrNoCape)*100).toFixed(2)}pp vs storico</span>`
           : '';
         const cagrNoCapeCell = r.cagrNoCape != null
-          ? `<span style="font-family:'DM Mono',monospace;color:var(--text3)">${(r.cagrNoCape >= 0 ? '+' : '') + (r.cagrNoCape*100).toFixed(2)}%/a</span>`
-          : `<span style="font-family:'DM Mono',monospace;color:var(--text3)">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a</span>`;
+          ? `<span class="tabular-nums" style="color:var(--text3)">${(r.cagrNoCape >= 0 ? '+' : '') + (r.cagrNoCape*100).toFixed(2)}%/a</span>`
+          : `<span class="tabular-nums" style="color:var(--text3)">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a</span>`;
         return `<tr>
-          <td style="text-align:left;font-weight:700;color:${r.color};font-family:'DM Mono',monospace">${r.year}</td>
+          <td class="tabular-nums" style="text-align:left;font-weight:700;color:${r.color};">${r.year}</td>
           <td style="font-size:11.5px;color:var(--text2)">${BT_PERIODS[r.year].label.split('—')[1]?.trim() || ''}</td>
           <td style="text-align:center">${capeCell}</td>
-          <td class="${r.twr >= 0.05 ? 'pos' : r.twr >= 0 ? 'neutral' : 'neg'}" style="font-family:'DM Mono',monospace;font-weight:600">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a${cagrDelta}</td>
+          <td class="tabular-nums ${r.twr >= 0.05 ? 'pos' : r.twr >= 0 ? 'neutral' : 'neg'}" style="font-weight:600">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a${cagrDelta}</td>
           <td>${cagrNoCapeCell}</td>
           <td style="font-weight:600">${fmt(r.finalVal)}</td>
-          <td class="${r.maxDD < -0.3 ? 'neg' : r.maxDD < -0.15 ? 'neutral' : 'pos'}" style="font-family:'DM Mono',monospace">${(r.maxDD*100).toFixed(1)}%</td>
+          <td class="${r.maxDD < -0.3 ? 'neg' : r.maxDD < -0.15 ? 'neutral' : 'pos'} tabular-nums">${(r.maxDD*100).toFixed(1)}%</td>
         </tr>`;
       }).join('')}
       </tbody>
     </table></div>
-    <div style="font-size:11.5px;color:var(--text3);margin-top:10px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-      <strong>📊 Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
+    <div style="font-size:11.5px;color:var(--text3);margin-top:10px;padding:10px 14px;background:var(--bg-body);border:1px solid var(--border-color);border-radius:var(--radius);line-height:1.7">
+      <strong><i data-lucide="bar-chart-3" class="lucide-sm"></i> Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
     </div>`;
+  if (window.refreshIcons) window.refreshIcons();
   
   // Normalize all datasets to same start to compare trajectories
   const normalizedDatasets = datasets.map(ds => ({
@@ -963,7 +988,7 @@ function runAllBacktests() {
       interaction: { mode: 'index', intersect: false },
       plugins: {
         legend: { display: true, labels: { font: { size: 10 } } },
-        tooltip: { callbacks: { title: c => c[0].label, label: c => ` ${c.dataset.label.split(' ')[0]}: ${c.raw}% del capitale iniziale` }, backgroundColor: '#fff', borderColor: '#dadce0', borderWidth: 1, padding: 10 }
+        tooltip: { callbacks: { title: c => c[0].label, label: c => ` ${c.dataset.label.split(' ')[0]}: ${c.raw}% del capitale iniziale` }, backgroundColor: '#ffffff', borderColor: '#d9d9d9', borderWidth: 1, padding: 10 }
       },
       scales: {
         x: { ticks: { color: tC, font: { size: 10, family: 'DM Mono' }, maxTicksLimit: 13 }, grid: { color: gC } },
