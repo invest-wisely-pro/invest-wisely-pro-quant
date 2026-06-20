@@ -4578,10 +4578,10 @@ async function generatePDF() {
     let mc = null;
     try { mc = runMontecarlo(); } catch (_) { mc = null; }
 
-    // Palette
-    const BLU = [26, 115, 232], GRN = [30, 142, 62], ORG = [227, 116, 0], PUR = [147, 52, 230];
-    const TEAL = [0, 137, 123], GRAY = [95, 99, 104], LBG = [248, 249, 250];
-    const WHT = [255, 255, 255], RED = [217, 48, 37], DARK = [32, 33, 36];
+    // Palette — allineata al rosso istituzionale del tool (vedi style.css :root)
+    const BLU = [158, 27, 50], GRN = [14, 122, 68], ORG = [89, 89, 89], PUR = [122, 18, 36];
+    const TEAL = [14, 122, 68], GRAY = [89, 89, 89], LBG = [244, 245, 247];
+    const WHT = [255, 255, 255], RED = [201, 42, 42], DARK = [33, 33, 33];
     const W = 210, H = 297, ML = 14, MR = 14, CW = W - ML - MR;
     let y = 0, pN = 1;
 
@@ -4650,12 +4650,12 @@ async function generatePDF() {
 
     // ─────────── COVER ───────────
     doc.setFillColor(...BLU); doc.rect(0, 0, W, 60, 'F');
-    doc.setFillColor(13, 71, 161); doc.rect(0, 55, W, 5, 'F');
+    doc.setFillColor(...PUR); doc.rect(0, 55, W, 5, 'F');
     doc.setFontSize(26); doc.setFont('helvetica', 'bold'); doc.setTextColor(...WHT);
     doc.text('Report Patrimoniale Pro', ML, 24);
     doc.setFontSize(11.5); doc.setFont('helvetica', 'normal');
     doc.text(pdfSafe('Suite v3 — Multi-Scenario · Monte Carlo · Regimi Economici · Sequence Risk'), ML, 33);
-    doc.setFontSize(8.8); doc.setTextColor(200, 225, 255);
+    doc.setFontSize(8.8); doc.setTextColor(240, 210, 215);
     doc.text(`Generato il ${new Date().toLocaleDateString('it-IT', { day: '2-digit', month: 'long', year: 'numeric' })} alle ${new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}`, ML, 41);
     doc.text(pdfSafe(`Orizzonte ${years} anni  |  Eta ${age} -> ${endAge}  |  Portfolio: ${portMeta.label}`), ML, 47);
     y = 68;
@@ -5082,7 +5082,7 @@ async function generatePDF() {
 
     // ─────────── 7b. BACKTESTING STORICO ───────────
     doc.addPage(); pN++; y = 20; miniHdr();
-    sHdr('7b — Backtesting Storico — Dati Storici 1970-2024', [0, 150, 167]);
+    sHdr('7b — Backtesting Storico — Dati Storici 1970-2024', BLU);
     narrative(
       'Il backtesting usa 660 rendimenti mensili storici 1970-2024, ancorati anno per anno alle serie ufficiali in EUR (azioni MSCI World Net EUR, obbligazioni Euro Aggregate, oro LBMA); la granularita mensile e una ricostruzione coerente con il totale annuo reale. ' +
       'Il portafoglio e il PAC mensile attuali del simulatore vengono applicati a 10 periodi storici diversi, includendo le correlazioni dinamiche: ' +
@@ -5119,7 +5119,7 @@ async function generatePDF() {
       head: [['Anno', 'Evento Storico', 'IRR Piano', 'TWR Asset', 'Valore Finale', 'Max DD', 'Versato']],
       body: btResultRows,
       styles: { fontSize: 7.5, cellPadding: 2.2 },
-      headStyles: { fillColor: [0, 150, 167], textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
+      headStyles: { fillColor: BLU, textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
       columnStyles: {
         2: { fontStyle: 'bold', textColor: GRN },
         3: { fontStyle: 'bold', textColor: BLU },
@@ -5190,7 +5190,7 @@ async function generatePDF() {
     );
 
     // ─────────── 7d. STRESS TEST MACRO STORICI ───────────
-    sHdr('7d \u2014 Stress Test Macro Storici \u2014 Path Mensile Ricostruito', [183, 28, 28]);
+    sHdr('7d \u2014 Stress Test Macro Storici \u2014 Path Mensile Ricostruito', RED);
     narrative(
       'Simulazione del percorso mensile preciso del portafoglio attuale durante le 6 principali crisi macro 1970-2024. ' +
       'A differenza del backtesting PAC (piani con versamenti), questa analisi usa uno snapshot del capitale iniziale senza contributi aggiuntivi. ' +
@@ -5245,7 +5245,7 @@ async function generatePDF() {
     }
 
     const crisisPDFRows = [];
-    const TEAL_DARK = [0, 130, 150];
+    const TEAL_DARK = PUR;
     for (const c of CRISIS_PDF) {
       try {
         const sim = pdfCrisisPath(c, btPortKeyPDF);
@@ -5270,7 +5270,7 @@ async function generatePDF() {
         head: [['Crisi', 'S&P500', 'Contesto Macro', 'Max DD Port.', 'Perdita ('+fmtFull(btW0PDF)+')', 'Mese Peggiore', 'Recovery', 'Fine Finestra']],
         body: crisisPDFRows,
         styles: { fontSize: 7, cellPadding: 2.0, valign: 'top' },
-        headStyles: { fillColor: [183, 28, 28], textColor: WHT, fontStyle: 'bold', fontSize: 6.5 },
+        headStyles: { fillColor: RED, textColor: WHT, fontStyle: 'bold', fontSize: 6.5 },
         columnStyles: {
           3: { textColor: RED, fontStyle: 'bold' },
           4: { textColor: RED, fontStyle: 'bold' },
@@ -5380,7 +5380,7 @@ async function generatePDF() {
         columnStyles: {
           0: { fontStyle: 'bold' },
           2: { textColor: RED },
-          3: { textColor: [227, 116, 0] },
+          3: { textColor: ORG },
           4: { fontStyle: 'bold', textColor: GRN },
           5: { textColor: GRN },
         },
@@ -5431,7 +5431,7 @@ async function generatePDF() {
     // ─────────── 8b. DECUMULO STORICO (Trinity-style) ───────────
     try {
       const dh = runDecumuloHistorical();
-      sHdr('8c — Decumulo su Sequenze Storiche Reali (1970-2024)', [255, 152, 0]);
+      sHdr('8c — Decumulo su Sequenze Storiche Reali (1970-2024)', PUR);
       narrative(
         'Test di robustezza piu severo del Monte Carlo: ripercorre il piano di prelievo su tutti gli anni di partenza disponibili ' +
         'usando i rendimenti mensili storici REALI calibrati e l\'inflazione effettiva di ogni anno. Incorpora oil shock 1973, ' +
@@ -5468,7 +5468,7 @@ async function generatePDF() {
           ];
         }),
         styles: { fontSize: 8, cellPadding: 2.5 },
-        headStyles: { fillColor: [255, 152, 0], textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
+        headStyles: { fillColor: PUR, textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
         columnStyles: {
           2: { fontStyle: 'bold' },
           3: { halign: 'right' },
@@ -5488,7 +5488,7 @@ async function generatePDF() {
     if (portfolio === 'custom') {
       const cp = calcCustomParams();
       if (cp && (cp.fxExposure > 0.05 || cp.volStress)) {
-        sHdr('8d — Esposizione Cambio e Vol in Regime di Stress', [156, 39, 176]);
+        sHdr('8d — Esposizione Cambio e Vol in Regime di Stress', BLU);
         narrative(
           'Per un investitore in euro, l\'esposizione a valute estere (USD, GBP, JPY) ' +
           'introduce un secondo rischio: la volatilita del cambio EUR/USD (~8.5%/a storica). ' +
@@ -5508,7 +5508,7 @@ async function generatePDF() {
           head: [['Parametro', 'Valore']],
           body: fxRows,
           styles: { fontSize: 8, cellPadding: 2.5 },
-          headStyles: { fillColor: [156, 39, 176], textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
+          headStyles: { fillColor: BLU, textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
           columnStyles: { 0: { fontStyle: 'bold', cellWidth: 90 }, 1: { halign: 'right', fontStyle: 'bold' } },
           margin: { left: ML, right: MR },
         });
@@ -5516,7 +5516,7 @@ async function generatePDF() {
         callout('Quando coprire il cambio?',
           'Per portafogli obbligazionari globali e per orizzonti brevi (<10 anni) l\'hedging EUR/USD migliora il Sharpe (riduce vol senza ridurre molto il rendimento). ' +
           'Per portafogli azionari globali a lungo termine (>15 anni), i benefici dell\'hedging si attenuano: storicamente l\'EUR/USD oscilla ma non mostra trend forti.',
-          [156, 39, 176]);
+          BLU);
       }
     }
 
@@ -5628,7 +5628,7 @@ async function generatePDF() {
       const stratLabels = { fixed: 'Fisso Nominale', inflation: 'Indicizzato Inflazione (4% rule)', gk: 'Guyton-Klinger (guard-rails)' };
       const decStratLabel = stratLabels[decState.strategy] || decState.strategy;
       const decPortMeta = getPortParams(decState.portfolio) || { label: decState.portfolio };
-      sHdr('8f \u2014 Piano di Decumulo \u2014 Strategia Prelievi', [0, 150, 136]);
+      sHdr('8f \u2014 Piano di Decumulo \u2014 Strategia Prelievi', PUR);
       let decExtraNote = '';
       if (decState.seq && decState.seq.on) {
         const sevLbl = { mild: '-20%', moderate: '-35%', severe: '-50%' }[decState.seq.severity] || '';
@@ -5667,7 +5667,7 @@ async function generatePDF() {
           ['Esaurimento capitale', ruinBase  < 0 ? 'Non si esaurisce' : 'Anno ' + (ruinBase + 1), '\u2014', ruinWorst < 0 ? 'Regge' : 'Anno ' + (ruinWorst + 1)],
         ],
         styles: { fontSize: 8, cellPadding: 2.5 },
-        headStyles: { fillColor: [0, 150, 136], textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
+        headStyles: { fillColor: PUR, textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
         columnStyles: { 1: { fontStyle: 'bold', textColor: BLU }, 3: { textColor: ruinWorst < 0 ? GRN[0] : RED[0] } },
         margin: { left: ML, right: MR }
       });
@@ -5685,7 +5685,7 @@ async function generatePDF() {
         head: [['Anno', 'Capitale Inizio', 'Rendimento', 'Prelievo', 'Capitale Fine', 'Tasso Prel.', 'Note']],
         body: decRows,
         styles: { fontSize: 7.5, cellPadding: 2 },
-        headStyles: { fillColor: [0, 150, 136], textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
+        headStyles: { fillColor: PUR, textColor: WHT, fontStyle: 'bold', fontSize: 7.5 },
         columnStyles: { 2: { textColor: GRN }, 3: { textColor: RED }, 4: { fontStyle: 'bold', textColor: BLU }, 6: { fontSize: 7, textColor: GRAY } },
         margin: { left: ML, right: MR }
       });
@@ -5693,17 +5693,17 @@ async function generatePDF() {
       if (decState.strategy === 'gk') {
         callout('Guyton-Klinger Guard-Rails',
           `La regola GK aggiusta il prelievo in modo dinamico: se il tasso di prelievo corrente supera del 20% quello iniziale (${(decState.withdrawal / Math.max(1, decState.startPortfolio) * 100).toFixed(2)}%), scatta un taglio del 10%; se scende sotto del 20%, aumenta del 10% (salvo anno precedente negativo). Questa flessibilita permette prelievi iniziali piu alti rispetto alla regola del 4% statica, massimizzando il reddito mantenendo la longevita del portafoglio.`,
-          [0, 150, 136]
+          PUR
         );
       } else if (decState.strategy === 'inflation') {
         callout('Prelievo Indicizzato Inflazione',
           `Il prelievo annuale cresce del ${decState.inflation.toFixed(1)}% per mantenere costante il potere d'acquisto reale. E il metodo standard della pianificazione pensionistica (Bengen 1994). La regola del 4% con indicizzazione ha storicamente un tasso di sopravvivenza >95% su 30 anni con portafoglio 60/40 (Trinity Study 1998).`,
-          [0, 150, 136]
+          PUR
         );
       } else {
         callout('Prelievo Fisso Nominale',
           `Il prelievo rimane costante in termini nominali: ${fmtFull(decState.withdrawal)}/anno per ${decState.years} anni. Semplice da gestire ma il potere d'acquisto reale si erode anno per anno dell'inflazione cumulata. Con inflazione ${decState.inflation.toFixed(1)}%/a, dopo ${decState.years} anni il valore reale del prelievo sara circa ${fmtFull(Math.round(decState.withdrawal / Math.pow(1 + decState.inflation/100, decState.years)))}/anno.`,
-          [0, 150, 136]
+          PUR
         );
       }
     }
@@ -5716,7 +5716,7 @@ async function generatePDF() {
         const pr = calcPensione();
         if (pr && isFinite(pr.pensioneLordaAnn) && pr.pensioneLordaAnn > 0) {
           chkPB(40);
-          sHdr('8g — Stima Previdenziale (INPS)', [0, 121, 107]);
+          sHdr('8g — Stima Previdenziale (INPS)', BLU);
           narrative(`Hai utilizzato il modulo Pensione del simulatore. Questa stima e indipendente dal piano di accumulo sopra: proietta la pensione pubblica INPS sulla base della tua carriera contributiva, secondo il metodo contributivo (montante rivalutato al PIL e convertito con il coefficiente di trasformazione per eta). E una stima semplificata a fini educativi, non un calcolo previdenziale ufficiale.`);
           const ts = (pr.tassoSost != null) ? (pr.tassoSost * 100).toFixed(0) + '%' : 'n/d';
           doc.autoTable({
@@ -5729,7 +5729,7 @@ async function generatePDF() {
               ['Eta di pensionamento ipotizzata', String(penState.retAge) + ' anni'],
             ],
             theme:'grid', styles:{fontSize:8.5,cellPadding:2.5,font:'helvetica'},
-            headStyles:{fillColor:[0,121,107],textColor:255,fontStyle:'bold',fontSize:8.5},
+            headStyles:{fillColor:BLU,textColor:255,fontStyle:'bold',fontSize:8.5},
             margin:{left:ML,right:ML}
           });
           y = doc.lastAutoTable.finalY + 5;
@@ -5936,7 +5936,7 @@ async function generatePDF() {
     } catch (eNarr) { /* la sezione narrativa non deve mai bloccare il PDF */ }
 
     // ─────────── 10. NOTE LEGALI FINALI ───────────
-    sHdr('10 — Note Legali e Limiti del Modello', [150, 50, 50]);
+    sHdr('10 — Note Legali e Limiti del Modello', RED);
     narrative(
       'Limiti del modello. (1) Le simulazioni assumono una distribuzione gaussiana dei rendimenti, mentre i mercati reali presentano "fat tails" ' +
       '(eventi estremi piu frequenti). (2) Le correlazioni fra asset class sono assunte stabili, ma in periodi di stress tendono a convergere a 1. ' +
@@ -5950,9 +5950,9 @@ async function generatePDF() {
       CW - 8
     );
     chkPB(discFull.length * 4.2 + 14);
-    doc.setFillColor(255, 235, 235); doc.rect(ML, y, CW, discFull.length * 4.2 + 12, 'F');
-    doc.setDrawColor(200, 80, 80); doc.rect(ML, y, CW, discFull.length * 4.2 + 12, 'S');
-    doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(150, 50, 50);
+    doc.setFillColor(252, 237, 237); doc.rect(ML, y, CW, discFull.length * 4.2 + 12, 'F');
+    doc.setDrawColor(...RED); doc.rect(ML, y, CW, discFull.length * 4.2 + 12, 'S');
+    doc.setFontSize(8); doc.setFont('helvetica', 'normal'); doc.setTextColor(...RED);
     doc.text(discFull, ML + 4, y + 6);
     y += discFull.length * 4.2 + 16;
 
