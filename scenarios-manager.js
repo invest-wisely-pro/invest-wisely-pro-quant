@@ -377,11 +377,15 @@ function renderScenarioPanel() {
         <span class="scenario-date tabular-nums">${fmtDate(s.savedAt)}</span>
       </div>
       <div class="scenario-actions">
-        <button class="gbtn a-blue" onclick="scenarioLoad('${s.id}')" title="Carica questo scenario">Carica
+        <button class="gbtn a-blue" onclick="scenarioLoad('${s.id}')" title="Carica questo scenario">
+          <i data-lucide="corner-down-left" class="lucide-sm"></i> Carica
         </button>
-        <button class="gbtn" onclick="scenarioOverwrite('${s.id}')" title="Aggiorna con lo stato corrente">Aggiorna
+        <button class="gbtn" onclick="scenarioOverwrite('${s.id}')" title="Aggiorna con lo stato corrente">
+          <i data-lucide="arrow-up" class="lucide-sm"></i> Aggiorna
         </button>
-        <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--negative);border-color:var(--border-color)"><i data-lucide="x" class="lucide-sm"></i></button>
+        <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--negative);border-color:var(--border-color)">
+          <i data-lucide="x" class="lucide-sm"></i>
+        </button>
       </div>
     </div>
   `).join('');

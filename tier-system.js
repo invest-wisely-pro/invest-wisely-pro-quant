@@ -391,8 +391,8 @@ const INFO_TEXTS = {
         </button>
       </div>
     `;
-    panel.appendChild(overlay);
     if (window.refreshIcons) window.refreshIcons();
+    panel.appendChild(overlay);
   }
 
   // ── Tier Chooser (modale di selezione) ─────────────────────────────────────
@@ -409,36 +409,38 @@ const INFO_TEXTS = {
         </div>
         <div class="tier-modal-cards">
           <button class="tier-card tier-card-base" onclick="window.setTier('base'); window.hideTierChooser()">
+            <div class="tier-card-icon"><i data-lucide="bar-chart-3" class="lucide-sm"></i></div>
             <div class="tier-card-name">Versione Base</div>
             <div class="tier-card-tagline">Essenziale e intuitiva</div>
             <ul class="tier-card-list">
-              <li>Simulatore patrimoniale completo</li>
-              <li>Scenari economici (6 regimi macro)</li>
-              <li>Confronto A/B portafogli</li>
-              <li>Probabilità di successo (Monte Carlo base)</li>
-              <li>Simulazione decumulo</li>
-              <li>Backtesting storico 1970-2024</li>
-              <li class="tier-list-locked">MC Avanzato (GARCH, t-Student)</li>
-              <li class="tier-list-locked">Fiscalità IT completa</li>
-              <li class="tier-list-locked">Piano Pensione integrativo</li>
-              <li class="tier-list-locked">Stress Valutazioni (CAPE)</li>
-              <li class="tier-list-locked">Obiettivo Inverso</li>
-              <li class="tier-list-locked">Quant Analytics (Markowitz, VaR)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Simulatore patrimoniale completo</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Scenari economici (6 regimi macro)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Confronto A/B portafogli</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Probabilità di successo (Monte Carlo base)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Simulazione decumulo</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Backtesting storico 1970-2024</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> MC Avanzato (GARCH, t-Student)</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> Fiscalità IT completa</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> Piano Pensione integrativo</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> Stress Valutazioni (CAPE)</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> Obiettivo Inverso</li>
+              <li class="tier-list-locked"><i data-lucide="lock" class="lucide-sm"></i> Quant Analytics (Markowitz, VaR)</li>
             </ul>
             <span class="tier-card-cta">Inizia in Base →</span>
           </button>
           <button class="tier-card tier-card-pro" onclick="window.setTier('pro'); window.hideTierChooser()">
-            <div class="tier-card-badge-pro">SUITE COMPLETA</div>
+            <div class="tier-card-badge-pro"><i data-lucide="sparkle" class="lucide-sm"></i> SUITE COMPLETA</div>
+            <div class="tier-card-icon"><i data-lucide="rocket" class="lucide-sm"></i></div>
             <div class="tier-card-name">Versione Pro</div>
             <div class="tier-card-tagline">Strumenti quantitativi avanzati</div>
             <ul class="tier-card-list">
-              <li>Tutto della versione Base</li>
-              <li>MC Avanzato (GARCH, t-Student, Regime-Switching)</li>
-              <li>Fiscalità IT (regimi, switch, zainetto)</li>
-              <li>Piano Pensione integrativo completo</li>
-              <li>Stress Valutazioni CAPE/Bogle</li>
-              <li>Obiettivo Inverso con sensitività</li>
-              <li>Quant Analytics (Markowitz, VaR, Factor, Rolling)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Tutto della versione Base</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> MC Avanzato (GARCH, t-Student, Regime-Switching)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Fiscalità IT (regimi, switch, zainetto)</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Piano Pensione integrativo completo</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Stress Valutazioni CAPE/Bogle</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Obiettivo Inverso con sensitività</li>
+              <li><i data-lucide="check" class="lucide-sm"></i> Quant Analytics (Markowitz, VaR, Factor, Rolling)</li>
             </ul>
             <span class="tier-card-cta">Accedi a tutte le funzioni →</span>
           </button>
@@ -446,8 +448,8 @@ const INFO_TEXTS = {
         <button class="tier-modal-close" onclick="window.hideTierChooser()" title="Chiudi"><i data-lucide="x" class="lucide-sm"></i></button>
       </div>
     `;
-    document.body.appendChild(modal);
     if (window.refreshIcons) window.refreshIcons();
+    document.body.appendChild(modal);
     // Chiudi cliccando backdrop
     modal.addEventListener('click', (e) => {
       if (e.target === modal) window.hideTierChooser();
@@ -610,8 +612,8 @@ const INFO_TEXTS = {
         <div class="info-popover-title"></div>
         <div class="info-popover-text"></div>
       `;
-      document.body.appendChild(_popover);
       if (window.refreshIcons) window.refreshIcons();
+      document.body.appendChild(_popover);
       // Backdrop (visibile solo su mobile): tap per chiudere, sempre affidabile su touch
       _backdrop = document.createElement('div');
       _backdrop.className = 'info-popover-backdrop';
@@ -900,6 +902,10 @@ const INFO_TEXTS = {
   letter-spacing: .07em;
   text-transform: uppercase;
 }
+.tier-card-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
 .tier-card-name {
   font-size: 18px;
   font-weight: 700;
@@ -917,33 +923,16 @@ const INFO_TEXTS = {
   padding: 0;
   margin: 0 0 18px;
   display: grid;
-  gap: 6px;
+  gap: 5px;
 }
 .tier-card-list li {
   font-size: 12.5px;
   color: var(--text2);
-  padding-left: 16px;
-  position: relative;
-}
-.tier-card-list li::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 7px;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--teal);
-}
-.tier-card-pro .tier-card-list li::before {
-  background: var(--blue);
+  padding-left: 2px;
 }
 .tier-card-list .tier-list-locked {
   color: var(--text3);
   font-size: 12px;
-}
-.tier-card-list .tier-list-locked::before {
-  background: var(--text3);
 }
 .tier-card-cta {
   display: inline-flex;

@@ -21,7 +21,7 @@ async function downloadGuidePDF() {
       doc.setDrawColor(220,220,220); doc.line(ML, 11.2, W-MR, 11.2);
     };
     const chk = (n=12) => { if (y+n>278){ doc.addPage(); pN++; y=18; hdrBar(); } };
-    const h1 = (t) => { chk(18); doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(...BLU); doc.text(pdfSafe(t), ML, y); y+=4; doc.setDrawColor(...BLU); doc.setLineWidth(.6); doc.line(ML,y,ML+30,y); doc.setLineWidth(.2); doc.setTextColor(0,0,0); y+=5; };
+    const h1 = (t) => { chk(16); doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(...BLU); doc.text(pdfSafe(t), ML, y); y+=7; doc.setDrawColor(...BLU); doc.setLineWidth(.6); doc.line(ML,y-2,ML+30,y-2); doc.setLineWidth(.2); doc.setTextColor(0,0,0); };
     const h2 = (t) => { chk(10); doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(...DARK); doc.text(pdfSafe(t), ML, y); y+=5; doc.setTextColor(0,0,0); };
     const p  = (t, ind=0) => {
       doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(50,55,60);
@@ -316,7 +316,7 @@ async function downloadGuidePDF() {
     li('Fissare l\'orizzonte troppo corto: l\'azionario ha senso solo su 10+ anni. Sotto i 5 anni considera portafogli prevalentemente obbligazionari.');
     li('Ignorare le tasse nel confronto: usa la scheda Fiscalita IT per capire il netto reale. La differenza tra regime amministrato e dichiarativo puo valere migliaia di euro.');
     li('Non aggiornare il piano: rivisita i parametri ogni anno o dopo eventi importanti (cambio lavoro, acquisto casa, variazione del mercato).');
-    callout('Nessun simulatore puo sostituire una consulenza personalizzata. Per decisioni patrimoniali importanti rivolgiti a un consulente finanziario indipendente abilitato (in Italia: iscritto all\'albo OCF — organismoconsulenti.org).', [201,42,42], 'Avvertenza finale');
+    callout('Nessun simulatore puo sostituire una consulenza personalizzata. Per decisioni patrimoniali importanti rivolgiti a un consulente finanziario indipendente abilitato (in Italia: iscritto all\'albo OCF — organismoconsulenti.org).', [217,48,37], 'Avvertenza finale');
 
     // ─────────── 13. SCENARI SALVATI ───────────
     chk(16); h1('13 — Scenari Salvati');

@@ -312,17 +312,17 @@ function buildCrisisUI() {
     <!-- Modalità di versamento -->
     <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Modalità di versamento</div>
     <div class="btn-group" id="crisisModeBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn a-red" data-mode="solo_cap">Solo capitale</button>
-      <button class="gbtn" data-mode="cap_pac">Capitale + PAC</button>
-      <button class="gbtn" data-mode="solo_pac">Solo PAC</button>
+      <button class="gbtn a-red" data-mode="solo_cap"><i data-lucide="mountain" class="lucide-sm"></i> Solo capitale</button>
+      <button class="gbtn" data-mode="cap_pac"><i data-lucide="wallet" class="lucide-sm"></i> Capitale + PAC</button>
+      <button class="gbtn" data-mode="solo_pac"><i data-lucide="calendar" class="lucide-sm"></i> Solo PAC</button>
     </div>
 
     <!-- Stadio del piano (quando arriva la crisi) -->
     <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">A che punto del piano arriva la crisi</div>
     <div class="btn-group" id="crisisStageBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn" data-stage="inizio">Inizio piano</button>
-      <button class="gbtn a-red" data-stage="meta">Metà piano</button>
-      <button class="gbtn" data-stage="fine">Fine piano</button>
+      <button class="gbtn" data-stage="inizio"><i data-lucide="sprout" class="lucide-sm"></i> Inizio piano</button>
+      <button class="gbtn a-red" data-stage="meta"><i data-lucide="hourglass" class="lucide-sm"></i> Metà piano</button>
+      <button class="gbtn" data-stage="fine"><i data-lucide="target" class="lucide-sm"></i> Fine piano</button>
     </div>
 
     <!-- Contesto crisi -->
@@ -349,7 +349,8 @@ function buildCrisisUI() {
     <!-- Confronto tutte le crisi -->
     <div style="margin-top:4px">
       <button class="gbtn" id="btnAllCrises" onclick="renderAllCrisesCompare()"
-        style="background:var(--bg2);border:1px solid var(--border2);font-weight:600;padding:9px 18px">Confronta tutte le crisi con questo portafoglio
+        style="background:var(--bg2);border:1px solid var(--border2);font-weight:600;padding:9px 18px">
+        <i data-lucide="bar-chart-3" class="lucide-sm"></i> Confronta tutte le crisi con questo portafoglio
       </button>
     </div>
 
