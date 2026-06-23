@@ -195,7 +195,7 @@ window.scenarioLoad = function(id) {
   renderScenarioPanel();
 
   // Flash di conferma
-  _flashToast(`Scenario "${entry.name}" caricato`, 'check');
+  _flashToast(`✓ Scenario "${entry.name}" caricato`);
   return { ok: true };
 };
 
@@ -218,7 +218,7 @@ window.scenarioOverwrite = function(id) {
   list[idx].snapshot = _buildSnapshot();
   _writeScenarios(list);
   renderScenarioPanel();
-  _flashToast(`Scenario "${list[idx].name}" aggiornato`, 'refresh-cw');
+  _flashToast(`✓ Scenario "${list[idx].name}" aggiornato`);
 };
 
 window.scenarioExportJSON = function() {
@@ -252,7 +252,7 @@ window.scenarioImportJSON = function(file) {
       }
       _writeScenarios(existing);
       renderScenarioPanel();
-      _flashToast(`${added} scenario/i importati`, 'upload');
+      _flashToast(`✓ ${added} scenario/i importati`);
     } catch (err) {
       alert('Errore durante l\'importazione: ' + err.message);
     }
@@ -281,23 +281,20 @@ function _buildScenarioSummary() {
 }
 
 // ── Toast notification ────────────────────────────────────────────────────────
-function _flashToast(msg, icon) {
+function _flashToast(msg) {
   const existing = document.getElementById('scenarioToast');
   if (existing) existing.remove();
   const el = document.createElement('div');
   el.id = 'scenarioToast';
-  const ic = icon || 'check';
-  el.innerHTML = `<i data-lucide="${ic}" class="lucide-sm"></i><span>${_esc(msg)}</span>`;
+  el.textContent = msg;
   el.style.cssText = `
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
-    display:inline-flex; align-items:center; gap:8px;
-    background:var(--positive); color:#fff; font-size:13px; font-weight:600;
-    padding:10px 18px; border-radius:var(--radius); box-shadow:none;
+    background:#1e8e3e; color:#fff; font-size:13px; font-weight:600;
+    padding:10px 20px; border-radius:8px; box-shadow:0 4px 16px rgba(0,0,0,.18);
     z-index:9999; pointer-events:none; opacity:1; transition:opacity .4s;
     font-family:'DM Sans',sans-serif;
   `;
   document.body.appendChild(el);
-  if (window.refreshIcons) window.refreshIcons();
   setTimeout(() => { el.style.opacity = '0'; setTimeout(() => el.remove(), 400); }, 2200);
 }
 
@@ -351,11 +348,10 @@ function renderScenarioPanel() {
   if (!list.length) {
     panel.innerHTML = `
       <div style="text-align:center;padding:24px 12px;color:var(--text3);font-size:13px">
-        <div style="margin-bottom:8px"><i data-lucide="folder-open" style="width:28px;height:28px;stroke-width:1.6"></i></div>
+        <div style="font-size:28px;margin-bottom:8px">📂</div>
         Nessuno scenario salvato ancora.<br>
         <span style="font-size:12px">Inserisci un nome e clicca <strong>Salva</strong>.</span>
       </div>`;
-    if (window.refreshIcons) window.refreshIcons();
     return;
   }
 
@@ -374,22 +370,21 @@ function renderScenarioPanel() {
           <span class="scenario-name">${_esc(s.name)}</span>
           <span class="scenario-summary">${_esc(s.summary || '—')}</span>
         </div>
-        <span class="scenario-date tabular-nums">${fmtDate(s.savedAt)}</span>
+        <span class="scenario-date">${fmtDate(s.savedAt)}</span>
       </div>
       <div class="scenario-actions">
         <button class="gbtn a-blue" onclick="scenarioLoad('${s.id}')" title="Carica questo scenario">
-          <i data-lucide="corner-down-left" class="lucide-sm"></i> Carica
+          ↩ Carica
         </button>
         <button class="gbtn" onclick="scenarioOverwrite('${s.id}')" title="Aggiorna con lo stato corrente">
-          <i data-lucide="arrow-up" class="lucide-sm"></i> Aggiorna
+          ↑ Aggiorna
         </button>
-        <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--negative);border-color:var(--border-color)">
-          <i data-lucide="x" class="lucide-sm"></i>
+        <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--red);border-color:rgba(217,48,37,.3)">
+          ✕
         </button>
       </div>
     </div>
   `).join('');
-  if (window.refreshIcons) window.refreshIcons();
 }
 
 function _esc(s) {

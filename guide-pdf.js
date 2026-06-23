@@ -4,14 +4,14 @@
 async function downloadGuidePDF() {
   const btn = document.getElementById('guideDlBtn');
   const orig = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = '<i data-lucide="hourglass" class="lucide-sm"></i> Generazione...'; if (window.refreshIcons) window.refreshIcons();
+  btn.disabled = true; btn.innerHTML = '⏳ Generazione...';
   await new Promise(r => setTimeout(r, 60));
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210, H = 297, ML = 16, MR = 16, CW = W - ML - MR;
     let y = 0, pN = 1;
-    const BLU = [158,27,50], PUR = [122,18,36], GRAY = [89,89,89], DARK = [33,33,33], LBG = [244,245,247], AMBER = [89,89,89];
+    const BLU = [26,115,232], PUR = [147,52,230], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [251,188,4];
 
     const hdrBar = () => {
       doc.setFillColor(...LBG); doc.rect(0,0,W,12,'F');
@@ -21,8 +21,8 @@ async function downloadGuidePDF() {
       doc.setDrawColor(220,220,220); doc.line(ML, 11.2, W-MR, 11.2);
     };
     const chk = (n=12) => { if (y+n>278){ doc.addPage(); pN++; y=18; hdrBar(); } };
-    const h1 = (t) => { chk(16); doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(...BLU); doc.text(pdfSafe(t), ML, y); y+=7; doc.setDrawColor(...BLU); doc.setLineWidth(.6); doc.line(ML,y-2,ML+30,y-2); doc.setLineWidth(.2); doc.setTextColor(0,0,0); };
-    const h2 = (t) => { chk(10); doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(...DARK); doc.text(pdfSafe(t), ML, y); y+=5; doc.setTextColor(0,0,0); };
+    const h1 = (t) => { chk(16); doc.setFontSize(14); doc.setFont('helvetica','bold'); doc.setTextColor(...BLU); doc.text(pdfSafe(t), ML, y); y+=7; doc.setDrawColor(...BLU); doc.setLineWidth(.6); doc.line(ML,y-2,ML+30,y-2); doc.setLineWidth(.2); doc.setTextColor(0,0,0); y+=4.5; };
+    const h2 = (t) => { chk(10); doc.setFontSize(10.5); doc.setFont('helvetica','bold'); doc.setTextColor(...DARK); doc.text(pdfSafe(t), ML, y); y+=5.8; doc.setTextColor(0,0,0); };
     const p  = (t, ind=0) => {
       doc.setFontSize(9); doc.setFont('helvetica','normal'); doc.setTextColor(50,55,60);
       const lines = doc.splitTextToSize(pdfSafe(t), CW-ind);
@@ -42,11 +42,11 @@ async function downloadGuidePDF() {
       const lines = doc.splitTextToSize(pdfSafe(t), CW-8);
       const boxH = lines.length*4.4 + 10;
       chk(boxH+3);
-      doc.setFillColor(244, 245, 247); doc.rect(ML, y, CW, boxH, 'F');
+      doc.setFillColor(255, 248, 225); doc.rect(ML, y, CW, boxH, 'F');
       doc.setFillColor(...col); doc.rect(ML, y, 1.5, boxH, 'F');
       doc.setFontSize(8.4); doc.setFont('helvetica','bold'); doc.setTextColor(...col);
       doc.text(pdfSafe(title), ML+5, y+5);
-      doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(33,33,33);
+      doc.setFontSize(8.5); doc.setFont('helvetica','normal'); doc.setTextColor(60,55,30);
       doc.text(lines, ML+5, y+10);
       y += boxH + 3; doc.setTextColor(0,0,0);
     };
@@ -57,7 +57,7 @@ async function downloadGuidePDF() {
     doc.text('Guida all\'utilizzo', ML, 24);
     doc.setFontSize(13); doc.setFont('helvetica','normal');
     doc.text(pdfSafe('Suite Patrimoniale Pro v3 — Manuale operativo completo'), ML, 33);
-    doc.setFontSize(9); doc.setTextColor(255,255,255);
+    doc.setFontSize(9); doc.setTextColor(230,215,255);
     doc.text(`Documento generato il ${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})}`, ML, 42);
     y = 65;
 
@@ -176,7 +176,7 @@ async function downloadGuidePDF() {
     li('2019 — Pre-COVID: crash COVID -34% in 33 giorni, recovery completata in 6 mesi — il piu veloce crash e rimbalzo della storia.');
     li('2022 — Inflazione & rialzo tassi: azioni -20% E obbligazioni -15% insieme. Il 60/40 perde -17%: peggior anno per portafogli bilanciati dal 1937.');
     h2('Metodologia e dati');
-    li('Dati mensili: HIST_MONTHLY con rendimenti per asset class equity, bond, gold ancorati anno per anno alle serie ufficiali in EUR (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA in EUR).');
+    li('Dati mensili: le tre asset class di base (equity, bond, gold) sono ancorate anno per anno alle serie ufficiali in EUR (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA in EUR). Gli asset fattoriali (Small Cap Value, Momentum, Value, Quality, Investment, Size), la Bassa Volatilita, i REITs e i Mercati Emergenti usano serie storiche reali dedicate (Kenneth French Data Library, AQR Betting Against Beta, FTSE Nareit) convertite in EUR.');
     li('CAPE-adjusted equity: i rendimenti azionari sono aggiustati per il CAPE Shiller dell\'anno di partenza tramite Earnings Yield Delta (1/CAPE). CAPE alto = rendimenti attesi piu bassi, e viceversa.');
     li('Correlazioni dinamiche: in anni con drawdown equity > 15%, le correlazioni si avvicinano alla matrice STRESS (correlazioni osservate empiricamente in crisi). Cattura il \"correlation breakdown\" dei crash.');
     li('Inflazione storica: CPI annuale reale per ogni periodo, usato per deflatare e mostrare rendimento reale.');
@@ -223,7 +223,7 @@ async function downloadGuidePDF() {
     li('2020 COVID-19 — Crash piu veloce della storia: -34% in 33 giorni (febbraio-marzo 2020). Recovery altrettanto rapida: meno di 6 mesi. Fed interviene con QE illimitato. Obbligazioni governative e oro positivi per tutto il 2020.');
     li('2022 Inflazione & Tassi — Crisi unica: azioni -20% E obbligazioni -15% simultaneamente. Il 60/40 perde -17%, peggior anno dal 1937. Fed alza i tassi da 0.25% a 4.5% in 12 mesi. Solo cash e obbligazioni a brevissima duration tengono. L\'oro risulta quasi flat (-2%).');
     h2('Dati e metodologia');
-    li('Fonte dati: HIST_MONTHLY — rendimenti mensili di azioni sviluppate, obbligazioni e oro dal 1970 al 2024, ancorati alle serie ufficiali in EUR (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA). 660 osservazioni mensili; totali annuali fedeli alle fonti, granularita mensile ricostruita.');
+    li('Fonte dati: rendimenti mensili dal 1970 al 2024. Le tre asset class di base (azioni sviluppate, obbligazioni, oro) sono ancorate alle serie ufficiali in EUR (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA); 660 osservazioni mensili, totali annuali fedeli alle fonti, granularita mensile ricostruita. Fattori azionari, Bassa Volatilita, REITs e Mercati Emergenti dispongono di serie storiche reali dedicate (Kenneth French Data Library, AQR, FTSE Nareit) convertite in EUR.');
     li('Pesi portafoglio: quelli attuali del simulatore, aggiornati in tempo reale al cambio selezione. TER applicato mensilmente. Capitale, PAC e fase del piano sono quelli impostati: la fase scala il capitale esposto, coerente con la sezione Rischio di Sequenza.');
     li('Finestra: include alcuni mesi pre-crisi per contesto. Il drawdown e calcolato rispetto al picco della finestra mostrata.');
     li('Recovery: numero di mesi dal bottom per tornare al livello di inizio finestra (non al picco assoluto pre-crisi).');
@@ -398,11 +398,11 @@ async function downloadGuidePDF() {
     const total = doc.getNumberOfPages();
     for (let i=1; i<=total; i++){ doc.setPage(i); /* header already drawn via hdrBar on new pages; first page has cover instead */ }
     doc.save('guida-utilizzo-suite-patrimoniale.pdf');
-    btn.innerHTML = '<i data-lucide="check" class="lucide-sm"></i> Scaricato!'; if (window.refreshIcons) window.refreshIcons();
+    btn.innerHTML = '✅ Scaricato!';
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 2500);
   } catch (e) {
     console.error('Guide PDF error:', e);
-    btn.innerHTML = '<i data-lucide="x" class="lucide-sm"></i> Errore generazione'; if (window.refreshIcons) window.refreshIcons();
+    btn.innerHTML = '❌ Errore generazione';
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 3000);
   }
 }
