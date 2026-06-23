@@ -299,7 +299,7 @@ function buildCrisisUI() {
 
   return `
   <div class="sec" style="margin-top:18px">
-    <div class="sec-label" data-info-id="info-crisis-stress" style="color:var(--red)">🔥 Stress Test Macro Storici — Path Mensile Ricostruito</div>
+    <div class="sec-label" data-info-id="info-crisis-stress" style="color:var(--red)">Stress Test Macro Storici — Path Mensile Ricostruito</div>
     <p style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:14px">
       Simulazione del percorso mensile <strong>preciso</strong> del tuo portafoglio durante le principali crisi storiche,
       usando la serie mensile 1970–2024: totali annui e mesi-crisi chiave ancorati ai dati storici reali, distribuzione degli altri mesi ricostruita.
@@ -311,17 +311,17 @@ function buildCrisisUI() {
     <!-- Modalità di versamento -->
     <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Modalità di versamento</div>
     <div class="btn-group" id="crisisModeBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn a-red" data-mode="solo_cap">🏔️ Solo capitale</button>
-      <button class="gbtn" data-mode="cap_pac">💰 Capitale + PAC</button>
-      <button class="gbtn" data-mode="solo_pac">📅 Solo PAC</button>
+      <button class="gbtn a-red" data-mode="solo_cap">Solo capitale</button>
+      <button class="gbtn" data-mode="cap_pac">Capitale + PAC</button>
+      <button class="gbtn" data-mode="solo_pac">Solo PAC</button>
     </div>
 
     <!-- Stadio del piano (quando arriva la crisi) -->
     <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">A che punto del piano arriva la crisi</div>
     <div class="btn-group" id="crisisStageBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn" data-stage="inizio">🌱 Inizio piano</button>
-      <button class="gbtn a-red" data-stage="meta">⏳ Metà piano</button>
-      <button class="gbtn" data-stage="fine">🎯 Fine piano</button>
+      <button class="gbtn" data-stage="inizio">Inizio piano</button>
+      <button class="gbtn a-red" data-stage="meta">Metà piano</button>
+      <button class="gbtn" data-stage="fine">Fine piano</button>
     </div>
 
     <!-- Contesto crisi -->
@@ -332,13 +332,13 @@ function buildCrisisUI() {
 
     <!-- Grafico path mensile -->
     <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">
-      📈 Portafoglio normalizzato (base 100 = inizio crisi)
+      Portafoglio normalizzato (base 100 = inizio crisi)
     </div>
     <div class="chart-wrap" style="height:300px;margin-bottom:16px"><canvas id="chCrisisPath"></canvas></div>
 
     <!-- Grafico drawdown mensile -->
     <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">
-      📉 Drawdown mensile dal picco (%)
+      Drawdown mensile dal picco (%)
     </div>
     <div class="chart-wrap" style="height:200px;margin-bottom:18px"><canvas id="chCrisisDD"></canvas></div>
 
@@ -349,7 +349,7 @@ function buildCrisisUI() {
     <div style="margin-top:4px">
       <button class="gbtn" id="btnAllCrises" onclick="renderAllCrisesCompare()"
         style="background:var(--bg2);border:1px solid var(--border2);font-weight:600;padding:9px 18px">
-        📊 Confronta tutte le crisi con questo portafoglio
+        Confronta tutte le crisi con questo portafoglio
       </button>
     </div>
 
@@ -483,7 +483,7 @@ function renderCrisis(crisisId) {
       <div style="font-size:13px;font-weight:700;color:${crisis.color};margin-bottom:6px">${crisis.label}</div>
       <div style="color:var(--text2)">${crisis.context}</div>
       <div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,.5);border-radius:6px;font-size:11.5px;color:var(--text3)">
-        <strong>💡 Cosa imparare:</strong> ${crisis.lessons}
+        <strong>Cosa imparare:</strong> ${crisis.lessons}
       </div>`;
   }
 
@@ -638,7 +638,7 @@ function renderCrisis(crisisId) {
   const sortedByRet = [...sim.path].sort((a, b) => a.portRet - b.portRet).slice(0, 10);
   document.getElementById('crisisWorstMonths').innerHTML = `
     <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">
-      📋 I 10 mesi peggiori in questo scenario
+      I 10 mesi peggiori in questo scenario
     </div>
     <div class="tbl-outer"><table>
       <thead><tr>

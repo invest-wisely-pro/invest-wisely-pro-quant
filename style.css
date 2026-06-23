@@ -358,11 +358,10 @@ tbody tr:hover{background:var(--bg2)}
 .home-card .icon{margin-bottom:16px;display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:2px;border:1px solid var(--border-color);background:var(--bg-body)}
 .home-card .icon svg,.home-card .icon i[data-lucide]{width:26px;height:26px;stroke-width:1.7}
 .home-card.sim .icon{color:var(--brand-red)}
-.home-card.guide .icon{color:var(--text-muted)}
+.home-card.guide .icon{color:var(--brand-red)}
 .home-card h2{font-size:22px;font-weight:700;margin-bottom:10px;letter-spacing:-.01em}
 .home-card p{font-size:14px;color:var(--text2);line-height:1.55;margin-bottom:18px}
 .home-card .cta{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:13.5px;color:var(--brand-red)}
-.home-card.guide .cta{color:var(--purple)}
 .home-card ul{list-style:none;padding:0;margin:0 0 16px;display:grid;gap:6px}
 .home-card ul li{font-size:13px;color:var(--text2);padding-left:18px;position:relative}
 .home-card ul li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:700}
@@ -371,7 +370,7 @@ tbody tr:hover{background:var(--bg2)}
 /* ── PDF BTN ── */
 .guide-head{display:flex;align-items:flex-start;gap:18px;flex-wrap:wrap;margin-bottom:8px}
 .guide-head h1{font-size:30px;font-weight:700;letter-spacing:-.02em;flex:1;min-width:240px}
-.guide-dl{background:var(--purple);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 18px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;box-shadow:none}
+.guide-dl{background:var(--brand-red);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 18px;font:inherit;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:8px;transition:.15s;box-shadow:none}
 .guide-dl:hover{background:var(--brand-red-hover)}
 .guide-dl:disabled{opacity:.6;cursor:wait}
 .guide-intro{color:var(--text2);font-size:15px;line-height:1.65;margin:14px 0 28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
@@ -416,9 +415,9 @@ tbody tr:hover{background:var(--bg2)}
 .guide-wrap{max-width:860px;margin:0 auto;padding:28px 20px 40px}
 .guide-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px}
 .guide-head h1{font-size:22px;font-weight:700;color:var(--text)}
-.guide-dl{padding:9px 18px;border-radius:var(--radius-sm);border:1px solid var(--blue);background:var(--blue-dim);color:var(--blue);font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
-.guide-dl:hover{background:var(--blue);color:#fff}
-.guide-intro{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border-left:4px solid var(--blue);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
+.guide-dl{padding:9px 18px;border-radius:var(--radius-sm);border:none;background:var(--brand-red);color:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .15s}
+.guide-dl:hover{background:var(--brand-red-hover)}
+.guide-intro{font-size:13.5px;color:var(--text2);line-height:1.7;margin-bottom:24px;padding:16px 20px;background:var(--bg2);border-left:4px solid var(--brand-red);border-radius:0 var(--radius-sm) var(--radius-sm) 0}
 .guide-toc{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin-bottom:24px}
 .guide-toc h3{font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text)}
 .guide-toc ol{margin-left:20px;font-size:13px;color:var(--text2);line-height:1.8}

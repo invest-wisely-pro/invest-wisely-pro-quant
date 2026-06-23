@@ -1,4 +1,4 @@
-// ██████  MODULO — PIANO PENSIONISTICO INTEGRATO
+//  MODULO — PIANO PENSIONISTICO INTEGRATO
 // Stima INPS contributivo/misto/retributivo + Fondo Pensione + ETF Portfolio
 // ══════════════════════════════════════════════════════════════
 
@@ -546,7 +546,7 @@ function renderPenKPI(r) {
     const pF = totMens > 0 ? rendFPMens / totMens * 100 : 0;
     const pE = totMens > 0 ? etfPrelievoMens / totMens * 100 : 0;
     incEl.innerHTML = `
-      <div class="sec-label" style="font-size:11px;margin-bottom:10px">⚖️ Da dove arriva il tuo reddito in pensione (${fmt(totMens)}/mese)</div>
+      <div class="sec-label" style="font-size:11px;margin-bottom:10px">Da dove arriva il tuo reddito in pensione (${fmt(totMens)}/mese)</div>
       <div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);margin-bottom:10px">
         <div style="width:${pI}%;background:var(--blue);min-width:${pI>0?'2px':'0'}"></div>
         <div style="width:${pF}%;background:var(--purple);min-width:${pF>0?'2px':'0'}"></div>
@@ -690,7 +690,7 @@ function renderPenRispFisc(r) {
   const costBaseETF  = risparmioFisc * yearsToRet;
   const capReinvETFNetto = capReinvETF - Math.max(0, capReinvETF - costBaseETF) * 0.26;
 
-  const destLabel = { spendi: '🛍️ Speso/consumato', reinvesti_fp: '💼 Reinvestito nel Fondo Pensione', reinvesti_etf: '📈 Reinvestito nel portafoglio ETF' };
+  const destLabel = { spendi: 'Speso/consumato', reinvesti_fp: 'Reinvestito nel Fondo Pensione', reinvesti_etf: 'Reinvestito nel portafoglio ETF' };
   const activeStyle = (d) => rispFiscDest === d ? 'background:var(--blue);color:#fff;border-color:var(--blue)' : '';
 
   document.getElementById('penRispFiscBox').innerHTML = `
@@ -707,26 +707,26 @@ function renderPenRispFisc(r) {
       </div>
     </div>
 
-    <div class="sec-label" style="margin-bottom:8px">📌 Cosa fai con il risparmio fiscale ogni anno?</div>
+    <div class="sec-label" style="margin-bottom:8px">Cosa fai con il risparmio fiscale ogni anno?</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-      <button class="gbtn" style="${activeStyle('spendi')}" onclick="penState.rispFiscDest='spendi'; renderPensione()">🛍️ Lo spendo</button>
-      <button class="gbtn" style="${activeStyle('reinvesti_fp')}" onclick="penState.rispFiscDest='reinvesti_fp'; renderPensione()">💼 Reinvesto nel FP</button>
-      <button class="gbtn" style="${activeStyle('reinvesti_etf')}" onclick="penState.rispFiscDest='reinvesti_etf'; renderPensione()">📈 Reinvesto in ETF</button>
+      <button class="gbtn" style="${activeStyle('spendi')}" onclick="penState.rispFiscDest='spendi'; renderPensione()">Lo spendo</button>
+      <button class="gbtn" style="${activeStyle('reinvesti_fp')}" onclick="penState.rispFiscDest='reinvesti_fp'; renderPensione()">Reinvesto nel FP</button>
+      <button class="gbtn" style="${activeStyle('reinvesti_etf')}" onclick="penState.rispFiscDest='reinvesti_etf'; renderPensione()">Reinvesto in ETF</button>
     </div>
 
     <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
       <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='spendi'?'border-color:var(--orange)':''}">
-        <div class="ml">🛍️ Se lo spendi</div>
+        <div class="ml">Se lo spendi</div>
         <div class="mv" style="color:var(--orange)">${fmt(Math.round(totRisp))}</div>
         <div class="ms">Consumato anno per anno · nessun accumulo</div>
       </div>
       <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_fp'?'border-color:var(--purple)':''}">
-        <div class="ml">💼 Se reinvesti nel FP</div>
+        <div class="ml">Se reinvesti nel FP</div>
         <div class="mv" style="color:var(--purple)">${fmt(Math.round(capReinvFP))}</div>
         <div class="ms">Rendimento ${(fpRet*100).toFixed(1)}% − 20%/a plusval. FP · +${fmt(Math.round(capReinvFP - totRisp))} vs speso</div>
       </div>
       <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_etf'?'border-color:var(--teal)':''}">
-        <div class="ml">📈 Se reinvesti in ETF</div>
+        <div class="ml">Se reinvesti in ETF</div>
         <div class="mv" style="color:var(--teal)">${fmt(Math.round(capReinvETFNetto))}</div>
         <div class="ms">Rendimento ${(etfRet*100).toFixed(1)}% (piano simulatore) · tax deferral → 26% solo alla fine · +${fmt(Math.round(capReinvETFNetto - totRisp))} vs speso</div>
       </div>
@@ -807,7 +807,7 @@ function renderPenFiscComp(r) {
       <div class="mcard"><div class="ml">Conviene ${tfrWinner}</div><div class="mv" style="color:${tfrWinColor}">${fmt(Math.abs(Math.round(tfrDiff)))}</div><div class="ms">Differenza netta su ${yearsToRet} anni · TFR ${fmt(Math.round(tfrAnnuoMedio))}/a</div></div>
     </div>
     <div style="background:#f3e5f5;border:1px solid #e1bee7;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#6a1b9a;margin-bottom:12px;line-height:1.6">
-      <strong>📌 Perché il TFR cambia molto:</strong> in azienda si rivaluta solo all'<strong>${(revAzienda*100).toFixed(2)}%/a</strong> (1,5% fisso + 75% inflazione, art. 2120 c.c.) e alla liquidazione sconta la <strong>tassazione separata</strong> all'aliquota media IRPEF (~${(aliqMediaTFR*100).toFixed(0)}%). Conferito al fondo rende come il comparto scelto (${(penState.fpRet*100).toFixed(1)}%/a) e la prestazione è tassata col regime agevolato <strong>${(aliqFP*100).toFixed(1)}%</strong> (dal 15% al 9% in base agli anni di adesione). La differenza nasce dal doppio effetto rivalutazione + fiscalità.
+      <strong>Perché il TFR cambia molto:</strong> in azienda si rivaluta solo all'<strong>${(revAzienda*100).toFixed(2)}%/a</strong> (1,5% fisso + 75% inflazione, art. 2120 c.c.) e alla liquidazione sconta la <strong>tassazione separata</strong> all'aliquota media IRPEF (~${(aliqMediaTFR*100).toFixed(0)}%). Conferito al fondo rende come il comparto scelto (${(penState.fpRet*100).toFixed(1)}%/a) e la prestazione è tassata col regime agevolato <strong>${(aliqFP*100).toFixed(1)}%</strong> (dal 15% al 9% in base agli anni di adesione). La differenza nasce dal doppio effetto rivalutazione + fiscalità.
     </div>`;
   }
 
@@ -819,7 +819,7 @@ function renderPenFiscComp(r) {
       <div class="mcard"><div class="ml">Vantaggio ${winner}</div><div class="mv" style="color:var(--green)">${fmt(diff)}</div><div class="ms">Su ${yearsToRet} anni · entrambi al netto imposte</div></div>
     </div>
     <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#e65100;margin-bottom:12px;line-height:1.6">
-      <strong>📌 Nota tassazione:</strong> Il fondo pensione tassa i rendimenti al <strong>20% ogni anno</strong> (vs 26% ETF ma con tax deferral).
+      <strong>Nota tassazione:</strong> Il fondo pensione tassa i rendimenti al <strong>20% ogni anno</strong> (vs 26% ETF ma con tax deferral).
       L'ETF ad accumulazione rinvia tutta la tassazione alla vendita finale: il capitale "lavora" intero per anni, con effetto compounding più potente.
       Il FP recupera parte del vantaggio grazie alla deducibilità dei contributi e all'aliquota ridotta sulla prestazione finale (${(aliqFP*100).toFixed(0)}%).
     </div>`;

@@ -1,4 +1,4 @@
-// ██████  MODULO 2 — MONTE CARLO AVANZATO
+//  MODULO 2 — MONTE CARLO AVANZATO
 // ══════════════════════════════════════════════════════════════
 let advMCState = { model: 'student', N: 2000, nu: 4 };
 let chartAdvMC = null, chartAdvComp = null, chartGarch = null, chartRegime = null, chartAdvHist = null;
@@ -507,7 +507,7 @@ document.getElementById('sAdvNu').oninput = function(){ advMCState.nu=+this.valu
 document.getElementById('advMcModelDesc').innerHTML = ADV_MODEL_DESC['student'];
 
 function runAdvancedMC() {
-  const btn = event.target; btn.disabled=true; btn.textContent='⏳ Simulazione...';
+  const btn = event.target; btn.disabled=true; btn.textContent='Simulazione...';
   setTimeout(()=>{
     try {
       const { w, age, years, portfolio, ter, pics, exps, seq } = state;
@@ -721,7 +721,7 @@ function runAdvancedMC() {
       // Confronto tutti i modelli
       renderAdvMCComparison();
     } catch(e){ console.error('AdvMC error',e); }
-    btn.disabled=false; btn.textContent='🧮 Esegui Simulazione Avanzata';
+    btn.disabled=false; btn.textContent='Esegui Simulazione Avanzata';
   }, 80);
 }
 

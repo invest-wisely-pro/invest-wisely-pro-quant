@@ -12,12 +12,12 @@ const TIER_PRO_TABS = new Set([
 ]);
 
 const PRO_TAB_LABELS = {
-  advmc:     { icon: '🧮', name: 'MC Avanzato',        desc: 'Monte Carlo con modelli GARCH, t-Student e Regime-Switching per code di rischio più realistiche e distribuzioni fat-tail.' },
-  fiscale:   { icon: '🏛️',  name: 'Fiscalità IT',       desc: 'Analisi completa della tassazione italiana: capital gain, switch di portafoglio, confronto regimi e proiezione netta fiscale.' },
-  pensione:  { icon: '👴', name: 'Piano Pensione',      desc: 'Simulazione integrata pensione pubblica + privata con fase di accumulo e decumulo previdenziale personalizzato.' },
+  advmc:     { icon: '', name: 'MC Avanzato',        desc: 'Monte Carlo con modelli GARCH, t-Student e Regime-Switching per code di rischio più realistiche e distribuzioni fat-tail.' },
+  fiscale:   { icon: '',  name: 'Fiscalità IT',       desc: 'Analisi completa della tassazione italiana: capital gain, switch di portafoglio, confronto regimi e proiezione netta fiscale.' },
+  pensione:  { icon: '', name: 'Piano Pensione',      desc: 'Simulazione integrata pensione pubblica + privata con fase di accumulo e decumulo previdenziale personalizzato.' },
   valuation: { icon: '⚠️',  name: 'Stress Valutazioni', desc: 'Analisi CAPE/Bogle, stress test macro e scenario di mean-reversion per valutare la sopravvalutazione di mercato.' },
-  goal:      { icon: '🏆', name: 'Obiettivo Inverso',  desc: 'Dato un obiettivo patrimoniale, calcola PAC necessario, orizzonte minimo e sensitività ai parametri.' },
-  quant:     { icon: '📐', name: 'Quant Analytics',    desc: 'Ottimizzazione Markowitz, VaR/CVaR multi-metodo, Factor Decomposition Fama-French e analisi rolling.' },
+  goal:      { icon: '', name: 'Obiettivo Inverso',  desc: 'Dato un obiettivo patrimoniale, calcola PAC necessario, orizzonte minimo e sensitività ai parametri.' },
+  quant:     { icon: '', name: 'Quant Analytics',    desc: 'Ottimizzazione Markowitz, VaR/CVaR multi-metodo, Factor Decomposition Fama-French e analisi rolling.' },
 };
 
 // ─── INFO HELPER TEXTS ────────────────────────────────────────────────────────
@@ -377,7 +377,7 @@ const INFO_TEXTS = {
     const panel = document.getElementById(`tab-${tabId}`);
     if (!panel) return;
     if (panel.querySelector('.pro-lock-overlay')) return; // già presente
-    const info = PRO_TAB_LABELS[tabId] || { icon: '🔒', name: tabId, desc: '' };
+    const info = PRO_TAB_LABELS[tabId] || { icon: '', name: tabId, desc: '' };
     const overlay = document.createElement('div');
     overlay.className = 'pro-lock-overlay';
     overlay.innerHTML = `
@@ -385,7 +385,7 @@ const INFO_TEXTS = {
         <div class="pro-lock-icon">${info.icon}</div>
         <div class="pro-lock-title">${info.name}</div>
         <div class="pro-lock-desc">${info.desc}</div>
-        <div class="pro-lock-badge">🔒 Funzione Pro</div>
+        <div class="pro-lock-badge">Funzione Pro</div>
         <button class="pro-lock-cta" onclick="window.showTierChooser()">
           Sblocca versione completa →
         </button>
@@ -408,7 +408,7 @@ const INFO_TEXTS = {
         </div>
         <div class="tier-modal-cards">
           <button class="tier-card tier-card-base" onclick="window.setTier('base'); window.hideTierChooser()">
-            <div class="tier-card-icon">📊</div>
+            <div class="tier-card-icon"></div>
             <div class="tier-card-name">Versione Base</div>
             <div class="tier-card-tagline">Essenziale e intuitiva</div>
             <ul class="tier-card-list">
@@ -418,18 +418,18 @@ const INFO_TEXTS = {
               <li>✓ Probabilità di successo (Monte Carlo base)</li>
               <li>✓ Simulazione decumulo</li>
               <li>✓ Backtesting storico 1970-2024</li>
-              <li class="tier-list-locked">🔒 MC Avanzato (GARCH, t-Student)</li>
-              <li class="tier-list-locked">🔒 Fiscalità IT completa</li>
-              <li class="tier-list-locked">🔒 Piano Pensione integrativo</li>
-              <li class="tier-list-locked">🔒 Stress Valutazioni (CAPE)</li>
-              <li class="tier-list-locked">🔒 Obiettivo Inverso</li>
-              <li class="tier-list-locked">🔒 Quant Analytics (Markowitz, VaR)</li>
+              <li class="tier-list-locked">MC Avanzato (GARCH, t-Student)</li>
+              <li class="tier-list-locked">Fiscalità IT completa</li>
+              <li class="tier-list-locked">Piano Pensione integrativo</li>
+              <li class="tier-list-locked">Stress Valutazioni (CAPE)</li>
+              <li class="tier-list-locked">Obiettivo Inverso</li>
+              <li class="tier-list-locked">Quant Analytics (Markowitz, VaR)</li>
             </ul>
             <span class="tier-card-cta">Inizia in Base →</span>
           </button>
           <button class="tier-card tier-card-pro" onclick="window.setTier('pro'); window.hideTierChooser()">
-            <div class="tier-card-badge-pro">✦ SUITE COMPLETA</div>
-            <div class="tier-card-icon">🚀</div>
+            <div class="tier-card-badge-pro">SUITE COMPLETA</div>
+            <div class="tier-card-icon"></div>
             <div class="tier-card-name">Versione Pro</div>
             <div class="tier-card-tagline">Strumenti quantitativi avanzati</div>
             <ul class="tier-card-list">
@@ -486,11 +486,11 @@ const INFO_TEXTS = {
       }
     }
     if (tier === 'pro') {
-      btn.innerHTML = '⚡ Pro — cambia modalità';
+      btn.innerHTML = 'Pro — cambia modalità';
       btn.classList.remove('btn-base');
       btn.classList.add('btn-pro');
     } else {
-      btn.innerHTML = '📊 Base — sblocca Pro';
+      btn.innerHTML = 'Base — sblocca Pro';
       btn.classList.remove('btn-pro');
       btn.classList.add('btn-base');
     }
@@ -693,7 +693,7 @@ const INFO_TEXTS = {
   cursor: pointer;
 }
 .tab-btn-locked::after {
-  content: ' 🔒';
+  content: ' ';
   font-size: 10px;
 }
 

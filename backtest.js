@@ -1016,7 +1016,7 @@ function runAllBacktests() {
       </tbody>
     </table></div>
     <div style="font-size:11.5px;color:var(--text3);margin-top:10px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-      <strong>📊 Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
+      <strong>Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
     </div>`;
   
   // Normalize all datasets to same start to compare trajectories

@@ -348,7 +348,7 @@ function renderScenarioPanel() {
   if (!list.length) {
     panel.innerHTML = `
       <div style="text-align:center;padding:24px 12px;color:var(--text3);font-size:13px">
-        <div style="font-size:28px;margin-bottom:8px">📂</div>
+        <div style="font-size:28px;margin-bottom:8px"></div>
         Nessuno scenario salvato ancora.<br>
         <span style="font-size:12px">Inserisci un nome e clicca <strong>Salva</strong>.</span>
       </div>`;

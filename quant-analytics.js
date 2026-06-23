@@ -1006,7 +1006,7 @@ function _renderVaRView() {
       <strong>Rendimento netto:</strong> ${((mu-ter/100)*100).toFixed(1)}%/a · <strong>Volatilità:</strong> ${(vol*100).toFixed(1)}%/a
     </div>
     ${_varLeveraged ? `<div style="font-size:11.5px;color:var(--orange);background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:14px;line-height:1.55">
-      ⚡ <strong>Portafoglio a leva:</strong> il VaR/CVaR espande i sottostanti ma normalizza i pesi al 100%, quindi <strong>sottostima il rischio reale</strong> amplificato dalla leva (notional &gt;100%). Per una stima corretta del rischio di questo portafoglio usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong>, che modellano leva e costo di finanziamento.
+      <strong>Portafoglio a leva:</strong> il VaR/CVaR espande i sottostanti ma normalizza i pesi al 100%, quindi <strong>sottostima il rischio reale</strong> amplificato dalla leva (notional &gt;100%). Per una stima corretta del rischio di questo portafoglio usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong>, che modellano leva e costo di finanziamento.
     </div>` : ''}
     <div class="tbl-outer" style="margin-bottom:20px">
       <table>
@@ -1612,13 +1612,13 @@ window.FACTOR_PREMIA         = FACTOR_PREMIA;
 // ════════════════════════════════════════════════════════════════════════════
 
 const OBJ_META = {
-  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '⭐', color: '#1a73e8',
+  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '', color: '#1a73e8',
                    desc: 'Massimizza (μ−RF)/σ — miglior rendimento per unità di rischio totale.' },
-  min_variance:  { label: 'Minima Varianza',       icon: '🛡️', color: '#1e8e3e',
+  min_variance:  { label: 'Minima Varianza',       icon: '️', color: '#1e8e3e',
                    desc: 'Minimizza σ — portafoglio difensivo a varianza ridotta.' },
-  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '📉', color: '#e37400',
+  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '', color: '#e37400',
                    desc: 'Massimizza (μ−RF)/σ_down — penalizza solo la volatilità negativa (downside).' },
-  risk_parity:   { label: 'Risk Parity',           icon: '⚖️', color: '#9334e6',
+  risk_parity:   { label: 'Risk Parity',           icon: '', color: '#9334e6',
                    desc: 'Ogni asset contribuisce in egual misura al rischio totale (equal risk contribution).' },
 };
 
@@ -1929,7 +1929,7 @@ function _renderOptimizerView() {
       : _optCompositeSlots.map(s => `<strong>${ASSET_CLASSES[s.ac].label}</strong>`).join(', ');
     el.innerHTML = `
       <div style="background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:20px 24px;margin:8px 0;line-height:1.7">
-        <div style="font-size:13.5px;font-weight:700;color:#b8860b;margin-bottom:8px">⚡ Optimizer non disponibile per questo portafoglio</div>
+        <div style="font-size:13.5px;font-weight:700;color:#b8860b;margin-bottom:8px">Optimizer non disponibile per questo portafoglio</div>
         <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">
           Il portafoglio ${names} opera con <strong>leva implicita</strong>
           (esposizione notional &gt;100%). L'optimizer di Markowitz lavora con pesi che sommano
@@ -2018,7 +2018,7 @@ function _renderOptimizerView() {
 
         <button id="optRunBtn" onclick="optRunOptimization()"
           style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-          🚀 Esegui Ottimizzazione
+          Esegui Ottimizzazione
         </button>
         <div id="optStatus" style="margin-top:10px;font-size:11.5px;color:var(--text3);text-align:center;min-height:16px"></div>
       </div>
@@ -2156,7 +2156,7 @@ window.optRunOptimization = function() {
     if (status) { status.style.color = 'var(--red)'; status.textContent = '⚠️ Seleziona almeno 2 asset class'; }
     return;
   }
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Ottimizzazione in corso...'; btn.style.opacity = '0.7'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Ottimizzazione in corso...'; btn.style.opacity = '0.7'; }
   if (status) { status.style.color = 'var(--text3)'; status.textContent = 'Esecuzione 8.000 simulazioni + local search...'; }
 
   // Esegue in setTimeout per permettere repaint UI
@@ -2169,18 +2169,18 @@ window.optRunOptimization = function() {
 
       if (result.error) {
         if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ ' + result.error; }
-        if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
         return;
       }
 
       _optState.result = result;
       if (status) { status.style.color = 'var(--green)'; status.textContent = `✓ Completato in ${dt}s`; }
-      if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
       _renderOptResult();
     } catch (e) {
       console.error('Optimizer error:', e);
       if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ Errore: ' + e.message; }
-      if (btn) { btn.disabled = false; btn.textContent = '🚀 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
     }
   }, 50);
 };

@@ -4,14 +4,14 @@
 async function downloadGuidePDF() {
   const btn = document.getElementById('guideDlBtn');
   const orig = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = '⏳ Generazione...';
+  btn.disabled = true; btn.innerHTML = 'Generazione...';
   await new Promise(r => setTimeout(r, 60));
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210, H = 297, ML = 16, MR = 16, CW = W - ML - MR;
     let y = 0, pN = 1;
-    const BLU = [26,115,232], PUR = [147,52,230], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [251,188,4];
+    const BLU = [139,0,0], PUR = [139,0,0], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [139,0,0];
 
     const hdrBar = () => {
       doc.setFillColor(...LBG); doc.rect(0,0,W,12,'F');
@@ -52,12 +52,12 @@ async function downloadGuidePDF() {
     };
 
     // COVER
-    doc.setFillColor(...PUR); doc.rect(0,0,W,55,'F');
+    doc.setFillColor(139,0,0); doc.rect(0,0,W,55,'F');
     doc.setFontSize(24); doc.setFont('helvetica','bold'); doc.setTextColor(255,255,255);
     doc.text('Guida all\'utilizzo', ML, 24);
     doc.setFontSize(13); doc.setFont('helvetica','normal');
     doc.text(pdfSafe('Suite Patrimoniale Pro v3 — Manuale operativo completo'), ML, 33);
-    doc.setFontSize(9); doc.setTextColor(230,215,255);
+    doc.setFontSize(9); doc.setTextColor(255,200,200);
     doc.text(`Documento generato il ${new Date().toLocaleDateString('it-IT',{day:'2-digit',month:'long',year:'numeric'})}`, ML, 42);
     y = 65;
 
