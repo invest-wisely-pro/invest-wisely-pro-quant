@@ -79,7 +79,7 @@ const BT_PERIODS = {
   1984: { label: '1984 \u2192 Black Monday (crisi 1987)', color: '#9334e6', bg: 'rgba(147,52,230,.08)', context: 'Inizio nel 1984: 3 anni di accumulo, poi il Black Monday del 19 ottobre 1987 (azioni \u221222% in UN giorno) colpisce il capitale formato. Il mercato recupero entro 2 anni \u2014 crash violento ma breve.', crisis: [1987] },
   1995: { label: '1995 \u2192 Bolla dot-com (crisi 2000-02)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nella fase espansiva pre-bolla internet. Rendimenti eccezionali 1995-1999 accumulano un grande capitale, poi il crash 2000-2002 lo falcidia. Stress test della euforia seguita dal crollo.', crisis: [2000, 2001, 2002] },
   1997: { label: '1997 \u2192 Burst dot-com (crisi 2000-02)', color: '#d93025', bg: 'rgba(217,48,37,.08)', context: 'Inizio nel 1997: 3 anni di forte accumulo nella bolla, poi il crollo internet. Azioni \u221249% in 3 anni (2000-2002), NASDAQ \u221278%. Chi aveva accumulato vide il capitale dimezzarsi \u2014 poi recupero fino al 2007.', crisis: [2000, 2001, 2002] },
-  2004: { label: '2004 \u2192 Crisi finanziaria (crisi 2008-09)', color: '#9e1b32', bg: 'rgba(158,27,50,.08)', context: 'Inizio nel 2004: bull market 2004-2007 accumula capitale, poi il peggior crash dal 1929. Lo stress test vero: il capitale formato incontra la crisi finanziaria globale nel mezzo del piano.', crisis: [2008, 2009] },
+  2004: { label: '2004 \u2192 Crisi finanziaria (crisi 2008-09)', color: '#96151d', bg: 'rgba(150,21,29,.08)', context: 'Inizio nel 2004: bull market 2004-2007 accumula capitale, poi il peggior crash dal 1929. Lo stress test vero: il capitale formato incontra la crisi finanziaria globale nel mezzo del piano.', crisis: [2008, 2009] },
   2005: { label: '2005 \u2192 Lehman (crisi 2008-09)', color: '#d93025', bg: 'rgba(217,48,37,.1)', context: 'Inizio nel 2005: 3 anni di accumulo prima del crollo. S&P500 \u221257%, MSCI World \u221254% nel 2008-09, le correlazioni azioni-obbligazioni implosero. Il capitale gia formato subisce il pieno impatto \u2014 poi triplica in 10 anni.', crisis: [2008, 2009] },
   2009: { label: '2009 \u2192 Crisi Euro sovrana (crisi 2011-12)', color: '#e37400', bg: 'rgba(227,116,0,.08)', context: 'Inizio nel 2009: si accumula nella ripresa, poi la crisi dei debiti sovrani europei (2011-2012). Spread BTP-Bund a 500bp. Draghi (whatever it takes, luglio 2012) segna il bottom. Poi bull market fino al 2022.', crisis: [2011, 2012] },
   2017: { label: '2017 \u2192 COVID-19 (crisi 2020)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nel 2017: 3 anni di accumulo, poi il crollo COVID-19 (febbraio-marzo 2020): azioni \u221234% in 33 giorni sul capitale formato. Recovery completata in meno di 6 mesi \u2014 il crash piu veloce della storia.', crisis: [2020] },
@@ -727,13 +727,7 @@ function buildCorrInfo(period, portKey, result) {
   const corrStatic = CORR_PAIR('eq', 'ob_glob');
   const corrStress = CORR_PAIR_STRESS('eq', 'ob_glob');
   
-  return `<strong>Correlazioni Dinamiche — ${portLabel}</strong><br>
-    In periodi di crisi (${crisisStr}), le correlazioni storicamente osservate <strong>divergono significativamente</strong> da quelle medie.<br>
-    <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:11.5px">
-      <span>Az.↔Ob.: regime normale <strong style="color:var(--green)">${corrStatic.toFixed(2)}</strong> → crisi <strong style="color:var(--red)">${corrStress.toFixed(2)}</strong></span>
-      <span>Az.↔Oro: normale <strong style="color:var(--green)">${CORR_PAIR('eq','real').toFixed(2)}</strong> → crisi <strong style="color:var(--orange)">${CORR_PAIR_STRESS('eq','real').toFixed(2)}</strong></span>
-    </div>
-    <div style="margin-top:6px;font-size:11.5px;color:var(--text3)">⚠️ Nel 2022 azioni e obbligazioni hanno correlato positivamente (+0.6) per la prima volta dagli anni '70: il 60/40 non ha diversificato come atteso. Nell'agosto 2024 la correlazione è tornata negativa (flight-to-quality). Le correlazioni statiche usate nei modelli parametrici sottostimano il rischio in mercati stressati.</div>`;
+  return `<strong>Correlazioni Dinamiche — ${portLabel}</strong><br>In periodi di crisi (${crisisStr}), le correlazioni storicamente osservate <strong>divergono significativamente</strong> da quelle medie.<br> <div style="margin-top:8px;display:flex;gap:16px;flex-wrap:wrap;font-family:'DM Mono',monospace;font-size:11.5px"> <span>Az.↔Ob.: regime normale <strong style="color:var(--green)">${corrStatic.toFixed(2)}</strong> → crisi <strong style="color:var(--red)">${corrStress.toFixed(2)}</strong></span> <span>Az.↔Oro: normale <strong style="color:var(--green)">${CORR_PAIR('eq','real').toFixed(2)}</strong> → crisi <strong style="color:var(--orange)">${CORR_PAIR_STRESS('eq','real').toFixed(2)}</strong></span> </div> <div style="margin-top:6px;font-size:11.5px;color:var(--text3)">Nel 2022 azioni e obbligazioni hanno correlato positivamente (+0.6) per la prima volta dagli anni '70: il 60/40 non ha diversificato come atteso. Nell'agosto 2024 la correlazione è tornata negativa (flight-to-quality). Le correlazioni statiche usate nei modelli parametrici sottostimano il rischio in mercati stressati.</div>`;
 }
 
 // ── Sequence of Returns Risk: stessa crisi a inizio / metà / fine piano ─────
@@ -861,10 +855,7 @@ function runSequenceRiskStress() {
     // Perdita in euro = drawdown applicato al capitale esposto al crollo
     const lossEur = Math.round(s.w0 * s.r.maxDD);
     const row = (label, val, color) => `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">${label}</span><strong style="font-family:'DM Mono',monospace${color?`;color:${color}`:''}">${val}</strong></div>`;
-    return `<div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)">
-      <div style="font-size:13px;font-weight:700;margin-bottom:4px">${s.label}</div>
-      <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${s.desc}</div>
-      ${row('Capitale al crollo', fmt(s.w0), 'var(--blue)')}
+    return `<div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"> <div style="font-size:13px;font-weight:700;margin-bottom:4px">${s.label}</div> <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${s.desc}</div> ${row('Capitale al crollo', fmt(s.w0), 'var(--blue)')}
       ${row('Max Drawdown', (s.r.maxDD*100).toFixed(1)+'%', ddColor)}
       ${row('Perdita al bottom', fmt(lossEur), 'var(--red)')}
       ${row('Valore finale', fmt(s.r.finalValue))}
@@ -981,17 +972,7 @@ function runAllBacktests() {
   summaryRows.sort((a, b) => b.twr - a.twr);
   
   document.getElementById('btCompareStats').innerHTML = `
-    <div class="tbl-outer"><table>
-      <thead><tr>
-        <th style="text-align:left">Anno inizio</th>
-        <th>Evento</th>
-        <th title="CAPE Shiller all'inizio del periodo — prevede i rendimenti a 10 anni (R²≈0.38-0.45)">CAPE inizio</th>
-        <th title="Rendimento asset (TWR) con aggiustamento CAPE — indipendente dal timing dei versamenti">TWR adj.</th>
-        <th title="Rendimento asset (TWR) senza aggiustamento CAPE — solo dati storici puri">TWR storico</th>
-        <th>Valore finale</th>
-        <th>Max Drawdown</th>
-      </tr></thead>
-      <tbody>${summaryRows.map(r => {
+    <div class="tbl-outer"><table> <thead><tr> <th style="text-align:left">Anno inizio</th> <th>Evento</th> <th title="CAPE Shiller all'inizio del periodo — prevede i rendimenti a 10 anni (R²≈0.38-0.45)">CAPE inizio</th> <th title="Rendimento asset (TWR) con aggiustamento CAPE — indipendente dal timing dei versamenti">TWR adj.</th> <th title="Rendimento asset (TWR) senza aggiustamento CAPE — solo dati storici puri">TWR storico</th> <th>Valore finale</th> <th>Max Drawdown</th> </tr></thead> <tbody>${summaryRows.map(r => {
         const cl = r.capeStart ? capeBtLabel(r.capeStart) : null;
         const cpPct = r.capeStart ? capeHistPercentile(r.capeStart) : null;
         const capeCell = r.capeStart
@@ -1003,20 +984,9 @@ function runAllBacktests() {
         const cagrNoCapeCell = r.cagrNoCape != null
           ? `<span style="font-family:'DM Mono',monospace;color:var(--text3)">${(r.cagrNoCape >= 0 ? '+' : '') + (r.cagrNoCape*100).toFixed(2)}%/a</span>`
           : `<span style="font-family:'DM Mono',monospace;color:var(--text3)">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a</span>`;
-        return `<tr>
-          <td style="text-align:left;font-weight:700;color:${r.color};font-family:'DM Mono',monospace">${r.year}</td>
-          <td style="font-size:11.5px;color:var(--text2)">${BT_PERIODS[r.year].label.split('—')[1]?.trim() || ''}</td>
-          <td style="text-align:center">${capeCell}</td>
-          <td class="${r.twr >= 0.05 ? 'pos' : r.twr >= 0 ? 'neutral' : 'neg'}" style="font-family:'DM Mono',monospace;font-weight:600">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a${cagrDelta}</td>
-          <td>${cagrNoCapeCell}</td>
-          <td style="font-weight:600">${fmt(r.finalVal)}</td>
-          <td class="${r.maxDD < -0.3 ? 'neg' : r.maxDD < -0.15 ? 'neutral' : 'pos'}" style="font-family:'DM Mono',monospace">${(r.maxDD*100).toFixed(1)}%</td>
-        </tr>`;
+        return `<tr> <td style="text-align:left;font-weight:700;color:${r.color};font-family:'DM Mono',monospace">${r.year}</td> <td style="font-size:11.5px;color:var(--text2)">${BT_PERIODS[r.year].label.split('—')[1]?.trim() || ''}</td> <td style="text-align:center">${capeCell}</td> <td class="${r.twr >= 0.05 ? 'pos' : r.twr >= 0 ? 'neutral' : 'neg'}" style="font-family:'DM Mono',monospace;font-weight:600">${(r.twr >= 0 ? '+' : '') + (r.twr*100).toFixed(2)}%/a${cagrDelta}</td> <td>${cagrNoCapeCell}</td> <td style="font-weight:600">${fmt(r.finalVal)}</td> <td class="${r.maxDD < -0.3 ? 'neg' : r.maxDD < -0.15 ? 'neutral' : 'pos'}" style="font-family:'DM Mono',monospace">${(r.maxDD*100).toFixed(1)}%</td> </tr>`;
       }).join('')}
-      </tbody>
-    </table></div>
-    <div style="font-size:11.5px;color:var(--text3);margin-top:10px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7">
-      <strong>📋 Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
+      </tbody> </table></div> <div style="font-size:11.5px;color:var(--text3);margin-top:10px;padding:10px 14px;background:var(--bg2);border-radius:8px;line-height:1.7"> <strong>Metodologia CAPE-adjusted:</strong> il rendimento azionario mensile viene scalato dal fattore CAPE dell'anno di partenza (regressione Shiller: R²≈0.38-0.45 su 10 anni). Mercati cari (CAPE alto → fattore &lt;1) producono rendimenti futuri inferiori alla media storica; mercati economici (CAPE basso → fattore &gt;1) producono rendimenti superiori. L'aggiustamento si attenua linearmente su 10 anni (mean-reversion). I crash storici e la struttura temporale rimangono invariati.
     </div>`;
   
   // Normalize all datasets to same start to compare trajectories

@@ -4,14 +4,14 @@
 async function downloadGuidePDF() {
   const btn = document.getElementById('guideDlBtn');
   const orig = btn.innerHTML;
-  btn.disabled = true; btn.innerHTML = '⏳ Generazione...';
+  btn.disabled = true; btn.innerHTML = 'Generazione...';
   await new Promise(r => setTimeout(r, 60));
   try {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
     const W = 210, H = 297, ML = 16, MR = 16, CW = W - ML - MR;
     let y = 0, pN = 1;
-    const BLU = [158,27,50], PUR = [147,52,230], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [251,188,4];
+    const BLU = [150,21,29], PUR = [147,52,230], GRAY = [95,99,104], DARK = [32,33,36], LBG = [248,249,250], AMBER = [251,188,4];
 
     const hdrBar = () => {
       doc.setFillColor(...LBG); doc.rect(0,0,W,12,'F');
@@ -398,11 +398,11 @@ async function downloadGuidePDF() {
     const total = doc.getNumberOfPages();
     for (let i=1; i<=total; i++){ doc.setPage(i); /* header already drawn via hdrBar on new pages; first page has cover instead */ }
     doc.save('guida-utilizzo-suite-patrimoniale.pdf');
-    btn.innerHTML = '✅ Scaricato!';
+    btn.innerHTML = 'Scaricato!';
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 2500);
   } catch (e) {
     console.error('Guide PDF error:', e);
-    btn.innerHTML = '❌ Errore generazione';
+    btn.innerHTML = 'Errore generazione';
     setTimeout(()=>{ btn.innerHTML = orig; btn.disabled = false; }, 3000);
   }
 }

@@ -12,12 +12,12 @@ const TIER_PRO_TABS = new Set([
 ]);
 
 const PRO_TAB_LABELS = {
-  advmc:     { icon: '🧮', name: 'MC Avanzato',        desc: 'Monte Carlo con modelli GARCH, t-Student e Regime-Switching per code di rischio più realistiche e distribuzioni fat-tail.' },
-  fiscale:   { icon: '🏛️',  name: 'Fiscalità IT',       desc: 'Analisi completa della tassazione italiana: capital gain, switch di portafoglio, confronto regimi e proiezione netta fiscale.' },
-  pensione:  { icon: '👴', name: 'Piano Pensione',      desc: 'Simulazione integrata pensione pubblica + privata con fase di accumulo e decumulo previdenziale personalizzato.' },
-  valuation: { icon: '⚠️',  name: 'Stress Valutazioni', desc: 'Analisi CAPE/Bogle, stress test macro e scenario di mean-reversion per valutare la sopravvalutazione di mercato.' },
-  goal:      { icon: '🏆', name: 'Obiettivo Inverso',  desc: 'Dato un obiettivo patrimoniale, calcola PAC necessario, orizzonte minimo e sensitività ai parametri.' },
-  quant:     { icon: '📏', name: 'Quant Analytics',    desc: 'Ottimizzazione Markowitz, VaR/CVaR multi-metodo, Factor Decomposition Fama-French e analisi rolling.' },
+  advmc:     { icon: '', name: 'MC Avanzato',        desc: 'Monte Carlo con modelli GARCH, t-Student e Regime-Switching per code di rischio più realistiche e distribuzioni fat-tail.' },
+  fiscale:   { icon: '',  name: 'Fiscalità IT',       desc: 'Analisi completa della tassazione italiana: capital gain, switch di portafoglio, confronto regimi e proiezione netta fiscale.' },
+  pensione:  { icon: '', name: 'Piano Pensione',      desc: 'Simulazione integrata pensione pubblica + privata con fase di accumulo e decumulo previdenziale personalizzato.' },
+  valuation: { icon: '',  name: 'Stress Valutazioni', desc: 'Analisi CAPE/Bogle, stress test macro e scenario di mean-reversion per valutare la sopravvalutazione di mercato.' },
+  goal:      { icon: '', name: 'Obiettivo Inverso',  desc: 'Dato un obiettivo patrimoniale, calcola PAC necessario, orizzonte minimo e sensitività ai parametri.' },
+  quant:     { icon: '', name: 'Quant Analytics',    desc: 'Ottimizzazione Markowitz, VaR/CVaR multi-metodo, Factor Decomposition Fama-French e analisi rolling.' },
 };
 
 // ─── INFO HELPER TEXTS ────────────────────────────────────────────────────────
@@ -317,7 +317,7 @@ const INFO_TEXTS = {
       if (isPro) {
         badge.textContent = 'PRO SUITE';
         badge.style.color = 'var(--blue)';
-        badge.style.borderColor = 'rgba(158,27,50,.3)';
+        badge.style.borderColor = 'rgba(150,21,29,.3)';
         badge.style.background = 'var(--blue-dim)';
       } else {
         badge.textContent = 'BASE';
@@ -377,20 +377,12 @@ const INFO_TEXTS = {
     const panel = document.getElementById(`tab-${tabId}`);
     if (!panel) return;
     if (panel.querySelector('.pro-lock-overlay')) return; // già presente
-    const info = PRO_TAB_LABELS[tabId] || { icon: '🔒', name: tabId, desc: '' };
+    const info = PRO_TAB_LABELS[tabId] || { icon: '', name: tabId, desc: '' };
     const overlay = document.createElement('div');
     overlay.className = 'pro-lock-overlay';
     overlay.innerHTML = `
-      <div class="pro-lock-box">
-        <div class="pro-lock-icon">${info.icon}</div>
-        <div class="pro-lock-title">${info.name}</div>
-        <div class="pro-lock-desc">${info.desc}</div>
-        <div class="pro-lock-badge">🔒 Funzione Pro</div>
-        <button class="pro-lock-cta" onclick="window.showTierChooser()">
-          Sblocca versione completa →
-        </button>
-      </div>
-    `;
+      <div class="pro-lock-box"> <div class="pro-lock-icon">${info.icon}</div> <div class="pro-lock-title">${info.name}</div> <div class="pro-lock-desc">${info.desc}</div> <div class="pro-lock-badge">Funzione Pro</div> <button class="pro-lock-cta" onclick="window.showTierChooser()">Sblocca versione completa →
+        </button> </div> `;
     panel.appendChild(overlay);
   }
 
@@ -401,52 +393,7 @@ const INFO_TEXTS = {
     modal.id = 'tier-chooser-modal';
     modal.className = 'tier-modal-backdrop';
     modal.innerHTML = `
-      <div class="tier-modal">
-        <div class="tier-modal-header">
-          <div class="tier-modal-title">Scegli la tua modalità</div>
-          <div class="tier-modal-sub">Puoi cambiare in qualsiasi momento dal pulsante nell'header</div>
-        </div>
-        <div class="tier-modal-cards">
-          <button class="tier-card tier-card-base" onclick="window.setTier('base'); window.hideTierChooser()">
-            <div class="tier-card-icon">📋</div>
-            <div class="tier-card-name">Versione Base</div>
-            <div class="tier-card-tagline">Essenziale e intuitiva</div>
-            <ul class="tier-card-list">
-              <li>✓ Simulatore patrimoniale completo</li>
-              <li>✓ Scenari economici (6 regimi macro)</li>
-              <li>✓ Confronto A/B portafogli</li>
-              <li>✓ Probabilità di successo (Monte Carlo base)</li>
-              <li>✓ Simulazione decumulo</li>
-              <li>✓ Backtesting storico 1970-2024</li>
-              <li class="tier-list-locked">🔒 MC Avanzato (GARCH, t-Student)</li>
-              <li class="tier-list-locked">🔒 Fiscalità IT completa</li>
-              <li class="tier-list-locked">🔒 Piano Pensione integrativo</li>
-              <li class="tier-list-locked">🔒 Stress Valutazioni (CAPE)</li>
-              <li class="tier-list-locked">🔒 Obiettivo Inverso</li>
-              <li class="tier-list-locked">🔒 Quant Analytics (Markowitz, VaR)</li>
-            </ul>
-            <span class="tier-card-cta">Inizia in Base →</span>
-          </button>
-          <button class="tier-card tier-card-pro" onclick="window.setTier('pro'); window.hideTierChooser()">
-            <div class="tier-card-badge-pro">✦ SUITE COMPLETA</div>
-            <div class="tier-card-icon">📈</div>
-            <div class="tier-card-name">Versione Pro</div>
-            <div class="tier-card-tagline">Strumenti quantitativi avanzati</div>
-            <ul class="tier-card-list">
-              <li>✓ Tutto della versione Base</li>
-              <li>✓ MC Avanzato (GARCH, t-Student, Regime-Switching)</li>
-              <li>✓ Fiscalità IT (regimi, switch, zainetto)</li>
-              <li>✓ Piano Pensione integrativo completo</li>
-              <li>✓ Stress Valutazioni CAPE/Bogle</li>
-              <li>✓ Obiettivo Inverso con sensitività</li>
-              <li>✓ Quant Analytics (Markowitz, VaR, Factor, Rolling)</li>
-            </ul>
-            <span class="tier-card-cta">Accedi a tutte le funzioni →</span>
-          </button>
-        </div>
-        <button class="tier-modal-close" onclick="window.hideTierChooser()" title="Chiudi">✕</button>
-      </div>
-    `;
+      <div class="tier-modal"> <div class="tier-modal-header"> <div class="tier-modal-title">Scegli la tua modalità</div> <div class="tier-modal-sub">Puoi cambiare in qualsiasi momento dal pulsante nell'header</div> </div> <div class="tier-modal-cards"> <button class="tier-card tier-card-base" onclick="window.setTier('base'); window.hideTierChooser()"> <div class="tier-card-icon"></div> <div class="tier-card-name">Versione Base</div> <div class="tier-card-tagline">Essenziale e intuitiva</div> <ul class="tier-card-list"> <li>✓ Simulatore patrimoniale completo</li> <li>✓ Scenari economici (6 regimi macro)</li> <li>✓ Confronto A/B portafogli</li> <li>✓ Probabilità di successo (Monte Carlo base)</li> <li>✓ Simulazione decumulo</li> <li>✓ Backtesting storico 1970-2024</li> <li class="tier-list-locked">MC Avanzato (GARCH, t-Student)</li> <li class="tier-list-locked">Fiscalità IT completa</li> <li class="tier-list-locked">Piano Pensione integrativo</li> <li class="tier-list-locked">Stress Valutazioni (CAPE)</li> <li class="tier-list-locked">Obiettivo Inverso</li> <li class="tier-list-locked">Quant Analytics (Markowitz, VaR)</li> </ul> <span class="tier-card-cta">Inizia in Base →</span> </button> <button class="tier-card tier-card-pro" onclick="window.setTier('pro'); window.hideTierChooser()"> <div class="tier-card-badge-pro">SUITE COMPLETA</div> <div class="tier-card-icon"></div> <div class="tier-card-name">Versione Pro</div> <div class="tier-card-tagline">Strumenti quantitativi avanzati</div> <ul class="tier-card-list"> <li>✓ Tutto della versione Base</li> <li>✓ MC Avanzato (GARCH, t-Student, Regime-Switching)</li> <li>✓ Fiscalità IT (regimi, switch, zainetto)</li> <li>✓ Piano Pensione integrativo completo</li> <li>✓ Stress Valutazioni CAPE/Bogle</li> <li>✓ Obiettivo Inverso con sensitività</li> <li>✓ Quant Analytics (Markowitz, VaR, Factor, Rolling)</li> </ul> <span class="tier-card-cta">Accedi a tutte le funzioni →</span> </button> </div> <button class="tier-modal-close" onclick="window.hideTierChooser()" title="Chiudi">✕</button> </div> `;
     document.body.appendChild(modal);
     // Chiudi cliccando backdrop
     modal.addEventListener('click', (e) => {
@@ -486,11 +433,11 @@ const INFO_TEXTS = {
       }
     }
     if (tier === 'pro') {
-      btn.innerHTML = '🔋 Pro — cambia modalità';
+      btn.innerHTML = 'Pro — cambia modalità';
       btn.classList.remove('btn-base');
       btn.classList.add('btn-pro');
     } else {
-      btn.innerHTML = '📋 Base — sblocca Pro';
+      btn.innerHTML = 'Base — sblocca Pro';
       btn.classList.remove('btn-pro');
       btn.classList.add('btn-base');
     }
@@ -578,8 +525,7 @@ const INFO_TEXTS = {
     btn.innerHTML = 'ℹ';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      e.preventDefault(); // evita il toggle dei <details> quando il label è un <summary>
-      toggleInfoPopover(btn, info);
+      e.preventDefault(); // evita il toggle dei <details> quando il label è un <summary> toggleInfoPopover(btn, info);
     });
     // Inserisci prima del ::after del sec-label (prima dell'eventuale badge a destra)
     label.insertBefore(btn, label.children[1] || null);
@@ -604,10 +550,7 @@ const INFO_TEXTS = {
       _popover = document.createElement('div');
       _popover.className = 'info-popover';
       _popover.innerHTML = `
-        <button class="info-popover-close" aria-label="Chiudi">✕</button>
-        <div class="info-popover-title"></div>
-        <div class="info-popover-text"></div>
-      `;
+        <button class="info-popover-close" aria-label="Chiudi">✕</button> <div class="info-popover-title"></div> <div class="info-popover-text"></div> `;
       document.body.appendChild(_popover);
       // Backdrop (visibile solo su mobile): tap per chiudere, sempre affidabile su touch
       _backdrop = document.createElement('div');
@@ -693,7 +636,7 @@ const INFO_TEXTS = {
   cursor: pointer;
 }
 .tab-btn-locked::after {
-  content: ' 🔒';
+  content: '';
   font-size: 10px;
 }
 
@@ -794,11 +737,11 @@ const INFO_TEXTS = {
 }
 .tier-toggle-btn.btn-pro {
   color: var(--blue);
-  border-color: rgba(158,27,50,.3);
+  border-color: rgba(150,21,29,.3);
   background: var(--blue-dim);
 }
 .tier-toggle-btn.btn-pro:hover {
-  background: rgba(158,27,50,.18);
+  background: rgba(150,21,29,.18);
 }
 
 /* ── Tier Chooser Modal ───────────────────────────────────────── */
@@ -875,12 +818,12 @@ const INFO_TEXTS = {
   box-shadow: 0 8px 24px rgba(0,137,123,.14);
 }
 .tier-card-pro {
-  border-color: rgba(158,27,50,.35);
-  background: linear-gradient(135deg, #fff 60%, rgba(158,27,50,.04));
+  border-color: rgba(150,21,29,.35);
+  background: linear-gradient(135deg, #fff 60%, rgba(150,21,29,.04));
 }
 .tier-card-pro:hover {
   border-color: var(--blue);
-  box-shadow: 0 8px 24px rgba(158,27,50,.18);
+  box-shadow: 0 8px 24px rgba(150,21,29,.18);
 }
 .tier-card-badge-pro {
   position: absolute;
@@ -891,7 +834,7 @@ const INFO_TEXTS = {
   font-weight: 700;
   color: var(--blue);
   background: var(--blue-dim);
-  border: 1px solid rgba(158,27,50,.25);
+  border: 1px solid rgba(150,21,29,.25);
   border-radius: 4px;
   padding: 2px 7px;
   letter-spacing: .07em;
@@ -966,7 +909,7 @@ const INFO_TEXTS = {
 }
 .home-tier-banner {
   background: linear-gradient(135deg, var(--blue-dim) 0%, var(--purple-dim) 100%);
-  border: 1px solid rgba(158,27,50,.2);
+  border: 1px solid rgba(150,21,29,.2);
   border-radius: 14px;
   padding: 22px 24px;
   display: flex;
@@ -1047,7 +990,7 @@ const INFO_TEXTS = {
 .info-helper-btn:hover {
   background: var(--blue-dim);
   color: var(--blue);
-  border-color: rgba(158,27,50,.3);
+  border-color: rgba(150,21,29,.3);
 }
 
 /* ── Info Popover ─────────────────────────────────────────────── */

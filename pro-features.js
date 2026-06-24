@@ -29,28 +29,20 @@
         padding:16px 24px; display:flex; align-items:center; gap:16px;
         flex-wrap:wrap; font-family:'DM Sans',sans-serif; font-size:13px;
         color:#202124;
-      ">
-        <div style="flex:1;min-width:240px;line-height:1.6">
-          🍪 <strong>Questo sito usa localStorage</strong> per salvare le impostazioni del simulatore
+      "> <div style="flex:1;min-width:240px;line-height:1.6"> <strong>Questo sito usa localStorage</strong> per salvare le impostazioni del simulatore
           <strong>solo sul tuo dispositivo</strong> — nessun dato viene inviato a server esterni,
           nessun tracciamento, nessuna profilazione.
           <a href="#" onclick="showView('cookie');document.getElementById('cookieConsentBanner').remove();return false;"
-             style="color:#9e1b32;margin-left:4px">Leggi la Cookie Policy</a>
-        </div>
-        <div style="display:flex;gap:10px;flex-shrink:0">
-          <button id="cookieAcceptBtn" style="
+             style="color:#96151d;margin-left:4px">Leggi la Cookie Policy</a> </div> <div style="display:flex;gap:10px;flex-shrink:0"> <button id="cookieAcceptBtn" style="
             padding:9px 20px; border-radius:8px; border:none;
-            background:#9e1b32; color:#fff; font-size:13px; font-weight:600;
+            background:#96151d; color:#fff; font-size:13px; font-weight:600;
             cursor:pointer; font-family:'DM Sans',sans-serif;
-          ">Accetta</button>
-          <button id="cookieDeclineBtn" style="
+          ">Accetta</button> <button id="cookieDeclineBtn" style="
             padding:9px 20px; border-radius:8px;
             border:1px solid #dadce0; background:#fff; color:#5f6368;
             font-size:13px; font-weight:500; cursor:pointer;
             font-family:'DM Sans',sans-serif;
-          ">Solo tecnici</button>
-        </div>
-      </div>`;
+          ">Solo tecnici</button> </div> </div>`;
 
     document.body.appendChild(banner);
 
@@ -116,43 +108,19 @@
         background:#fff; border-radius:16px; max-width:520px; width:100%;
         padding:32px 28px; box-shadow:0 8px 40px rgba(0,0,0,.25);
         max-height:90vh; overflow-y:auto;
-      ">
-        <div style="font-size:28px; text-align:center; margin-bottom:12px">⚠️</div>
-        <h2 style="margin:0 0 16px; font-size:18px; font-weight:700; color:#202124; text-align:center">
-          Avviso legale importante
-        </h2>
-        <div style="font-size:13.5px; color:#3c4043; line-height:1.75; margin-bottom:20px">
-          <p style="margin:0 0 12px">
-            <strong>Suite Patrimoniale Pro</strong> è uno strumento
+      "> <div style="font-size:28px; text-align:center; margin-bottom:12px"></div> <h2 style="margin:0 0 16px; font-size:18px; font-weight:700; color:#202124; text-align:center">Avviso legale importante
+        </h2> <div style="font-size:13.5px; color:#3c4043; line-height:1.75; margin-bottom:20px"> <p style="margin:0 0 12px"> <strong>Suite Patrimoniale Pro</strong> è uno strumento
             <strong>esclusivamente informativo ed educativo</strong>.
-          </p>
-          <p style="margin:0 0 12px">
-            Le proiezioni, le simulazioni e i calcoli mostrati:
-          </p>
-          <ul style="margin:0 0 12px; padding-left:20px">
-            <li style="margin-bottom:6px"><strong>non costituiscono consulenza finanziaria</strong>, fiscale, legale o di investimento</li>
-            <li style="margin-bottom:6px"><strong>non rappresentano una garanzia</strong> di rendimenti futuri</li>
-            <li style="margin-bottom:6px">si basano su dati storici e modelli statistici soggetti a <strong>incertezza significativa</strong></li>
-            <li style="margin-bottom:6px">potrebbero non riflettere la tua situazione personale e fiscale</li>
-          </ul>
-          <p style="margin:0 0 12px">
-            I rendimenti passati non sono indicativi di quelli futuri.
+          </p> <p style="margin:0 0 12px">Le proiezioni, le simulazioni e i calcoli mostrati:
+          </p> <ul style="margin:0 0 12px; padding-left:20px"> <li style="margin-bottom:6px"><strong>non costituiscono consulenza finanziaria</strong>, fiscale, legale o di investimento</li> <li style="margin-bottom:6px"><strong>non rappresentano una garanzia</strong> di rendimenti futuri</li> <li style="margin-bottom:6px">si basano su dati storici e modelli statistici soggetti a <strong>incertezza significativa</strong></li> <li style="margin-bottom:6px">potrebbero non riflettere la tua situazione personale e fiscale</li> </ul> <p style="margin:0 0 12px">I rendimenti passati non sono indicativi di quelli futuri.
             <strong>Prima di qualsiasi decisione finanziaria rilevante, consulta un consulente
-            finanziario abilitato e iscritto all'albo OCF.</strong>
-          </p>
-          <p style="margin:0; font-size:12px; color:#5f6368">
-            Continuando a usare questo strumento dichiari di aver letto e compreso questo avviso.
-          </p>
-        </div>
-        <button id="disclaimerAcceptBtn" style="
-          width:100%; padding:13px; background:#9e1b32; color:#fff;
+            finanziario abilitato e iscritto all'albo OCF.</strong> </p> <p style="margin:0; font-size:12px; color:#5f6368">Continuando a usare questo strumento dichiari di aver letto e compreso questo avviso.
+          </p> </div> <button id="disclaimerAcceptBtn" style="
+          width:100%; padding:13px; background:#96151d; color:#fff;
           border:none; border-radius:8px; font-size:14px; font-weight:700;
           cursor:pointer; font-family:'DM Sans',sans-serif; letter-spacing:.01em;
-        ">✓ Ho capito — continua</button>
-        <div style="margin-top:10px; text-align:center; font-size:11.5px; color:#5f6368">
-          Questo avviso viene mostrato una sola volta.
-        </div>
-      </div>`;
+        ">✓ Ho capito — continua</button> <div style="margin-top:10px; text-align:center; font-size:11.5px; color:#5f6368">Questo avviso viene mostrato una sola volta.
+        </div> </div>`;
 
     document.body.appendChild(overlay);
 
@@ -215,7 +183,7 @@ function renderContextualWarnings() {
     if (state.pac > 0 && swr4pct < state.pac * 12 * 0.5 && projectedNormal > 0) {
       warnings.push({
         type: 'orange',
-        icon: '⚠️',
+        icon: '',
         title: 'SWR potenzialmente insufficiente',
         msg: `Con il montante base atteso (${_fmtW(projectedNormal)}), la rendita SWR 4% netta sarebbe circa ${_fmtW(swr4pct)}/anno — inferiore al tuo PAC attuale di ${_fmtW(state.pac * 12)}/anno. Considera di aumentare il PAC, l'orizzonte o ridurre le aspettative di prelievo.`,
       });
@@ -227,7 +195,7 @@ function renderContextualWarnings() {
   if (eqW >= 0.8 && state.years <= 5) {
     warnings.push({
       type: 'red',
-      icon: '🔴',
+      icon: '',
       title: 'Portafoglio aggressivo su orizzonte breve',
       msg: `Un portafoglio con ${Math.round(eqW * 100)}% azionario su soli ${state.years} anni espone a rischio di perdita in caso di mercato avverso alla scadenza. Per orizzonti ≤5 anni si consiglia generalmente un'allocazione difensiva (≤40% azioni).`,
     });
@@ -238,7 +206,7 @@ function renderContextualWarnings() {
     const terDragApprox = normalNet ? (Math.pow(1 + normalNet + state.ter / 100, state.years) - Math.pow(1 + normalNet, state.years)) : null;
     warnings.push({
       type: 'orange',
-      icon: '💸',
+      icon: '',
       title: 'TER elevato — costo composto significativo',
       msg: `Un TER di ${state.ter.toFixed(2)}% è alto rispetto agli ETF a basso costo (0.07–0.25%). Su ${state.years} anni il costo composto erode una quota rilevante del montante. Considera ETF equivalenti con TER inferiore.`,
     });
@@ -248,7 +216,7 @@ function renderContextualWarnings() {
   if (state.pac === 0 && state.w < 5000 && state.years >= 10) {
     warnings.push({
       type: 'blue',
-      icon: 'ℹ️',
+      icon: '',
       title: 'Nessun versamento impostato',
       msg: `Patrimonio iniziale e PAC sono entrambi molto bassi. Le proiezioni mostrano solo la crescita di €${state.w.toLocaleString('it-IT')} senza apporti. Imposta un PAC mensile per vedere l'impatto della capitalizzazione nel tempo.`,
     });
@@ -261,7 +229,7 @@ function renderContextualWarnings() {
     if (realNet < 0 && p) {
       warnings.push({
         type: 'orange',
-        icon: '🔻',
+        icon: '',
         title: 'Rendimento reale negativo nello scenario base',
         msg: `Con rendimento nominale netto ${(normalNet * 100).toFixed(2)}%/a e inflazione attesa ${(inflExp * 100).toFixed(1)}%/a, il rendimento reale è <strong style="color:var(--red)">${(realNet * 100).toFixed(2)}%/a</strong>. Il portafoglio perde potere d'acquisto in termini reali nello scenario base.`,
       });
@@ -272,7 +240,7 @@ function renderContextualWarnings() {
   if (state.age >= 55 && eqW >= 0.8 && state.portfolio !== 'lifecycle') {
     warnings.push({
       type: 'orange',
-      icon: '🕐',
+      icon: '',
       title: 'Allocazione aggressiva in fase avanzata',
       msg: `A ${state.age} anni, un'allocazione ${Math.round(eqW * 100)}% azionaria lascia poco tempo per recuperare da un mercato avverso. Il portafoglio Lifecycle riduce automaticamente il rischio con l'età.`,
     });
@@ -283,7 +251,7 @@ function renderContextualWarnings() {
   if (state.w > 0 && state.pac * 12 > state.w * 0.5 && state.years <= 3) {
     warnings.push({
       type: 'blue',
-      icon: 'ℹ️',
+      icon: '',
       title: 'Patrimonio iniziale basso rispetto al PAC',
       msg: `Su ${state.years} anni, i versamenti mensili (${_fmtW(state.pac * 12)}/anno) dominano la proiezione rispetto al patrimonio iniziale (${_fmtW(state.w)}). Le proiezioni sono principalmente determinate dai versamenti, non dalla crescita composta.`,
     });
@@ -298,7 +266,7 @@ function renderContextualWarnings() {
   const colorMap = {
     red:    { bg: 'var(--red-dim)',    border: 'rgba(217,48,37,.35)',    text: 'var(--red)' },
     orange: { bg: 'var(--orange-dim)', border: 'rgba(227,116,0,.35)',    text: 'var(--orange)' },
-    blue:   { bg: 'var(--blue-dim)',   border: 'rgba(158,27,50,.25)',   text: 'var(--blue)' },
+    blue:   { bg: 'var(--blue-dim)',   border: 'rgba(150,21,29,.25)',   text: 'var(--blue)' },
   };
 
   container.innerHTML = warnings.map(w => {
@@ -310,13 +278,7 @@ function renderContextualWarnings() {
         border-left:3px solid ${c.text};
         border-radius:var(--radius-sm); padding:10px 14px;
         margin-bottom:6px; font-size:12.5px; line-height:1.6;
-      ">
-        <span style="font-size:16px;flex-shrink:0;margin-top:1px">${w.icon}</span>
-        <div>
-          <strong style="color:${c.text};display:block;margin-bottom:2px">${w.title}</strong>
-          <span style="color:var(--text2)">${w.msg}</span>
-        </div>
-      </div>`;
+      "> <span style="font-size:16px;flex-shrink:0;margin-top:1px">${w.icon}</span> <div> <strong style="color:${c.text};display:block;margin-bottom:2px">${w.title}</strong> <span style="color:var(--text2)">${w.msg}</span> </div> </div>`;
   }).join('');
 }
 
@@ -516,27 +478,10 @@ function renderGoalTab() {
   };
 
   out.innerHTML = `
-    <div style="margin-bottom:16px">
-      <div class="sec-label">${modeDescriptions[result.mode]}</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:-8px">
-        Portafoglio: <strong>${portLabel}</strong> · TER: <strong>${goalState.ter.toFixed(2)}%</strong>
-        · Capitale iniziale: <strong>${fmt(goalState.w0)}</strong>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px">
-      ${cards.map(c => `
-        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center">
-          <div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${c.label}</div>
-          <div style="font-size:24px;font-weight:700;color:${c.color};font-family:'DM Mono',monospace;margin-bottom:4px">${c.val}</div>
-          <div style="font-size:11.5px;color:var(--text3)">${c.sub}</div>
-        </div>
-      `).join('')}
-    </div>
-
-    ${result.mode === 'pac' ? `
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>💡 Come leggere il risultato:</strong> Il PAC nello scenario base (${fmt(result.normal)}/mese)
+    <div style="margin-bottom:16px"> <div class="sec-label">${modeDescriptions[result.mode]}</div> <div style="font-size:12px;color:var(--text3);margin-top:-8px">Portafoglio: <strong>${portLabel}</strong> · TER: <strong>${goalState.ter.toFixed(2)}%</strong> · Capitale iniziale: <strong>${fmt(goalState.w0)}</strong> </div> </div> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:20px"> ${cards.map(c => `
+        <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;text-align:center"> <div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">${c.label}</div> <div style="font-size:24px;font-weight:700;color:${c.color};font-family:'DM Mono',monospace;margin-bottom:4px">${c.val}</div> <div style="font-size:11.5px;color:var(--text3)">${c.sub}</div> </div> `).join('')}
+    </div> ${result.mode === 'pac' ? `
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7"> <strong>Come leggere il risultato:</strong>Il PAC nello scenario base (${fmt(result.normal)}/mese)
       è quello necessario assumendo il rendimento storico medio del portafoglio ${portLabel},
       al netto del TER. Lo scenario pessimistico richiede un PAC più alto perché il rendimento
       atteso è inferiore. Se il capitale iniziale (${fmt(goalState.w0)}) è già sufficiente a
@@ -544,28 +489,24 @@ function renderGoalTab() {
     </div>` : ''}
 
     ${result.mode === 'years' ? `
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>💡 Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese e
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7"> <strong>Come leggere il risultato:</strong>Con PAC di ${fmt(goalState.pac)}/mese e
       portafoglio ${portLabel} (netto TER ${goalState.ter.toFixed(2)}%),
       raggiungeresti ${fmt(goalState.targetCapital)} in ${fmtYears(result.normal)} nello scenario base.
       La differenza tra scenario pessimistico e ottimistico mostra la forchetta di incertezza del mercato.
     </div>` : ''}
 
     ${result.mode === 'target' ? `
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>💡 Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese per ${goalState.years} anni
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7"> <strong>Come leggere il risultato:</strong>Con PAC di ${fmt(goalState.pac)}/mese per ${goalState.years} anni
       e portafoglio ${portLabel} (netto TER ${goalState.ter.toFixed(2)}%), il tuo patrimonio
       raggiungerebbe ${fmt(result.normal)} nello scenario base.
       La forchetta pessimistico–ottimistico (${fmt(result.worst)} – ${fmt(result.best)}) rappresenta
       l'incertezza tipica dei mercati finanziari su questo orizzonte.
     </div>` : ''}
 
-    <div style="margin-top:14px;padding:10px 14px;background:rgba(217,48,37,.06);border:1px solid rgba(217,48,37,.2);border-radius:var(--radius-sm);font-size:11.5px;color:var(--text3)">
-      ⚠️ <strong>Nota:</strong> Questi calcoli usano rendimenti storici costanti e non considerano
+    <div style="margin-top:14px;padding:10px 14px;background:rgba(217,48,37,.06);border:1px solid rgba(217,48,37,.2);border-radius:var(--radius-sm);font-size:11.5px;color:var(--text3)"> <strong>Nota:</strong>Questi calcoli usano rendimenti storici costanti e non considerano
       inflazione, variazioni di rendimento nel tempo, imposte intermediate o eventi straordinari.
       Per un'analisi completa usa il tab <strong>Simulatore</strong> con Monte Carlo e sequence risk.
-    </div>
-  `;
+    </div> `;
 }
 
 // ── Sync sliders del goal tab ─────────────────────────────────────────────────
@@ -594,8 +535,7 @@ function _syncGoalSlidersFromState() {
 
 function switchGoalMode(mode) {
   goalState.mode = mode;
-  document.querySelectorAll('#goalModeBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.gm === mode));
+  document.querySelectorAll('#goalModeBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.gm === mode));
   // Mostra/nascondi sezioni rilevanti
   const showTarget = (mode === 'pac' || mode === 'years');
   const showPAC    = (mode === 'years' || mode === 'target');
@@ -624,8 +564,7 @@ function syncGoalPortfolio() {
   document.getElementById('lGoalPAC') && (document.getElementById('lGoalPAC').textContent = _fmtW(goalState.pac) + '/m');
   // Sincronizza i campi numerici digitabili affiancati agli slider
   if (typeof syncNumBox === 'function') { syncNumBox('sGoalW0'); syncNumBox('sGoalPAC'); }
-  document.querySelectorAll('#goalPortBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.gp === goalState.portfolio));
+  document.querySelectorAll('#goalPortBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.gp === goalState.portfolio));
   renderGoalTab();
 }
 window.syncGoalPortfolio = syncGoalPortfolio;

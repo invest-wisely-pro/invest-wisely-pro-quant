@@ -56,7 +56,7 @@ function getCoeffTrasf(age) {
   if (age <= ages[0]) return COEFF_TRASF[ages[0]];
   if (age >= ages[ages.length - 1]) return COEFF_TRASF[ages[ages.length - 1]];
   const lo = ages.filter(a => a <= age).pop();
-  const hi = ages.filter(a => a >  age)[0];
+  const hi = ages.filter(a => a > age)[0];
   const t  = (age - lo) / (hi - lo);
   return COEFF_TRASF[lo] + t * (COEFF_TRASF[hi] - COEFF_TRASF[lo]);
 }
@@ -111,8 +111,7 @@ const PEN_REGIME_DESC = {
   misto: `<strong>Sistema misto (L. 335/1995):</strong> per chi aveva almeno 18 anni di contributi al 31/12/1995.
     La quota ante-1996 è calcolata con il metodo retributivo (% del reddito degli ultimi anni × anni di servizio × aliquota di rendimento).
     La quota post-1996 è contributiva. Il modello calcola entrambe le quote e le somma.`,
-  retributivo: `<strong>Retributivo (solo ante-1996, meno di 18 anni contrib. al 31/12/1995):</strong>
-    Tutto calcolato con il metodo retributivo sulla media degli ultimi redditi. Progressivamente meno frequente — si applica solo a casi residuali con contributi pre-1996 e meno di 18 anni di anzianità al 31/12/1995.`,
+  retributivo: `<strong>Retributivo (solo ante-1996, meno di 18 anni contrib. al 31/12/1995):</strong>Tutto calcolato con il metodo retributivo sulla media degli ultimi redditi. Progressivamente meno frequente — si applica solo a casi residuali con contributi pre-1996 e meno di 18 anni di anzianità al 31/12/1995.`,
 };
 
 // ── Calcolo core ──────────────────────────────────────────────
@@ -302,9 +301,15 @@ function calcPensione() {
     const fabbisognoAnn  = fabbisognoMens * 12;
     const pensNettaY     = pensioneNettaAnn * Math.pow(1 + infl * 0.75, y);
     const rendFPY        = rendFPNetta * Math.pow(1 + fpRet * (1 - aliqFP) * 0.5, y);
-    const etfY           = Math.min(capETFResiduo * swr, Math.max(0, fabbisognoAnn - pensNettaY - rendFPY));
+    // L'ETF genera il suo reddito al prelievo SWR pieno (4% del capitale residuo),
+    // coerentemente con la barra-riepilogo in alto: il grafico risponde a "da dove
+    // arriva il reddito", quindi mostra il reddito PRODOTTO da ogni gamba, non solo
+    // il tappabuchi del fabbisogno. La linea tratteggiata "Fabbisogno reale" resta il
+    // riferimento da confrontare; se le tre gambe la superano, è un surplus reale.
+    const etfY           = capETFResiduo * swr;
     capETFResiduo        = Math.max(0, capETFResiduo * (1 + fpRet * 0.7) - etfY);
     const coperto        = pensNettaY + rendFPY + etfY;
+    // Gap = quota di fabbisogno NON coperta dalla somma delle tre gambe (0 se surplus).
     const gap            = Math.max(0, fabbisognoAnn - coperto);
     decData.push({
       year: y + 1, age: curAge,
@@ -415,7 +420,7 @@ function importPenFromSim() {
   if (slAge) { slAge.value = penState.age; document.getElementById('lPenAge').textContent = penState.age; }
   const swrMens = Math.round(capStimato * 0.04 / 12);
   document.getElementById('penImportStatus').innerHTML =
-    `<span style="color:var(--green)">✅ Importato dal Simulatore: età <strong>${penState.age}</strong> anni · capitale ETF stimato al pensionamento (scenario Base): <strong>${fmt(penState.etfCapital)}</strong> → ~${fmt(swrMens)}/mese al 4% SWR, a completamento di INPS e fondo pensione.</span>`;
+    `<span style="color:var(--green)">Importato dal Simulatore: età <strong>${penState.age}</strong> anni · capitale ETF stimato al pensionamento (scenario Base): <strong>${fmt(penState.etfCapital)}</strong> → ~${fmt(swrMens)}/mese al 4% SWR, a completamento di INPS e fondo pensione.</span>`;
   renderPensione();
 }
 
@@ -436,7 +441,7 @@ function renderPensione() {
         const yrLeg   = Math.round(nowY + (etaLeg - penState.age));
         const etaCtr  = Math.min(71.25, etaLeg + 4); // canale contributivo: 71 (71a3m dal 2028), adeguato
         if (penState.retAge < etaLeg - 1/24) {
-          lawHint.innerHTML = `⚠️ Sotto l'<strong>età di vecchiaia stimata per te: ${fmtEta(etaLeg)}</strong> (nel ${yrLeg}, adeguamenti speranza di vita RGS). Uscire prima richiede la <strong>pensione anticipata</strong> (43a 2m di contributi dal 2028, anch'essi in crescita) o canali dedicati (APE, usuranti).`;
+          lawHint.innerHTML = `Sotto l'<strong>età di vecchiaia stimata per te: ${fmtEta(etaLeg)}</strong> (nel ${yrLeg}, adeguamenti speranza di vita RGS). Uscire prima richiede la <strong>pensione anticipata</strong> (43a 2m di contributi dal 2028, anch'essi in crescita) o canali dedicati (APE, usuranti).`;
           lawHint.style.color = 'var(--orange)';
         } else {
           lawHint.innerHTML = `✓ Compatibile con l'età di vecchiaia stimata per te: <strong>${fmtEta(etaLeg)}</strong> nel ${yrLeg} (tabellare adeguamenti ISTAT/RGS).${penState.retAge >= 71 ? ` A 71+ rientri anche nel canale <strong>vecchiaia contributiva</strong> (71a, 71a3m dal 2028, bastano 5 anni di contributi effettivi).` : ''}`;
@@ -491,53 +496,11 @@ function renderPenKPI(r) {
   const inpsReal   = toReal(pensioneNettaMens), fpReal = toReal(rendFPMens), etfReal = toReal(etfPrelievoMens), totReal = toReal(totMens);
 
   document.getElementById('penKpiCards').innerHTML = `
-    <div class="mcard">
-      <div class="ml">Pensione INPS netta</div>
-      <div class="mv" style="color:var(--blue)">${fmt(pensioneNettaMens)}<span style="font-size:11px;opacity:.6">/m</span></div>
-      <div class="ms">≈ ${fmt(inpsReal)}/m in € di oggi · coeff. ${(coeffTrasf*100).toFixed(3)}%${r.coeffTrasfBase && Math.abs(r.coeffTrasfBase-coeffTrasf)>1e-5?` (2025: ${(r.coeffTrasfBase*100).toFixed(3)}%)`:''}</div>
-    </div>
-    <div class="mcard">
-      <div class="ml">Rendita Fondo Pensione</div>
-      <div class="mv" style="color:var(--purple)">${fmt(rendFPMens)}<span style="font-size:11px;opacity:.6">/m</span></div>
-      <div class="ms">≈ ${fmt(fpReal)}/m in € di oggi · cap. ${fmt(capFP)}</div>
-    </div>
-    ${tfrInfo && tfrInfo.fondo.lordo > 0 ? `
-    <div class="mcard">
-      <div class="ml">TFR nel fondo (quota)</div>
-      <div class="mv" style="color:var(--purple)">${fmt(tfrInfo.fondo.netto)}</div>
-      <div class="ms">${fmt(tfrInfo.fondo.lordo)} lordo → ${fmt(tfrInfo.fondo.netto)} netto (tass. agevolata ${(tfrInfo.fondo.aliq*100).toFixed(1)}%) · già incluso nel capitale FP</div>
-    </div>` : ''}
-    <div class="mcard">
-      <div class="ml">Prelievo ETF Portfolio</div>
-      <div class="mv" style="color:var(--teal)">${fmt(etfPrelievoMens)}<span style="font-size:11px;opacity:.6">/m</span></div>
-      <div class="ms">≈ ${fmt(etfReal)}/m in € di oggi · cap. ${fmt(etfCap)} · SWR 4%</div>
-    </div>
-    ${capTfrAzNetto > 0 ? `
-    <div class="mcard">
-      <div class="ml">TFR liquidazione (azienda)</div>
-      <div class="mv" style="color:var(--orange)">${fmt(capTfrAzNetto)}</div>
-      <div class="ms">${fmt(tfrInfo.azienda.lordo)} lordo → ${fmt(tfrInfo.azienda.netto)} netto (tass. separata ${(tfrInfo.azienda.aliq*100).toFixed(0)}%) · incasso una tantum · ≈ ${fmt(Math.round(toReal(capTfrAzNetto)))} in € di oggi</div>
-    </div>` : ''}
-    <div class="mcard">
-      <div class="ml">Totale disponibile</div>
-      <div class="mv" style="color:${copertoPct>=100?'var(--green)':'var(--orange)'}">${fmt(totMens)}<span style="font-size:11px;opacity:.6">/m</span></div>
-      <div class="ms">≈ ${fmt(totReal)}/m oggi · fabbisogno ${fmt(Math.round(fabb))}/m</div>
-    </div>
-    <div class="mcard">
-      <div class="ml">Gap previdenziale</div>
-      <div class="mv" style="color:${gapCol}">${gap === 0 ? '✅ Zero' : fmt(gap) + '/m'}</div>
-      <div class="ms" style="color:${gapCol};font-weight:600">Copertura: ${copertoPct}%</div>
-    </div>
-    <div class="mcard">
-      <div class="ml">Tasso di sostituzione</div>
-      <div class="mv" style="color:${tsCol}">${(tassoSost*100).toFixed(1)}%</div>
-      <div class="ms">INPS lorda / RAL finale · ${penState.contYears + yearsToRet} anni di contributi${(penState.contYears + yearsToRet) >= 42 ? ' <span title="Tasso elevato perché assume una carriera lunga e SENZA interruzioni fino a età avanzata (coefficiente alto). Con carriera standard (~38 anni, età di vecchiaia) il tasso scende tipicamente al 60-70% lordo. Interruzioni, part-time o anni non coperti lo riducono.">ⓘ</span>' : ''}</div>
-    </div>
-    <div class="mcard">
-      <div class="ml">Montante INPS al pensionamento</div>
-      <div class="mv" style="color:var(--blue)">${fmt(cumMontante)}</div>
-      <div class="ms">${yearsToRet} anni di accumulo</div>
-    </div>`;
+    <div class="mcard"> <div class="ml">Pensione INPS netta</div> <div class="mv" style="color:var(--blue)">${fmt(pensioneNettaMens)}<span style="font-size:11px;opacity:.6">/m</span></div> <div class="ms">≈ ${fmt(inpsReal)}/m in € di oggi · coeff. ${(coeffTrasf*100).toFixed(3)}%${r.coeffTrasfBase && Math.abs(r.coeffTrasfBase-coeffTrasf)>1e-5?` (2025: ${(r.coeffTrasfBase*100).toFixed(3)}%)`:''}</div> </div> <div class="mcard"> <div class="ml">Rendita Fondo Pensione</div> <div class="mv" style="color:var(--purple)">${fmt(rendFPMens)}<span style="font-size:11px;opacity:.6">/m</span></div> <div class="ms">≈ ${fmt(fpReal)}/m in € di oggi · cap. ${fmt(capFP)}</div> </div> ${tfrInfo && tfrInfo.fondo.lordo > 0 ? `
+    <div class="mcard"> <div class="ml">TFR nel fondo (quota)</div> <div class="mv" style="color:var(--purple)">${fmt(tfrInfo.fondo.netto)}</div> <div class="ms">${fmt(tfrInfo.fondo.lordo)} lordo → ${fmt(tfrInfo.fondo.netto)} netto (tass. agevolata ${(tfrInfo.fondo.aliq*100).toFixed(1)}%) · già incluso nel capitale FP</div> </div>` : ''}
+    <div class="mcard"> <div class="ml">Prelievo ETF Portfolio</div> <div class="mv" style="color:var(--teal)">${fmt(etfPrelievoMens)}<span style="font-size:11px;opacity:.6">/m</span></div> <div class="ms">≈ ${fmt(etfReal)}/m in € di oggi · cap. ${fmt(etfCap)} · SWR 4%</div> </div> ${capTfrAzNetto > 0 ? `
+    <div class="mcard"> <div class="ml">TFR liquidazione (azienda)</div> <div class="mv" style="color:var(--orange)">${fmt(capTfrAzNetto)}</div> <div class="ms">${fmt(tfrInfo.azienda.lordo)} lordo → ${fmt(tfrInfo.azienda.netto)} netto (tass. separata ${(tfrInfo.azienda.aliq*100).toFixed(0)}%) · incasso una tantum · ≈ ${fmt(Math.round(toReal(capTfrAzNetto)))} in € di oggi</div> </div>` : ''}
+    <div class="mcard"> <div class="ml">Totale disponibile</div> <div class="mv" style="color:${copertoPct>=100?'var(--green)':'var(--orange)'}">${fmt(totMens)}<span style="font-size:11px;opacity:.6">/m</span></div> <div class="ms">≈ ${fmt(totReal)}/m oggi · fabbisogno ${fmt(Math.round(fabb))}/m</div> </div> <div class="mcard"> <div class="ml">Gap previdenziale</div> <div class="mv" style="color:${gapCol}">${gap === 0 ? 'Zero' : fmt(gap) + '/m'}</div> <div class="ms" style="color:${gapCol};font-weight:600">Copertura: ${copertoPct}%</div> </div> <div class="mcard"> <div class="ml">Tasso di sostituzione</div> <div class="mv" style="color:${tsCol}">${(tassoSost*100).toFixed(1)}%</div> <div class="ms">INPS lorda / RAL finale · ${penState.contYears + yearsToRet} anni di contributi${(penState.contYears + yearsToRet) >= 42 ? ' <span title="Tasso elevato perché assume una carriera lunga e SENZA interruzioni fino a età avanzata (coefficiente alto). Con carriera standard (~38 anni, età di vecchiaia) il tasso scende tipicamente al 60-70% lordo. Interruzioni, part-time o anni non coperti lo riducono.">ⓘ</span>' : ''}</div> </div> <div class="mcard"> <div class="ml">Montante INPS al pensionamento</div> <div class="mv" style="color:var(--blue)">${fmt(cumMontante)}</div> <div class="ms">${yearsToRet} anni di accumulo</div> </div>`;
 
   // Incidenza tre gambe
   const incEl = document.getElementById('penLegsBox');
@@ -546,19 +509,7 @@ function renderPenKPI(r) {
     const pF = totMens > 0 ? rendFPMens / totMens * 100 : 0;
     const pE = totMens > 0 ? etfPrelievoMens / totMens * 100 : 0;
     incEl.innerHTML = `
-      <div class="sec-label" style="font-size:11px;margin-bottom:10px">⚖️ Da dove arriva il tuo reddito in pensione (${fmt(totMens)}/mese)</div>
-      <div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);margin-bottom:10px">
-        <div style="width:${pI}%;background:var(--blue);min-width:${pI>0?'2px':'0'}"></div>
-        <div style="width:${pF}%;background:var(--purple);min-width:${pF>0?'2px':'0'}"></div>
-        <div style="width:${pE}%;background:var(--teal);min-width:${pE>0?'2px':'0'}"></div>
-      </div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px">
-        <span style="color:var(--blue)">● <strong>INPS ${pI.toFixed(0)}%</strong> — ${fmt(pensioneNettaMens)}/m</span>
-        <span style="color:var(--purple)">● <strong>Fondo Pensione ${pF.toFixed(0)}%</strong> — ${fmt(rendFPMens)}/m</span>
-        <span style="color:var(--teal)">● <strong>ETF ${pE.toFixed(0)}%</strong> — ${fmt(etfPrelievoMens)}/m</span>
-      </div>
-      <div style="font-size:11.5px;color:var(--text3);margin-top:8px;line-height:1.5">
-        Il <strong>fondo pensione integrativo incide per il ${pF.toFixed(0)}%</strong> del tuo reddito in pensione${pF < 1 ? ' (aumenta il versamento mensile per farlo crescere)' : ''}.
+      <div class="sec-label" style="font-size:11px;margin-bottom:10px">Da dove arriva il tuo reddito in pensione (${fmt(totMens)}/mese)</div> <div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--border2);margin-bottom:10px"> <div style="width:${pI}%;background:var(--blue);min-width:${pI>0?'2px':'0'}"></div> <div style="width:${pF}%;background:var(--purple);min-width:${pF>0?'2px':'0'}"></div> <div style="width:${pE}%;background:var(--teal);min-width:${pE>0?'2px':'0'}"></div> </div> <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px"> <span style="color:var(--blue)">● <strong>INPS ${pI.toFixed(0)}%</strong> — ${fmt(pensioneNettaMens)}/m</span> <span style="color:var(--purple)">● <strong>Fondo Pensione ${pF.toFixed(0)}%</strong> — ${fmt(rendFPMens)}/m</span> <span style="color:var(--teal)">● <strong>ETF ${pE.toFixed(0)}%</strong> — ${fmt(etfPrelievoMens)}/m</span> </div> <div style="font-size:11.5px;color:var(--text3);margin-top:8px;line-height:1.5">Il <strong>fondo pensione integrativo incide per il ${pF.toFixed(0)}%</strong> del tuo reddito in pensione${pF < 1 ? ' (aumenta il versamento mensile per farlo crescere)' : ''}.
         ${pE < 1 ? 'Il piano ETF non è ancora collegato: usa "Importa dal Simulatore" per includerlo.' : 'Il piano ETF copre il ' + pE.toFixed(0) + '% a completamento delle altre due gambe.'}
       </div>`;
   }
@@ -566,12 +517,10 @@ function renderPenKPI(r) {
   // Alert gap
   const alertEl = document.getElementById('penGapAlert');
   if (gap === 0) {
-    alertEl.innerHTML = `<div style="background:#e6f4ea;border:1px solid #81c995;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#1e8e3e;margin-bottom:4px">
-      ✅ <strong>Piano completo:</strong> le tre fonti coprono interamente il fabbisogno desiderato.
+    alertEl.innerHTML = `<div style="background:#e6f4ea;border:1px solid #81c995;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#1e8e3e;margin-bottom:4px"> <strong>Piano completo:</strong> le tre fonti coprono interamente il fabbisogno desiderato.
     </div>`;
   } else {
-    alertEl.innerHTML = `<div style="background:#fce8e6;border:1px solid #f28b82;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#c5221f;margin-bottom:4px">
-      ⚠️ <strong>Gap di ${fmt(gap)}/mese</strong> (${fmt(gap*12)}/anno) non coperto al primo anno di pensione.
+    alertEl.innerHTML = `<div style="background:#fce8e6;border:1px solid #f28b82;border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:#c5221f;margin-bottom:4px"> <strong>Gap di ${fmt(gap)}/mese</strong> (${fmt(gap*12)}/anno) non coperto al primo anno di pensione.
       Aumenta il versamento mensile al fondo pensione o il PAC ETF, oppure usa <em>"Calcola versamento ottimale"</em>.
     </div>`;
   }
@@ -593,7 +542,7 @@ function renderPenChart(r) {
     data: {
       labels,
       datasets: [
-        { label: 'Pensione INPS netta',   data: decData.map(d => d.pensNettaMens), backgroundColor: 'rgba(158,27,50,0.75)',  stack: 'cover', order: 2 },
+        { label: 'Pensione INPS netta',   data: decData.map(d => d.pensNettaMens), backgroundColor: 'rgba(150,21,29,0.75)',  stack: 'cover', order: 2 },
         { label: 'Rendita Fondo Pensione',data: decData.map(d => d.rendFPMens),    backgroundColor: 'rgba(147,52,230,0.75)', stack: 'cover', order: 2 },
         { label: 'Prelievo ETF Portfolio',data: decData.map(d => d.etfMens),       backgroundColor: 'rgba(0,150,136,0.75)',  stack: 'cover', order: 2 },
         { label: 'Gap non coperto',       data: decData.map(d => d.gapMens),       backgroundColor: 'rgba(217,48,37,0.35)',  stack: 'cover', order: 2 },
@@ -626,18 +575,7 @@ function renderPenINPS(r) {
   const { pensioneLordaMens, pensioneNettaMens, irpefAnn, tassoSost, cumMontante, coeffTrasf, pensioneLordaAnn } = r;
   const tsCol = tassoSost >= 0.7 ? 'var(--green)' : tassoSost >= 0.5 ? 'var(--orange)' : 'var(--red)';
   document.getElementById('penINPSDetail').innerHTML = `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <div class="mcard"><div class="ml">Montante al pensionamento</div><div class="mv" style="color:var(--blue)">${fmt(cumMontante)}</div><div class="ms">Rivalutato PIL nom. (${((penState.pil+penState.infl)*100).toFixed(1)}%/a)</div></div>
-      <div class="mcard"><div class="ml">Coeff. trasformazione</div><div class="mv" style="color:var(--blue)">${(coeffTrasf*100).toFixed(3)}%</div><div class="ms">Età ${penState.retAge}${r.coeffTrasfBase && Math.abs(r.coeffTrasfBase-coeffTrasf)>1e-5?` · futuro stimato (2025: ${(r.coeffTrasfBase*100).toFixed(3)}%)`:'· tabella INPS 2025'}</div></div>
-      <div class="mcard"><div class="ml">Pensione lorda annua</div><div class="mv" style="color:var(--blue)">${fmt(pensioneLordaAnn)}</div><div class="ms">${fmt(pensioneLordaMens)}/mese</div></div>
-      <div class="mcard"><div class="ml">IRPEF stimata annua</div><div class="mv" style="color:var(--red)">${fmt(irpefAnn)}</div><div class="ms">Scaglioni 2025 + detrazione</div></div>
-      <div class="mcard"><div class="ml">Pensione netta mensile</div><div class="mv" style="color:var(--blue)">${fmt(pensioneNettaMens)}</div><div class="ms">× 13 mensilità INPS</div></div>
-      <div class="mcard"><div class="ml">Tasso di sostituzione</div><div class="mv" style="color:${tsCol}">${(tassoSost*100).toFixed(1)}%</div><div class="ms">Lorda / RAL finale</div></div>
-    </div>
-    <div style="background:#e8f0fe;border:1px solid #aecbfa;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#9e1b32;line-height:1.7">
-      <strong>Formula (metodo contributivo):</strong>
-      Pensione lorda = Montante (${fmt(cumMontante)}) × Coefficiente (${(coeffTrasf*100).toFixed(3)}%) = <strong>${fmt(r.pensioneLordaAnn)}/anno</strong>.<br>
-      Montante rivalutato a PIL nom. (PIL reale ${(penState.pil*100).toFixed(1)}% + inflaz. ${(penState.infl*100).toFixed(1)}% = ${((penState.pil+penState.infl)*100).toFixed(1)}%/a).
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"> <div class="mcard"><div class="ml">Montante al pensionamento</div><div class="mv" style="color:var(--blue)">${fmt(cumMontante)}</div><div class="ms">Rivalutato PIL nom. (${((penState.pil+penState.infl)*100).toFixed(1)}%/a)</div></div> <div class="mcard"><div class="ml">Coeff. trasformazione</div><div class="mv" style="color:var(--blue)">${(coeffTrasf*100).toFixed(3)}%</div><div class="ms">Età ${penState.retAge}${r.coeffTrasfBase && Math.abs(r.coeffTrasfBase-coeffTrasf)>1e-5?` · futuro stimato (2025: ${(r.coeffTrasfBase*100).toFixed(3)}%)`:'· tabella INPS 2025'}</div></div> <div class="mcard"><div class="ml">Pensione lorda annua</div><div class="mv" style="color:var(--blue)">${fmt(pensioneLordaAnn)}</div><div class="ms">${fmt(pensioneLordaMens)}/mese</div></div> <div class="mcard"><div class="ml">IRPEF stimata annua</div><div class="mv" style="color:var(--red)">${fmt(irpefAnn)}</div><div class="ms">Scaglioni 2025 + detrazione</div></div> <div class="mcard"><div class="ml">Pensione netta mensile</div><div class="mv" style="color:var(--blue)">${fmt(pensioneNettaMens)}</div><div class="ms">× 13 mensilità INPS</div></div> <div class="mcard"><div class="ml">Tasso di sostituzione</div><div class="mv" style="color:${tsCol}">${(tassoSost*100).toFixed(1)}%</div><div class="ms">Lorda / RAL finale</div></div> </div> <div style="background:#e8f0fe;border:1px solid #aecbfa;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#96151d;line-height:1.7"> <strong>Formula (metodo contributivo):</strong>Pensione lorda = Montante (${fmt(cumMontante)}) × Coefficiente (${(coeffTrasf*100).toFixed(3)}%) = <strong>${fmt(r.pensioneLordaAnn)}/anno</strong>.<br>Montante rivalutato a PIL nom. (PIL reale ${(penState.pil*100).toFixed(1)}% + inflaz. ${(penState.infl*100).toFixed(1)}% = ${((penState.pil+penState.infl)*100).toFixed(1)}%/a).
     </div>`;
 }
 
@@ -648,22 +586,10 @@ function renderPenFP(r) {
           fpDatoriale, fpLavoratore, fpVersAnnVolont, fpVersAnnDat, plafondResiduo } = fiscData;
   const isNeg = penState.isNegoziale;
   const negRow = isNeg ? `
-      <div class="mcard"><div class="ml">Contrib. datoriale</div><div class="mv" style="color:${penState.tfrSi?'var(--green)':'var(--red)'}">${penState.tfrSi ? fmt(Math.round(fpDatoriale/12)) : '€0'}<span style="font-size:11px;opacity:.6">/m</span></div><div class="ms">${penState.tfrSi ? `${(penState.contDatoriale*100).toFixed(1)}% RAL · ${fmt(fpDatoriale)}/a` : '⚠️ Richiede il TFR al fondo'}</div></div>
-      <div class="mcard"><div class="ml">Contrib. lavoratore negoziale</div><div class="mv" style="color:var(--blue)">${fmt(Math.round(fpLavoratore/12))}<span style="font-size:11px;opacity:.6">/m</span></div><div class="ms">${(penState.contLavoratore*100).toFixed(1)}% RAL · ${fmt(fpLavoratore)}/a</div></div>` : '';
+      <div class="mcard"><div class="ml">Contrib. datoriale</div><div class="mv" style="color:${penState.tfrSi?'var(--green)':'var(--red)'}">${penState.tfrSi ? fmt(Math.round(fpDatoriale/12)) : '€0'}<span style="font-size:11px;opacity:.6">/m</span></div><div class="ms">${penState.tfrSi ? `${(penState.contDatoriale*100).toFixed(1)}% RAL · ${fmt(fpDatoriale)}/a` : 'Richiede il TFR al fondo'}</div></div> <div class="mcard"><div class="ml">Contrib. lavoratore negoziale</div><div class="mv" style="color:var(--blue)">${fmt(Math.round(fpLavoratore/12))}<span style="font-size:11px;opacity:.6">/m</span></div><div class="ms">${(penState.contLavoratore*100).toFixed(1)}% RAL · ${fmt(fpLavoratore)}/a</div></div>` : '';
   document.getElementById('penFPDetail').innerHTML = `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <div class="mcard"><div class="ml">Capitale accumulato</div><div class="mv" style="color:var(--purple)">${fmt(capFP)}</div><div class="ms">Vers. ${fmt(penState.fpVers)}/m + ${penState.tfrSi ? 'TFR' : 'no TFR'}${isNeg?' + contributi negoziali':''}</div></div>
-      <div class="mcard"><div class="ml">Rendita netta mensile</div><div class="mv" style="color:var(--purple)">${fmt(rendFPMens)}</div><div class="ms">Al netto tassazione ${(aliqFP*100).toFixed(0)}%</div></div>
-      <div class="mcard"><div class="ml">Tassazione rendimento</div><div class="mv" style="color:var(--orange)">20%</div><div class="ms">Annua sulle plusvalenze (vs 26% ETF)</div></div>
-      <div class="mcard"><div class="ml">Tassazione prestazione</div><div class="mv" style="color:${aliqFP<=0.12?'var(--green)':'var(--orange)'}">${(aliqFP*100).toFixed(1)}%</div><div class="ms">${anniAdesione} anni adesione (min 9%)</div></div>
-      <div class="mcard"><div class="ml">Deducibilità annua</div><div class="mv" style="color:var(--green)">${fmt(deduzEffettiva)}</div><div class="ms">${fpVersAnnDat > 0 ? `Plafond €5.300 − ${fmt(Math.round(fpVersAnnDat))} datoriale = ${fmt(Math.round(plafondResiduo))} disp.` : 'Limite €5.300/a (2026)'} · applicata ${(aliqMargIRPEF*100).toFixed(0)}%</div></div>
-      <div class="mcard"><div class="ml">Risparmio IRPEF annuo</div><div class="mv" style="color:var(--green)">${fmt(risparmioFisc)}</div><div class="ms">${fmt(Math.round(risparmioFisc/12))}/mese · aliq. marg. ${(aliqMargIRPEF*100).toFixed(0)}%</div></div>
-      <div class="mcard"><div class="ml">TFR al fondo</div><div class="mv" style="color:${penState.tfrSi?'var(--green)':'var(--red)'}">${penState.tfrSi ? '✅ Sì' : '❌ No'}</div><div class="ms">${penState.tfrSi ? fmt(Math.round(penState.ral/13.5/12))+'/m (RAL÷13,5)' : 'Resta in azienda'}</div></div>
-      ${negRow}
-    </div>
-    <div style="background:#f3e8fd;border:1px solid #d7aefb;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#6200ea;line-height:1.7">
-      <strong>Vantaggi fiscali (D.Lgs. 252/2005):</strong>
-      Contributi fino a €5.300 deducibili dall'IRPEF → risparmio immediato di <strong>${fmt(risparmioFisc)}/anno</strong>.
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"> <div class="mcard"><div class="ml">Capitale accumulato</div><div class="mv" style="color:var(--purple)">${fmt(capFP)}</div><div class="ms">Vers. ${fmt(penState.fpVers)}/m + ${penState.tfrSi ? 'TFR' : 'no TFR'}${isNeg?' + contributi negoziali':''}</div></div> <div class="mcard"><div class="ml">Rendita netta mensile</div><div class="mv" style="color:var(--purple)">${fmt(rendFPMens)}</div><div class="ms">Al netto tassazione ${(aliqFP*100).toFixed(0)}%</div></div> <div class="mcard"><div class="ml">Tassazione rendimento</div><div class="mv" style="color:var(--orange)">20%</div><div class="ms">Annua sulle plusvalenze (vs 26% ETF)</div></div> <div class="mcard"><div class="ml">Tassazione prestazione</div><div class="mv" style="color:${aliqFP<=0.12?'var(--green)':'var(--orange)'}">${(aliqFP*100).toFixed(1)}%</div><div class="ms">${anniAdesione} anni adesione (min 9%)</div></div> <div class="mcard"><div class="ml">Deducibilità annua</div><div class="mv" style="color:var(--green)">${fmt(deduzEffettiva)}</div><div class="ms">${fpVersAnnDat > 0 ? `Plafond €5.300 − ${fmt(Math.round(fpVersAnnDat))} datoriale = ${fmt(Math.round(plafondResiduo))} disp.` : 'Limite €5.300/a (2026)'} · applicata ${(aliqMargIRPEF*100).toFixed(0)}%</div></div> <div class="mcard"><div class="ml">Risparmio IRPEF annuo</div><div class="mv" style="color:var(--green)">${fmt(risparmioFisc)}</div><div class="ms">${fmt(Math.round(risparmioFisc/12))}/mese · aliq. marg. ${(aliqMargIRPEF*100).toFixed(0)}%</div></div> <div class="mcard"><div class="ml">TFR al fondo</div><div class="mv" style="color:${penState.tfrSi?'var(--green)':'var(--red)'}">${penState.tfrSi ? 'Sì' : 'No'}</div><div class="ms">${penState.tfrSi ? fmt(Math.round(penState.ral/13.5/12))+'/m (RAL÷13,5)' : 'Resta in azienda'}</div></div> ${negRow}
+    </div> <div style="background:#f3e8fd;border:1px solid #d7aefb;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#6200ea;line-height:1.7"> <strong>Vantaggi fiscali (D.Lgs. 252/2005):</strong>Contributi fino a €5.300 deducibili dall'IRPEF → risparmio immediato di <strong>${fmt(risparmioFisc)}/anno</strong>.
       Rendimenti tassati al <strong>20% annuo</strong> (vs 26% ETF, ma con tassazione immediata vs tax deferral ETF).
       Prestazione finale tassata al ${(aliqFP*100).toFixed(1)}% (scende dal 15% al 9% con 35+ anni di adesione).
       ${isNeg ? `<br><strong>Fondo negoziale:</strong> il datore contribuisce ${fmt(fpDatoriale)}/anno (${(penState.contDatoriale*100).toFixed(1)}% RAL) — versamento "gratuito" per il lavoratore che entra solo versando la quota contrattuale (${fmt(fpLavoratore)}/anno).` : ''}
@@ -690,51 +616,11 @@ function renderPenRispFisc(r) {
   const costBaseETF  = risparmioFisc * yearsToRet;
   const capReinvETFNetto = capReinvETF - Math.max(0, capReinvETF - costBaseETF) * 0.26;
 
-  const destLabel = { spendi: '🛍️ Speso/consumato', reinvesti_fp: '💼 Reinvestito nel Fondo Pensione', reinvesti_etf: '📈 Reinvestito nel portafoglio ETF' };
+  const destLabel = { spendi: 'Speso/consumato', reinvesti_fp: 'Reinvestito nel Fondo Pensione', reinvesti_etf: 'Reinvestito nel portafoglio ETF' };
   const activeStyle = (d) => rispFiscDest === d ? 'background:var(--blue);color:#fff;border-color:var(--blue)' : '';
 
   document.getElementById('penRispFiscBox').innerHTML = `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px">
-      <div class="mcard" style="flex:1;min-width:160px">
-        <div class="ml">Risparmio IRPEF annuo</div>
-        <div class="mv" style="color:var(--green)">${fmt(risparmioFisc)}</div>
-        <div class="ms">${fmt(rispFiscMens)}/mese · aliq. ${(aliqMargIRPEF*100).toFixed(0)}% su €${fmt(deduzEffettiva)}</div>
-      </div>
-      <div class="mcard" style="flex:1;min-width:160px">
-        <div class="ml">Totale IRPEF risparmiata</div>
-        <div class="mv" style="color:var(--green)">${fmt(Math.round(totRisp))}</div>
-        <div class="ms">Su ${yearsToRet} anni (nominale)</div>
-      </div>
-    </div>
-
-    <div class="sec-label" style="margin-bottom:8px">📌 Cosa fai con il risparmio fiscale ogni anno?</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
-      <button class="gbtn" style="${activeStyle('spendi')}" onclick="penState.rispFiscDest='spendi'; renderPensione()">🛍️ Lo spendo</button>
-      <button class="gbtn" style="${activeStyle('reinvesti_fp')}" onclick="penState.rispFiscDest='reinvesti_fp'; renderPensione()">💼 Reinvesto nel FP</button>
-      <button class="gbtn" style="${activeStyle('reinvesti_etf')}" onclick="penState.rispFiscDest='reinvesti_etf'; renderPensione()">📈 Reinvesto in ETF</button>
-    </div>
-
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
-      <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='spendi'?'border-color:var(--orange)':''}">
-        <div class="ml">🛍️ Se lo spendi</div>
-        <div class="mv" style="color:var(--orange)">${fmt(Math.round(totRisp))}</div>
-        <div class="ms">Consumato anno per anno · nessun accumulo</div>
-      </div>
-      <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_fp'?'border-color:var(--purple)':''}">
-        <div class="ml">💼 Se reinvesti nel FP</div>
-        <div class="mv" style="color:var(--purple)">${fmt(Math.round(capReinvFP))}</div>
-        <div class="ms">Rendimento ${(fpRet*100).toFixed(1)}% − 20%/a plusval. FP · +${fmt(Math.round(capReinvFP - totRisp))} vs speso</div>
-      </div>
-      <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_etf'?'border-color:var(--teal)':''}">
-        <div class="ml">📈 Se reinvesti in ETF</div>
-        <div class="mv" style="color:var(--teal)">${fmt(Math.round(capReinvETFNetto))}</div>
-        <div class="ms">Rendimento ${(etfRet*100).toFixed(1)}% (piano simulatore) · tax deferral → 26% solo alla fine · +${fmt(Math.round(capReinvETFNetto - totRisp))} vs speso</div>
-      </div>
-    </div>
-
-    <div style="background:#e6f4ea;border:1px solid #81c995;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#1e8e3e;line-height:1.7">
-      <strong>Modalità attiva: ${destLabel[rispFiscDest]}</strong><br>
-      ${rispFiscDest === 'spendi'
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px"> <div class="mcard" style="flex:1;min-width:160px"> <div class="ml">Risparmio IRPEF annuo</div> <div class="mv" style="color:var(--green)">${fmt(risparmioFisc)}</div> <div class="ms">${fmt(rispFiscMens)}/mese · aliq. ${(aliqMargIRPEF*100).toFixed(0)}% su €${fmt(deduzEffettiva)}</div> </div> <div class="mcard" style="flex:1;min-width:160px"> <div class="ml">Totale IRPEF risparmiata</div> <div class="mv" style="color:var(--green)">${fmt(Math.round(totRisp))}</div> <div class="ms">Su ${yearsToRet} anni (nominale)</div> </div> </div> <div class="sec-label" style="margin-bottom:8px">Cosa fai con il risparmio fiscale ogni anno?</div> <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px"> <button class="gbtn" style="${activeStyle('spendi')}" onclick="penState.rispFiscDest='spendi'; renderPensione()">Lo spendo</button> <button class="gbtn" style="${activeStyle('reinvesti_fp')}" onclick="penState.rispFiscDest='reinvesti_fp'; renderPensione()">Reinvesto nel FP</button> <button class="gbtn" style="${activeStyle('reinvesti_etf')}" onclick="penState.rispFiscDest='reinvesti_etf'; renderPensione()">Reinvesto in ETF</button> </div> <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"> <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='spendi'?'border-color:var(--orange)':''}"> <div class="ml">Se lo spendi</div> <div class="mv" style="color:var(--orange)">${fmt(Math.round(totRisp))}</div> <div class="ms">Consumato anno per anno · nessun accumulo</div> </div> <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_fp'?'border-color:var(--purple)':''}"> <div class="ml">Se reinvesti nel FP</div> <div class="mv" style="color:var(--purple)">${fmt(Math.round(capReinvFP))}</div> <div class="ms">Rendimento ${(fpRet*100).toFixed(1)}% − 20%/a plusval. FP · +${fmt(Math.round(capReinvFP - totRisp))} vs speso</div> </div> <div class="mcard" style="flex:1;min-width:140px;${rispFiscDest==='reinvesti_etf'?'border-color:var(--teal)':''}"> <div class="ml">Se reinvesti in ETF</div> <div class="mv" style="color:var(--teal)">${fmt(Math.round(capReinvETFNetto))}</div> <div class="ms">Rendimento ${(etfRet*100).toFixed(1)}% (piano simulatore) · tax deferral → 26% solo alla fine · +${fmt(Math.round(capReinvETFNetto - totRisp))} vs speso</div> </div> </div> <div style="background:#e6f4ea;border:1px solid #81c995;border-radius:var(--radius-sm);padding:12px 16px;font-size:12px;color:#1e8e3e;line-height:1.7"> <strong>Modalità attiva: ${destLabel[rispFiscDest]}</strong><br> ${rispFiscDest === 'spendi'
         ? `Il risparmio IRPEF viene consumato ogni anno. Non si accumula capitale aggiuntivo, ma aumenta il tenore di vita attuale (${fmt(rispFiscMens)}/mese extra).`
         : rispFiscDest === 'reinvesti_fp'
         ? `Il risparmio IRPEF (${fmt(risparmioFisc)}/anno) viene versato ogni anno come contributo aggiuntivo al fondo pensione. Beneficia anche lui della deducibilità (fino al limite €5.300). Rendimento netto: ${(fpRet*80).toFixed(1)}%/a (tassazione 20% annua plusvalenze). Capitale aggiuntivo stimato: <strong>${fmt(Math.round(capReinvFP))}</strong>.`
@@ -800,26 +686,13 @@ function renderPenFiscComp(r) {
     const tfrWinner       = tfrDiff >= 0 ? 'al Fondo' : 'in Azienda';
     const tfrWinColor     = tfrDiff >= 0 ? 'var(--green)' : 'var(--red)';
     tfrCompHtml = `
-    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:4px 0 8px">Destinazione del TFR — Azienda vs Fondo Pensione</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-      <div class="mcard"><div class="ml">TFR in azienda (netto)</div><div class="mv" style="color:var(--orange)">${fmt(Math.round(tfrAziendaNetto))}</div><div class="ms">Rival. legale ${(revAzienda*100).toFixed(2)}%/a (1,5% + 75% infl.) · tass. separata ${(aliqMediaTFR*100).toFixed(0)}%</div></div>
-      <div class="mcard"><div class="ml">TFR al fondo (netto)</div><div class="mv" style="color:var(--purple)">${fmt(Math.round(tfrFondoNetto))}</div><div class="ms">Rend. fondo ${(penState.fpRet*100).toFixed(1)}%/a · tass. agevolata ${(aliqFP*100).toFixed(1)}%</div></div>
-      <div class="mcard"><div class="ml">Conviene ${tfrWinner}</div><div class="mv" style="color:${tfrWinColor}">${fmt(Math.abs(Math.round(tfrDiff)))}</div><div class="ms">Differenza netta su ${yearsToRet} anni · TFR ${fmt(Math.round(tfrAnnuoMedio))}/a</div></div>
-    </div>
-    <div style="background:#f3e5f5;border:1px solid #e1bee7;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#6a1b9a;margin-bottom:12px;line-height:1.6">
-      <strong>📌 Perché il TFR cambia molto:</strong> in azienda si rivaluta solo all'<strong>${(revAzienda*100).toFixed(2)}%/a</strong> (1,5% fisso + 75% inflazione, art. 2120 c.c.) e alla liquidazione sconta la <strong>tassazione separata</strong> all'aliquota media IRPEF (~${(aliqMediaTFR*100).toFixed(0)}%). Conferito al fondo rende come il comparto scelto (${(penState.fpRet*100).toFixed(1)}%/a) e la prestazione è tassata col regime agevolato <strong>${(aliqFP*100).toFixed(1)}%</strong> (dal 15% al 9% in base agli anni di adesione). La differenza nasce dal doppio effetto rivalutazione + fiscalità.
+    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:4px 0 8px">Destinazione del TFR — Azienda vs Fondo Pensione</div> <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"> <div class="mcard"><div class="ml">TFR in azienda (netto)</div><div class="mv" style="color:var(--orange)">${fmt(Math.round(tfrAziendaNetto))}</div><div class="ms">Rival. legale ${(revAzienda*100).toFixed(2)}%/a (1,5% + 75% infl.) · tass. separata ${(aliqMediaTFR*100).toFixed(0)}%</div></div> <div class="mcard"><div class="ml">TFR al fondo (netto)</div><div class="mv" style="color:var(--purple)">${fmt(Math.round(tfrFondoNetto))}</div><div class="ms">Rend. fondo ${(penState.fpRet*100).toFixed(1)}%/a · tass. agevolata ${(aliqFP*100).toFixed(1)}%</div></div> <div class="mcard"><div class="ml">Conviene ${tfrWinner}</div><div class="mv" style="color:${tfrWinColor}">${fmt(Math.abs(Math.round(tfrDiff)))}</div><div class="ms">Differenza netta su ${yearsToRet} anni · TFR ${fmt(Math.round(tfrAnnuoMedio))}/a</div></div> </div> <div style="background:#f3e5f5;border:1px solid #e1bee7;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#6a1b9a;margin-bottom:12px;line-height:1.6"> <strong>Perché il TFR cambia molto:</strong> in azienda si rivaluta solo all'<strong>${(revAzienda*100).toFixed(2)}%/a</strong> (1,5% fisso + 75% inflazione, art. 2120 c.c.) e alla liquidazione sconta la <strong>tassazione separata</strong> all'aliquota media IRPEF (~${(aliqMediaTFR*100).toFixed(0)}%). Conferito al fondo rende come il comparto scelto (${(penState.fpRet*100).toFixed(1)}%/a) e la prestazione è tassata col regime agevolato <strong>${(aliqFP*100).toFixed(1)}%</strong> (dal 15% al 9% in base agli anni di adesione). La differenza nasce dal doppio effetto rivalutazione + fiscalità.
     </div>`;
   }
 
   document.getElementById('penFiscComp').innerHTML = `
     ${tfrCompHtml}
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px">
-      <div class="mcard"><div class="ml">Capitale FP netto a ${penState.retAge}a</div><div class="mv" style="color:var(--purple)">${fmt(capFPNetto)}</div><div class="ms">Lordo ${fmt(capFPSim)} · tass. 20%/a rendim. + ${(aliqFP*100).toFixed(0)}% prestaz.</div></div>
-      <div class="mcard"><div class="ml">Capitale ETF equiv. netto</div><div class="mv" style="color:var(--teal)">${fmt(capETFNetto)}</div><div class="ms">Tax deferral + 26% plusval. finale · vers. + IRPEF reinvestita</div></div>
-      <div class="mcard"><div class="ml">Vantaggio ${winner}</div><div class="mv" style="color:var(--green)">${fmt(diff)}</div><div class="ms">Su ${yearsToRet} anni · entrambi al netto imposte</div></div>
-    </div>
-    <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#e65100;margin-bottom:12px;line-height:1.6">
-      <strong>📌 Nota tassazione:</strong> Il fondo pensione tassa i rendimenti al <strong>20% ogni anno</strong> (vs 26% ETF ma con tax deferral).
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px"> <div class="mcard"><div class="ml">Capitale FP netto a ${penState.retAge}a</div><div class="mv" style="color:var(--purple)">${fmt(capFPNetto)}</div><div class="ms">Lordo ${fmt(capFPSim)} · tass. 20%/a rendim. + ${(aliqFP*100).toFixed(0)}% prestaz.</div></div> <div class="mcard"><div class="ml">Capitale ETF equiv. netto</div><div class="mv" style="color:var(--teal)">${fmt(capETFNetto)}</div><div class="ms">Tax deferral + 26% plusval. finale · vers. + IRPEF reinvestita</div></div> <div class="mcard"><div class="ml">Vantaggio ${winner}</div><div class="mv" style="color:var(--green)">${fmt(diff)}</div><div class="ms">Su ${yearsToRet} anni · entrambi al netto imposte</div></div> </div> <div style="background:#fff3e0;border:1px solid #ffe082;border-radius:var(--radius-sm);padding:10px 14px;font-size:11.5px;color:#e65100;margin-bottom:12px;line-height:1.6"> <strong>Nota tassazione:</strong>Il fondo pensione tassa i rendimenti al <strong>20% ogni anno</strong> (vs 26% ETF ma con tax deferral).
       L'ETF ad accumulazione rinvia tutta la tassazione alla vendita finale: il capitale "lavora" intero per anni, con effetto compounding più potente.
       Il FP recupera parte del vantaggio grazie alla deducibilità dei contributi e all'aliquota ridotta sulla prestazione finale (${(aliqFP*100).toFixed(0)}%).
     </div>`;
@@ -859,24 +732,12 @@ function renderPenAccTable(r) {
   const { accData } = r;
   const isNeg = penState.isNegoziale;
   const stp = Math.max(1, Math.floor(accData.length / 12));
-  const header = `<thead><tr style="background:var(--bg2)">
-    <th>Età</th><th>Anno</th><th>RAL</th><th>Contrib. INPS</th><th>Montante INPS</th><th>Cap. FP</th><th>Vers. FP</th>
-    ${isNeg ? '<th>Di cui datoriale</th>' : ''}
-    <th>Risp. IRPEF</th>
-  </tr></thead>`;
+  const header = `<thead><tr style="background:var(--bg2)"> <th>Età</th><th>Anno</th><th>RAL</th><th>Contrib. INPS</th><th>Montante INPS</th><th>Cap. FP</th><th>Vers. FP</th> ${isNeg ? '<th>Di cui datoriale</th>' : ''}
+    <th>Risp. IRPEF</th> </tr></thead>`;
   const rows = accData
     .filter((_, i) => i % stp === 0 || i === accData.length - 1)
-    .map(d => `<tr>
-      <td><strong>${d.age}</strong></td>
-      <td>+${d.year}a</td>
-      <td style="color:var(--text2)">${fmt(d.ral)}</td>
-      <td style="color:var(--blue)">${fmt(d.contrib)}</td>
-      <td style="font-weight:600;color:var(--blue)">${fmt(d.montanteINPS)}</td>
-      <td style="font-weight:600;color:var(--purple)">${fmt(d.capFP)}</td>
-      <td style="color:var(--text3)">${fmt(d.fpVersAnn)}</td>
-      ${isNeg ? `<td style="color:var(--green)">${fmt(d.fpDatAnn)}</td>` : ''}
-      <td style="color:var(--green)">${fmt(d.rispFiscAnn)}</td>
-    </tr>`).join('');
+    .map(d => `<tr> <td><strong>${d.age}</strong></td> <td>+${d.year}a</td> <td style="color:var(--text2)">${fmt(d.ral)}</td> <td style="color:var(--blue)">${fmt(d.contrib)}</td> <td style="font-weight:600;color:var(--blue)">${fmt(d.montanteINPS)}</td> <td style="font-weight:600;color:var(--purple)">${fmt(d.capFP)}</td> <td style="color:var(--text3)">${fmt(d.fpVersAnn)}</td> ${isNeg ? `<td style="color:var(--green)">${fmt(d.fpDatAnn)}</td>` : ''}
+      <td style="color:var(--green)">${fmt(d.rispFiscAnn)}</td> </tr>`).join('');
   document.getElementById('penAccTable').innerHTML = `<table class="data-table" style="width:100%;border-collapse:collapse">${header}<tbody>${rows}</tbody></table>`;
 }
 
@@ -884,20 +745,10 @@ function renderPenAccTable(r) {
 function renderPenDecTable(r) {
   const { decData } = r;
   const stp = Math.max(1, Math.floor(decData.length / 12));
-  const header = `<thead><tr style="background:var(--bg2)">
-    <th>Età</th><th>Anno pensione</th><th>Fabbisogno/m</th><th>INPS netta/m</th><th>Rendita FP/m</th><th>Prelievo ETF/m</th><th>Copertura</th>
-  </tr></thead>`;
+  const header = `<thead><tr style="background:var(--bg2)"> <th>Età</th><th>Anno pensione</th><th>Fabbisogno/m</th><th>INPS netta/m</th><th>Rendita FP/m</th><th>Prelievo ETF/m</th><th>Copertura</th> </tr></thead>`;
   const rows = decData
     .filter((_, i) => i % stp === 0 || i === decData.length - 1)
-    .map(d => `<tr>
-      <td><strong>${d.age}</strong></td>
-      <td>+${d.year}a pens.</td>
-      <td style="color:var(--text2)">${fmt(d.fabbisognoMens)}/m</td>
-      <td style="color:var(--blue);font-weight:600">${fmt(d.pensNettaMens)}/m</td>
-      <td style="color:var(--purple)">${fmt(d.rendFPMens)}/m</td>
-      <td style="color:var(--teal)">${fmt(d.etfMens)}/m</td>
-      <td class="${d.gapMens===0?'pos':'neg'}">${d.gapMens===0?'✅ Coperto':'−'+fmt(d.gapMens)+'/m'}</td>
-    </tr>`).join('');
+    .map(d => `<tr> <td><strong>${d.age}</strong></td> <td>+${d.year}a pens.</td> <td style="color:var(--text2)">${fmt(d.fabbisognoMens)}/m</td> <td style="color:var(--blue);font-weight:600">${fmt(d.pensNettaMens)}/m</td> <td style="color:var(--purple)">${fmt(d.rendFPMens)}/m</td> <td style="color:var(--teal)">${fmt(d.etfMens)}/m</td> <td class="${d.gapMens===0?'pos':'neg'}">${d.gapMens===0?'Coperto':'−'+fmt(d.gapMens)+'/m'}</td> </tr>`).join('');
   document.getElementById('penDecTable').innerHTML = `<table class="data-table" style="width:100%;border-collapse:collapse">${header}<tbody>${rows}</tbody></table>`;
 }
 

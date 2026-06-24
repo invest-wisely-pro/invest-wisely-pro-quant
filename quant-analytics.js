@@ -100,7 +100,7 @@ const PRESET_LEVERAGE = {
 // rho[i][j] per i <= j — per i > j usa rho[j][i]
 const CORR_MATRIX = (() => {
   const n = AC_KEYS_EF.length;
-  const R = Array.from({length:n}, () => Array(n).fill(0));
+  const R = Array.from({length:n}, () =>Array(n).fill(0));
   // FIX: inizializza dalla correlazione base categoria-categoria invece che da 0.
   // Elimina l'86% di coppie a ρ=0 che sottostimavano la varianza di portafoglio
   // e gonfiavano lo Sharpe di mix con asset falsamente decorrelati.
@@ -233,7 +233,7 @@ const CORR_MATRIX = (() => {
 function _jacobiEig(M) {
   const N = M.length;
   const a = M.map(r => r.slice());
-  const V = Array.from({length:N}, (_,i) => Array.from({length:N}, (_,j) => i===j?1:0));
+  const V = Array.from({length:N}, (_,i) =>Array.from({length:N}, (_,j) => i===j?1:0));
   for (let sweep=0; sweep<200; sweep++) {
     let off=0;
     for (let p=0;p<N;p++) for (let q=p+1;q<N;q++) off += a[p][q]*a[p][q];
@@ -254,12 +254,12 @@ function _jacobiEig(M) {
 // Higham (2002) alternating projections + ridge finale → matrice di correlazione PD.
 function _nearestCorrelationPD(A, n) {
   let Y = A.map(r => r.slice());
-  const dS = Array.from({length:n}, () => Array(n).fill(0));
+  const dS = Array.from({length:n}, () =>Array(n).fill(0));
   for (let it=0; it<200; it++) {
     const Rk = Y.map((r,i) => r.map((x,j) => x - dS[i][j]));
     const { eig, V } = _jacobiEig(Rk);
     // proietta su PSD: azzera autovalori non positivi
-    const X = Array.from({length:n}, () => Array(n).fill(0));
+    const X = Array.from({length:n}, () =>Array(n).fill(0));
     for (let i=0;i<n;i++) for (let j=0;j<n;j++) {
       let sum=0;
       for (let k=0;k<n;k++){ const e = eig[k] > 0 ? eig[k] : 0; sum += V[i][k]*e*V[j][k]; }
@@ -335,7 +335,7 @@ function computeEfficientFrontier(acKeys, ter, nPoints) {
 
   // Rendimenti attesi per il range della frontiera (mu lordi, TER dedotto a livello portafoglio)
   const mus  = acKeys.map(k => _acMu(k));
-  const vols = acKeys.map(k => ASSET_CLASSES[k]?.vol || 0.10);
+  const vols = acKeys.map(k =>ASSET_CLASSES[k]?.vol || 0.10);
 
   const muMin = Math.min(...mus) - (ter||0)/100;  // range aggiustato per TER
   const muMax = Math.max(...mus) - (ter||0)/100;
@@ -514,7 +514,7 @@ function computeVaRCVaR(mu, vol, horizon, initialValue, ter) {
     var95:  clampLoss(V * (1 - Math.exp(muGeo*h - z95  * volH))),
     var99:  clampLoss(V * (1 - Math.exp(muGeo*h - z99  * volH))),
     var999: clampLoss(V * (1 - Math.exp(muGeo*h - z999 * volH))),
-    // CVaR parametrico log-normale: E[loss | loss > VaR]
+    // CVaR parametrico log-normale: E[loss | loss >VaR]
     // Formula: V*(1 - exp(μNet·h)*N(-z - σ√h)/(1-α))
     // Nota: muH + volH² = (μ-σ²/2)h + σ²h = μNet·h (momento primo log-normale)
     cvar95:  clampLoss(V * (1 - Math.exp(muNet*h) * _normCDF(-z95  - volH) / 0.05)),
@@ -563,7 +563,7 @@ function computeVaRCVaR(mu, vol, horizon, initialValue, ter) {
   };
 
   // ── Coerenza VaR/CVaR: se VaR(α) = null (nessuna perdita), CVaR(α) = null ──
-  // Per definizione CVaR(α) = E[perdita | perdita > VaR(α)].
+  // Per definizione CVaR(α) = E[perdita | perdita >VaR(α)].
   // Se VaR(α) è nullo (il portafoglio guadagna anche nel percentile α sfavorevole),
   // il CVaR allo stesso livello non può essere positivo — sarebbe matematicamente
   // incoerente. Applichiamo la regola a tutti e tre i metodi.
@@ -709,7 +709,7 @@ function _syncEFStateFromSimulator() {
   // alle asset class effettivamente selezionate. Ora il confronto è apples-to-apples.
   const comp = (typeof PRESET_COMPOSITION !== 'undefined') ? PRESET_COMPOSITION[state.portfolio] : null;
   if (comp) {
-    const compKeys = Object.keys(comp).filter(k => ASSET_CLASSES[k]);
+    const compKeys = Object.keys(comp).filter(k =>ASSET_CLASSES[k]);
     // La frontiera richiede almeno 2 asset class distinte. I preset con 1 solo asset
     // (es. eq100, ob100) non hanno una frontiera: aggiungiamo un secondo asset coerente
     // così la curva è disegnabile e il confronto resta sensato.
@@ -782,7 +782,7 @@ function _renderFrontierView() {
       data: frontierData,
       type: 'scatter',
       showLine: true,
-      borderColor: 'rgba(158,27,50,0.9)',
+      borderColor: 'rgba(150,21,29,0.9)',
       backgroundColor: frontierData.map(p => {
         const t = (p.sharpe - minSh) / (maxSh - minSh + 0.001);
         const r = Math.round(26  + (26-217)*t*0 + (0)*t);
@@ -886,34 +886,13 @@ function _updateFrontierStats(curr, maxS, minV) {
   const portLabel = state.portfolio==='custom' ? 'Custom' : (PORT[state.portfolio]?.label||state.portfolio);
 
   el.innerHTML = `
-    <div class="quant-stat-grid">
-      <div class="quant-stat-card" style="border-left:3px solid var(--red)">
-        <div class="qsc-title">▲ Il tuo portafoglio<br><small>${portLabel}</small></div>
-        <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(curr?.mu)}/a</strong></div>
-        <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(curr?.vol)}/a</strong></div>
-        <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(curr?.sharpe)}</strong></div>
-      </div>
-      <div class="quant-stat-card" style="border-left:3px solid var(--orange)">
-        <div class="qsc-title">★ Max Sharpe</div>
-        <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(maxS?.mu)}/a</strong></div>
-        <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(maxS?.vol)}/a</strong></div>
-        <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(maxS?.sharpe)}</strong></div>
-      </div>
-      <div class="quant-stat-card" style="border-left:3px solid var(--green)">
-        <div class="qsc-title">▼ Min Varianza</div>
-        <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(minV?.mu)}/a</strong></div>
-        <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(minV?.vol)}/a</strong></div>
-        <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(minV?.sharpe)}</strong></div>
-      </div>
-    </div>
-    ${curr && maxS ? `
-    <div class="quant-note ${curr.sharpe < maxS.sharpe * 0.85 ? 'quant-note-warn' : 'quant-note-ok'}">
-      ${curr.sharpe < maxS.sharpe * 0.85
-        ? `⚠️ Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong> vs <strong>${fmtS(maxS.sharpe)}</strong> del portafoglio Max Sharpe — esiste un'allocazione più efficiente tra le asset class selezionate.`
+    <div class="quant-stat-grid"> <div class="quant-stat-card" style="border-left:3px solid var(--red)"> <div class="qsc-title">▲ Il tuo portafoglio<br><small>${portLabel}</small></div> <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(curr?.mu)}/a</strong></div> <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(curr?.vol)}/a</strong></div> <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(curr?.sharpe)}</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--orange)"> <div class="qsc-title">★ Max Sharpe</div> <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(maxS?.mu)}/a</strong></div> <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(maxS?.vol)}/a</strong></div> <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(maxS?.sharpe)}</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--green)"> <div class="qsc-title">▼ Min Varianza</div> <div class="qsc-row"><span>Rendimento atteso</span><strong>${fmt(minV?.mu)}/a</strong></div> <div class="qsc-row"><span>Volatilità (σ)</span><strong>${fmt(minV?.vol)}/a</strong></div> <div class="qsc-row"><span>Sharpe ratio</span><strong>${fmtS(minV?.sharpe)}</strong></div> </div> </div> ${curr && maxS ? `
+    <div class="quant-note ${curr.sharpe < maxS.sharpe * 0.85 ? 'quant-note-warn' : 'quant-note-ok'}"> ${curr.sharpe < maxS.sharpe * 0.85
+        ? `Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong> vs <strong>${fmtS(maxS.sharpe)}</strong> del portafoglio Max Sharpe — esiste un'allocazione più efficiente tra le asset class selezionate.`
         : `✓ Il tuo portafoglio ha uno Sharpe ratio <strong>${fmtS(curr.sharpe)}</strong>, vicino al massimo ottimale (<strong>${fmtS(maxS.sharpe)}</strong>) — allocazione efficiente.`
       }
       ${curr.leverage && curr.leverage > 1.0
-        ? `<br><span style="font-size:11px;color:var(--text3)">ℹ️ Il tuo portafoglio usa leva (esposizione ×${curr.leverage.toFixed(2)}): la frontiera mostra portafogli non a leva, quindi il confronto di Sharpe è solo indicativo. La leva sposta il punto lungo la Capital Market Line, non sulla frontiera.</span>`
+        ? `<br><span style="font-size:11px;color:var(--text3)">Il tuo portafoglio usa leva (esposizione ×${curr.leverage.toFixed(2)}): la frontiera mostra portafogli non a leva, quindi il confronto di Sharpe è solo indicativo. La leva sposta il punto lungo la Capital Market Line, non sulla frontiera.</span>`
         : ''}
     </div>` : ''}
   `;
@@ -1000,55 +979,24 @@ function _renderVaRView() {
   ];
 
   el.innerHTML = `
-    <div style="margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.6">
-      <strong>Portafoglio:</strong> ${portLabel} · <strong>Valore:</strong> €${value.toLocaleString('it-IT')} ·
+    <div style="margin-bottom:16px;font-size:13px;color:var(--text2);line-height:1.6"> <strong>Portafoglio:</strong> ${portLabel} · <strong>Valore:</strong> €${value.toLocaleString('it-IT')} ·
       <strong>Orizzonte:</strong> ${horizon} anno/i · <strong>TER:</strong> ${ter.toFixed(2)}% ·
       <strong>Rendimento netto:</strong> ${((mu-ter/100)*100).toFixed(1)}%/a · <strong>Volatilità:</strong> ${(vol*100).toFixed(1)}%/a
-    </div>
-    ${_varLeveraged ? `<div style="font-size:11.5px;color:var(--orange);background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:14px;line-height:1.55">
-      🔋 <strong>Portafoglio a leva:</strong> il VaR/CVaR espande i sottostanti ma normalizza i pesi al 100%, quindi <strong>sottostima il rischio reale</strong> amplificato dalla leva (notional &gt;100%). Per una stima corretta del rischio di questo portafoglio usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong>, che modellano leva e costo di finanziamento.
+    </div> ${_varLeveraged ? `<div style="font-size:11.5px;color:var(--orange);background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:14px;line-height:1.55"> <strong>Portafoglio a leva:</strong> il VaR/CVaR espande i sottostanti ma normalizza i pesi al 100%, quindi <strong>sottostima il rischio reale</strong> amplificato dalla leva (notional &gt;100%). Per una stima corretta del rischio di questo portafoglio usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong>, che modellano leva e costo di finanziamento.
     </div>` : ''}
-    <div class="tbl-outer" style="margin-bottom:20px">
-      <table>
-        <thead>
-          <tr>
-            <th style="text-align:left">Misura di rischio</th>
-            ${methods.map(m=>`<th style="color:${m.color}">${m.label.split('(')[0].trim()}</th>`).join('')}
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map(row=>`
-            <tr>
-              <td style="text-align:left">
-                <strong>${row.label}</strong>
-                <div style="font-size:11px;color:var(--text3)">${row.desc}</div>
-              </td>
-              ${methods.map((m,mi)=>{
+    <div class="tbl-outer" style="margin-bottom:20px"> <table> <thead> <tr> <th style="text-align:left">Misura di rischio</th> ${methods.map(m=>`<th style="color:${m.color}">${m.label.split('(')[0].trim()}</th>`).join('')}
+          </tr> </thead> <tbody> ${rows.map(row=>`
+            <tr> <td style="text-align:left"> <strong>${row.label}</strong> <div style="font-size:11px;color:var(--text3)">${row.desc}</div> </td> ${methods.map((m,mi)=>{
                 const v = r[m.key][row.keys[mi]];
                 const pct = (v/value*100).toFixed(1);
                 const isExtreme = row.label.includes('99.9');
                 return `<td style="font-weight:600;color:${isExtreme?'var(--red)':m.color}">${fmt(v)}<br><small style="font-weight:400;color:var(--text3)">${fmtP(v,value)}</small></td>`;
               }).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px">
-      ${methods.map(m=>`
-        <div style="background:var(--bg2);border:1px solid var(--border2);border-left:3px solid ${m.color};border-radius:var(--radius-sm);padding:12px">
-          <div style="font-size:12px;font-weight:600;color:${m.color};margin-bottom:6px">${m.label}</div>
-          <div style="font-size:11.5px;color:var(--text3);line-height:1.6">${m.note}</div>
-        </div>
-      `).join('')}
-    </div>
-
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12px;color:var(--text3);line-height:1.7">
-      <strong>Come leggere il VaR:</strong> un VaR 99% di ${r.mc.var99 === null ? '<em>nessuna perdita attesa</em>' : '−€'+Math.round(r.mc.var99).toLocaleString('it-IT')} su orizzonte ${horizon} anno/i significa che nel 99% degli scenari simulati la perdita non supererà questa soglia. Nel restante 1% degli scenari (eventi rari ma possibili), la perdita attesa (CVaR 99%) è ${r.mc.cvar99 === null ? '<em>nessuna perdita attesa</em>' : '−€'+Math.round(r.mc.cvar99).toLocaleString('it-IT')}.<br>
-      <strong>CVaR vs VaR:</strong> il CVaR (Expected Shortfall) è preferito dai regolatori (Basilea III, SOLVENCY II) perché misura <em>quanto si perde</em> quando si va oltre il VaR, non solo il punto di soglia. È la misura di rischio coerente per eccellenza (Artzner et al., 1999).
-    </div>
-  `;
+            </tr> `).join('')}
+        </tbody> </table> </div> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:16px"> ${methods.map(m=>`
+        <div style="background:var(--bg2);border:1px solid var(--border2);border-left:3px solid ${m.color};border-radius:var(--radius-sm);padding:12px"> <div style="font-size:12px;font-weight:600;color:${m.color};margin-bottom:6px">${m.label}</div> <div style="font-size:11.5px;color:var(--text3);line-height:1.6">${m.note}</div> </div> `).join('')}
+    </div> <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12px;color:var(--text3);line-height:1.7"> <strong>Come leggere il VaR:</strong> un VaR 99% di ${r.mc.var99 === null ? '<em>nessuna perdita attesa</em>' : '−€'+Math.round(r.mc.var99).toLocaleString('it-IT')} su orizzonte ${horizon} anno/i significa che nel 99% degli scenari simulati la perdita non supererà questa soglia. Nel restante 1% degli scenari (eventi rari ma possibili), la perdita attesa (CVaR 99%) è ${r.mc.cvar99 === null ? '<em>nessuna perdita attesa</em>' : '−€'+Math.round(r.mc.cvar99).toLocaleString('it-IT')}.<br> <strong>CVaR vs VaR:</strong> il CVaR (Expected Shortfall) è preferito dai regolatori (Basilea III, SOLVENCY II) perché misura <em>quanto si perde</em> quando si va oltre il VaR, non solo il punto di soglia. È la misura di rischio coerente per eccellenza (Artzner et al., 1999).
+    </div> `;
 }
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -1058,8 +1006,7 @@ function _renderVaRView() {
 window.renderQuantTab = renderQuantTab;
 window.switchQuantMode = function(mode) {
   _efState.mode = mode;
-  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.qm === mode));
+  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.qm === mode));
   const frontierSection = document.getElementById('quantFrontierSection');
   const varSection      = document.getElementById('quantVaRSection');
   if (frontierSection) frontierSection.style.display = mode==='frontier' ? '' : 'none';
@@ -1069,8 +1016,7 @@ window.switchQuantMode = function(mode) {
 
 window.quantSetHorizon = function(h) {
   _efState.horizon = +h;
-  document.querySelectorAll('#quantHorizonBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', +b.dataset.qh === +h));
+  document.querySelectorAll('#quantHorizonBtns .gbtn').forEach(b => b.classList.toggle('a-blue', +b.dataset.qh === +h));
   _renderVaRView();
 };
 
@@ -1128,10 +1074,8 @@ function _populateAssetSelector() {
   };
 
   el.innerHTML = Object.entries(cats).map(([cat, items]) => `
-    <optgroup label="${catLabels[cat]||cat}">
-      ${items.map(({key,ac})=>`<option value="${key}">${ac.emoji||''} ${ac.label} — μ=${((ac.mu||0)*100).toFixed(1)}% σ=${((ac.vol||0)*100).toFixed(1)}%</option>`).join('')}
-    </optgroup>
-  `).join('');
+    <optgroup label="${catLabels[cat]||cat}"> ${items.map(({key,ac})=>`<option value="${key}">${ac.label} — μ=${((ac.mu||0)*100).toFixed(1)}% σ=${((ac.vol||0)*100).toFixed(1)}%</option>`).join('')}
+    </optgroup> `).join('');
 
   // Pre-seleziona le asset class correnti
   _syncEFStateFromSimulator();
@@ -1141,7 +1085,7 @@ function _populateAssetSelector() {
 
   el.onchange = function() {
     _efState.assets = Array.from(el.selectedOptions).map(o=>o.value);
-    if (_efState.assets.length < 2) { _flashQuantToast('⚠️ Seleziona almeno 2 asset class'); return; }
+    if (_efState.assets.length < 2) { _flashQuantToast('Seleziona almeno 2 asset class'); return; }
     renderQuantTab();
   };
 }
@@ -1228,7 +1172,7 @@ const FACTOR_LOADINGS = {
 
 // Metadati fattori per UI
 const FACTOR_META = {
-  MKT: { name: 'Market Beta',           short: 'MKT', color: '#9e1b32',
+  MKT: { name: 'Market Beta',           short: 'MKT', color: '#96151d',
          desc: 'Esposizione al mercato azionario globale. β=1 = correlazione perfetta col mercato. Premio storico ~6%/a (Sharpe 1964, CAPM).' },
   SMB: { name: 'Size (Small minus Big)', short: 'SMB', color: '#9334e6',
          desc: 'Premio delle small caps vs large (Banz 1981). β>0 = tilt small. Storico ~1.5–2%/a, compresso post-pubblicazione.' },
@@ -1353,14 +1297,14 @@ function _interpretFactorProfile(exp, decomp) {
   const insights = [];
   if (exp.MKT > 0.85)       insights.push('alta esposizione equity (β_MKT > 0.85) — il rendimento dipende fortemente dal mercato');
   else if (exp.MKT < 0.30)  insights.push('bassa esposizione equity (β_MKT < 0.30) — portafoglio difensivo');
-  if (exp.HML >  0.25)      insights.push('tilt <strong>Value</strong> (β_HML > 0.25)');
+  if (exp.HML > 0.25)      insights.push('tilt <strong>Value</strong> (β_HML > 0.25)');
   else if (exp.HML < -0.10) insights.push('tilt <strong>Growth</strong> (β_HML negativo)');
-  if (exp.SMB >  0.25)      insights.push('tilt <strong>Small Cap</strong> (β_SMB > 0.25)');
+  if (exp.SMB > 0.25)      insights.push('tilt <strong>Small Cap</strong> (β_SMB > 0.25)');
   else if (exp.SMB < -0.10) insights.push('preferenza Large Cap');
-  if (exp.RMW >  0.25)      insights.push('esposizione a <strong>Qualità</strong> (β_RMW > 0.25)');
-  if (exp.MOM >  0.20)      insights.push('componente <strong>Momentum</strong> significativa (β_MOM > 0.20)');
-  if (exp.CMA >  0.20)      insights.push('tilt verso <strong>Investment Factor</strong> (capex conservativi)');
-  if (decomp.alpha >  0.025) insights.push('<strong>alpha residuo positivo</strong> ~' + (decomp.alpha*100).toFixed(1) + '%/a (premi non-equity: term, credit, gold)');
+  if (exp.RMW > 0.25)      insights.push('esposizione a <strong>Qualità</strong> (β_RMW > 0.25)');
+  if (exp.MOM > 0.20)      insights.push('componente <strong>Momentum</strong> significativa (β_MOM > 0.20)');
+  if (exp.CMA > 0.20)      insights.push('tilt verso <strong>Investment Factor</strong> (capex conservativi)');
+  if (decomp.alpha > 0.025) insights.push('<strong>alpha residuo positivo</strong> ~' + (decomp.alpha*100).toFixed(1) + '%/a (premi non-equity: term, credit, gold)');
   else if (decomp.alpha < -0.015) insights.push('<strong>alpha residuo negativo</strong> (conservatismo dei premi forward-looking vs storici)');
   return insights.length ? insights.join('; ') + '.' : 'Profilo bilanciato senza tilt fattoriali significativi.';
 }
@@ -1384,7 +1328,7 @@ function _renderFactorWaterfall(decomp) {
   ];
   let cum = 0;
   const bars = items.map(it => { const start = cum; cum += it.value; return { ...it, start, end: cum }; });
-  bars.push({ label: 'TOTALE', value: cum, color: '#9e1b32', start: 0, end: cum });
+  bars.push({ label: 'TOTALE', value: cum, color: '#96151d', start: 0, end: cum });
 
   const ctx = canvas.getContext('2d');
   _factorChart = new Chart(ctx, {
@@ -1456,43 +1400,19 @@ function _renderFactorView() {
     const ac = ASSET_CLASSES[k];
     const ld = FACTOR_LOADINGS[k] || { MKT: 0, SMB: 0, HML: 0, RMW: 0, CMA: 0, MOM: 0 };
     return {
-      label: ac ? `${ac.emoji || ''} ${ac.label}` : k,
+      label: ac ? `${ac.label}` : k,
       weight: weights[i] * 100,
       MKT: ld.MKT, SMB: ld.SMB, HML: ld.HML, RMW: ld.RMW, CMA: ld.CMA, MOM: ld.MOM,
     };
   }).sort((a, b) => b.weight - a.weight);
 
   el.innerHTML = `
-    <!-- KPI riepilogativi -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:18px">
-      <div class="quant-stat-card" style="border-left:3px solid var(--blue)">
-        <div class="qsc-title">Portafoglio analizzato</div>
-        <div class="qsc-row"><span>Composizione</span><strong>${label}</strong></div>
-        <div class="qsc-row"><span>Rend. atteso netto</span><strong>${fmt(decomp.actualMu)}/a</strong></div>
-        <div class="qsc-row"><span>TER</span><strong>${_efState.ter.toFixed(2)}%</strong></div>
-      </div>
-      <div class="quant-stat-card" style="border-left:3px solid var(--green)">
-        <div class="qsc-title">Spiegato dai fattori</div>
-        <div class="qsc-row"><span>Risk-free</span><strong>${fmt(decomp.baseline)}/a</strong></div>
-        <div class="qsc-row"><span>Premio fattoriale</span><strong>${fmt(decomp.fromFactors)}/a</strong></div>
-        <div class="qsc-row"><span>Totale spiegato</span><strong>${fmt(decomp.totalExplained)}/a</strong></div>
-      </div>
-      <div class="quant-stat-card" style="border-left:3px solid var(--purple)">
-        <div class="qsc-title">Alpha residuo</div>
-        <div class="qsc-row"><span>α (non spiegato)</span><strong style="color:${decomp.alpha >= 0 ? 'var(--green)' : 'var(--red)'}">${fmt(decomp.alpha)}/a</strong></div>
-        <div class="qsc-row"><span>Significato</span><strong style="font-size:11px">${
+    <!-- KPI riepilogativi --> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:18px"> <div class="quant-stat-card" style="border-left:3px solid var(--blue)"> <div class="qsc-title">Portafoglio analizzato</div> <div class="qsc-row"><span>Composizione</span><strong>${label}</strong></div> <div class="qsc-row"><span>Rend. atteso netto</span><strong>${fmt(decomp.actualMu)}/a</strong></div> <div class="qsc-row"><span>TER</span><strong>${_efState.ter.toFixed(2)}%</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--green)"> <div class="qsc-title">Spiegato dai fattori</div> <div class="qsc-row"><span>Risk-free</span><strong>${fmt(decomp.baseline)}/a</strong></div> <div class="qsc-row"><span>Premio fattoriale</span><strong>${fmt(decomp.fromFactors)}/a</strong></div> <div class="qsc-row"><span>Totale spiegato</span><strong>${fmt(decomp.totalExplained)}/a</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--purple)"> <div class="qsc-title">Alpha residuo</div> <div class="qsc-row"><span>α (non spiegato)</span><strong style="color:${decomp.alpha >= 0 ? 'var(--green)' : 'var(--red)'}">${fmt(decomp.alpha)}/a</strong></div> <div class="qsc-row"><span>Significato</span><strong style="font-size:11px">${
           Math.abs(decomp.alpha) < 0.005 ? 'Trascurabile' :
           decomp.alpha > 0.02 ? 'Premio non-equity' :
           decomp.alpha > 0   ? 'Modesto positivo' :
           decomp.alpha > -0.02 ? 'Modesto negativo' : 'Conservatismo modello'
-        }</strong></div>
-      </div>
-    </div>
-
-    <!-- Esposizioni fattoriali con barre -->
-    <div class="sec-label" data-info-id="info-quant-factor" style="margin-bottom:12px">Esposizione Fattoriale (β del portafoglio)</div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px">
-      ${['MKT','SMB','HML','RMW','CMA','MOM'].map(f => {
+        }</strong></div> </div> </div> <!-- Esposizioni fattoriali con barre --> <div class="sec-label" data-info-id="info-quant-factor" style="margin-bottom:12px">Esposizione Fattoriale (β del portafoglio)</div> <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px"> ${['MKT','SMB','HML','RMW','CMA','MOM'].map(f => {
         const meta = FACTOR_META[f];
         const beta = exposure[f];
         const contrib = decomp.contributions[f];
@@ -1500,75 +1420,26 @@ function _renderFactorView() {
         const positive = pct >= 0;
         const barW = Math.abs(pct);
         return `
-          <div style="margin-bottom:14px;font-size:12.5px">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;flex-wrap:wrap">
-              <span><strong style="color:${meta.color}">${meta.name}</strong> <span style="color:var(--text3)">(β = ${fmtBeta(beta)})</span></span>
-              <span style="font-family:'DM Mono',monospace;color:${contrib >= 0 ? meta.color : 'var(--red)'};font-weight:600">${fmt(contrib)}/a</span>
-            </div>
-            <div style="position:relative;height:8px;background:var(--border2);border-radius:4px;overflow:hidden">
-              <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(0,0,0,.25)"></div>
-              <div style="position:absolute;${positive ? 'left:33.33%' : `right:${100-33.33}%`};top:0;bottom:0;width:${barW * 0.667}%;background:${meta.color};border-radius:4px;transition:width .4s ease"></div>
-            </div>
-            <div style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5">${meta.desc}</div>
-          </div>`;
+          <div style="margin-bottom:14px;font-size:12.5px"> <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px;flex-wrap:wrap"> <span><strong style="color:${meta.color}">${meta.name}</strong> <span style="color:var(--text3)">(β = ${fmtBeta(beta)})</span></span> <span style="font-family:'DM Mono',monospace;color:${contrib >= 0 ? meta.color : 'var(--red)'};font-weight:600">${fmt(contrib)}/a</span> </div> <div style="position:relative;height:8px;background:var(--border2);border-radius:4px;overflow:hidden"> <div style="position:absolute;left:33.33%;top:0;bottom:0;width:1px;background:rgba(0,0,0,.25)"></div> <div style="position:absolute;${positive ? 'left:33.33%' : `right:${100-33.33}%`};top:0;bottom:0;width:${barW * 0.667}%;background:${meta.color};border-radius:4px;transition:width .4s ease"></div> </div> <div style="font-size:11px;color:var(--text3);margin-top:5px;line-height:1.5">${meta.desc}</div> </div>`;
       }).join('')}
-    </div>
-
-    <!-- Waterfall del rendimento atteso -->
-    <div class="sec-label" style="margin-bottom:12px">Decomposizione del Rendimento Atteso (waterfall)</div>
-    <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px">
-      <div style="position:relative;height:300px"><canvas id="quantFactorChart"></canvas></div>
-    </div>
-
-    <!-- Tabella loadings per asset class -->
-    <div class="sec-label" style="margin-bottom:12px">Loadings Fattoriali per Asset Class</div>
-    <div class="tbl-outer" style="margin-bottom:16px">
-      <table>
-        <thead><tr>
-          <th style="text-align:left">Asset Class</th>
-          <th>Peso</th>
-          <th>MKT</th><th>SMB</th><th>HML</th><th>RMW</th><th>CMA</th><th>MOM</th>
-        </tr></thead>
-        <tbody>
-          ${tableRows.map(r => `
-            <tr>
-              <td style="text-align:left">${r.label}</td>
-              <td><strong>${r.weight.toFixed(1)}%</strong></td>
-              ${['MKT','SMB','HML','RMW','CMA','MOM'].map(f => {
+    </div> <!-- Waterfall del rendimento atteso --> <div class="sec-label" style="margin-bottom:12px">Decomposizione del Rendimento Atteso (waterfall)</div> <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:18px"> <div style="position:relative;height:300px"><canvas id="quantFactorChart"></canvas></div> </div> <!-- Tabella loadings per asset class --> <div class="sec-label" style="margin-bottom:12px">Loadings Fattoriali per Asset Class</div> <div class="tbl-outer" style="margin-bottom:16px"> <table> <thead><tr> <th style="text-align:left">Asset Class</th> <th>Peso</th> <th>MKT</th><th>SMB</th><th>HML</th><th>RMW</th><th>CMA</th><th>MOM</th> </tr></thead> <tbody> ${tableRows.map(r => `
+            <tr> <td style="text-align:left">${r.label}</td> <td><strong>${r.weight.toFixed(1)}%</strong></td> ${['MKT','SMB','HML','RMW','CMA','MOM'].map(f => {
                 const v = r[f];
                 const c = Math.abs(v) < 0.05 ? 'var(--text3)' :
-                          v >  0.3 ? FACTOR_META[f].color :
-                          v >  0   ? 'var(--text2)' : 'var(--red)';
+                          v > 0.3 ? FACTOR_META[f].color :
+                          v > 0   ? 'var(--text2)' : 'var(--red)';
                 return `<td style="color:${c};font-family:'DM Mono',monospace;font-weight:${Math.abs(v) >= 0.3 ? 600 : 400}">${fmtBeta(v)}</td>`;
               }).join('')}
-            </tr>
-          `).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Premi fattoriali usati -->
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text3);line-height:1.6">
-      <strong style="color:var(--text2)">Premi fattoriali forward-looking:</strong>
-      RF=${(FACTOR_PREMIA.RF*100).toFixed(1)}% ·
+            </tr> `).join('')}
+        </tbody> </table> </div> <!-- Premi fattoriali usati --> <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text3);line-height:1.6"> <strong style="color:var(--text2)">Premi fattoriali forward-looking:</strong>RF=${(FACTOR_PREMIA.RF*100).toFixed(1)}% ·
       MKT=${(FACTOR_PREMIA.MKT*100).toFixed(1)}% ·
       SMB=${(FACTOR_PREMIA.SMB*100).toFixed(1)}% ·
       HML=${(FACTOR_PREMIA.HML*100).toFixed(1)}% ·
       RMW=${(FACTOR_PREMIA.RMW*100).toFixed(1)}% ·
       CMA=${(FACTOR_PREMIA.CMA*100).toFixed(1)}% ·
       MOM=${(FACTOR_PREMIA.MOM*100).toFixed(1)}%
-      <br><span style="font-size:11px">Calibrati su Fama-French Data Library 1970-2024, scontati per affollamento post-pubblicazione e mean-reversion.</span>
-    </div>
-
-    <!-- Note interpretative -->
-    <div class="quant-note quant-note-ok" style="line-height:1.75">
-      <strong>Come leggere la decomposizione:</strong><br>
-      • <strong>Risk-free (${fmt(decomp.baseline)}/a)</strong> = rendimento garantito da cash/T-Bills.<br>
-      • <strong>Premio fattoriale (${fmt(decomp.fromFactors)}/a)</strong> = somma dei contributi ai 6 fattori azionari accademici (Fama-French 5 + Momentum). È il rendimento "spiegato" dal modello.<br>
-      • <strong>Alpha (${fmt(decomp.alpha)}/a)</strong> = ciò che il modello non spiega. Per portafogli con bond/oro è normalmente positivo (term premium, gold premium). Per portafogli equity puri è tipicamente vicino a 0 o lievemente negativo (riflesso del conservatismo nelle stime forward-looking).<br><br>
-      <strong>Interpretazione del tuo portafoglio:</strong> ${_interpretFactorProfile(exposure, decomp)}
-    </div>
-  `;
+      <br><span style="font-size:11px">Calibrati su Fama-French Data Library 1970-2024, scontati per affollamento post-pubblicazione e mean-reversion.</span> </div> <!-- Note interpretative --> <div class="quant-note quant-note-ok" style="line-height:1.75"> <strong>Come leggere la decomposizione:</strong><br> • <strong>Risk-free (${fmt(decomp.baseline)}/a)</strong> = rendimento garantito da cash/T-Bills.<br> • <strong>Premio fattoriale (${fmt(decomp.fromFactors)}/a)</strong> = somma dei contributi ai 6 fattori azionari accademici (Fama-French 5 + Momentum). È il rendimento "spiegato" dal modello.<br> • <strong>Alpha (${fmt(decomp.alpha)}/a)</strong> = ciò che il modello non spiega. Per portafogli con bond/oro è normalmente positivo (term premium, gold premium). Per portafogli equity puri è tipicamente vicino a 0 o lievemente negativo (riflesso del conservatismo nelle stime forward-looking).<br><br> <strong>Interpretazione del tuo portafoglio:</strong> ${_interpretFactorProfile(exposure, decomp)}
+    </div> `;
 
   _renderFactorWaterfall(decomp);
 }
@@ -1576,8 +1447,7 @@ function _renderFactorView() {
 // ── Override di switchQuantMode per gestire la modalità 'factor' ───────────
 window.switchQuantMode = function(mode) {
   _efState.mode = mode;
-  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.qm === mode));
+  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.qm === mode));
   const frontierSection = document.getElementById('quantFrontierSection');
   const varSection      = document.getElementById('quantVaRSection');
   const factorSection   = document.getElementById('quantFactorSection');
@@ -1612,13 +1482,13 @@ window.FACTOR_PREMIA         = FACTOR_PREMIA;
 // ════════════════════════════════════════════════════════════════════════════
 
 const OBJ_META = {
-  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '🌟', color: '#9e1b32',
+  max_sharpe:    { label: 'Massimo Sharpe Ratio', icon: '', color: '#96151d',
                    desc: 'Massimizza (μ−RF)/σ — miglior rendimento per unità di rischio totale.' },
-  min_variance:  { label: 'Minima Varianza',       icon: '🔰', color: '#1e8e3e',
+  min_variance:  { label: 'Minima Varianza',       icon: '', color: '#1e8e3e',
                    desc: 'Minimizza σ — portafoglio difensivo a varianza ridotta.' },
-  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '🔻', color: '#e37400',
+  max_sortino:   { label: 'Massimo Sortino Ratio', icon: '', color: '#e37400',
                    desc: 'Massimizza (μ−RF)/σ_down — penalizza solo la volatilità negativa (downside).' },
-  risk_parity:   { label: 'Risk Parity',           icon: '⚖️', color: '#9334e6',
+  risk_parity:   { label: 'Risk Parity',           icon: '', color: '#9334e6',
                    desc: 'Ogni asset contribuisce in egual misura al rischio totale (equal risk contribution).' },
 };
 
@@ -1728,14 +1598,14 @@ function _applyConstraints(w, acKeys, bounds, maxEquity) {
         changed = true;
       } else {
         // Nessun asset libero: rinormalizza tutto (fallback)
-        if (sum > 0) result = result.map(x => Math.max(0, x) / sum);
+        if (sum > 0) result = result.map(x =>Math.max(0, x) / sum);
       }
     }
     if (!changed) break;
   }
   // Normalizzazione finale di sicurezza
   const fsum = result.reduce((a, b) => a + Math.max(0, b), 0);
-  if (fsum > 0) result = result.map(x => Math.max(0, x) / fsum);
+  if (fsum > 0) result = result.map(x =>Math.max(0, x) / fsum);
   return result;
 }
 
@@ -1809,7 +1679,7 @@ function _solveRiskParity(acKeys, bounds, maxEquity) {
     let newW = w.map((wi, i) => sigmaW[i] > 0 ? wi * (1 - damping) + damping * target / sigmaW[i] : wi);
     // Normalizza
     const s = newW.reduce((a, b) => a + Math.max(0, b), 0);
-    if (s > 0) newW = newW.map(x => Math.max(0, x) / s);
+    if (s > 0) newW = newW.map(x =>Math.max(0, x) / s);
     // Applica vincoli
     newW = _applyConstraints(newW, acKeys, bounds, maxEquity);
     // Check convergenza
@@ -1853,7 +1723,7 @@ function runOptimizer(acKeys, objective, bounds, maxEquity, ter, opts) {
   // 2. Local search adattiva (perturbazione + accettazione greedy)
   for (let iter = 0; iter < localIters; iter++) {
     const step = 0.08 * (1 - iter / localIters);  // step decrescente
-    const trial = bestW.map(wi => Math.max(0, wi + (Math.random() - 0.5) * step));
+    const trial = bestW.map(wi =>Math.max(0, wi + (Math.random() - 0.5) * step));
     const sum = trial.reduce((a, b) => a + b, 0);
     if (sum <= 0) continue;
     const wNorm = trial.map(x => x / sum);
@@ -1928,109 +1798,39 @@ function _renderOptimizerView() {
       ? `<strong>${PORT[state.portfolio]?.label || state.portfolio}</strong>`
       : _optCompositeSlots.map(s => `<strong>${ASSET_CLASSES[s.ac].label}</strong>`).join(', ');
     el.innerHTML = `
-      <div style="background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:20px 24px;margin:8px 0;line-height:1.7">
-        <div style="font-size:13.5px;font-weight:700;color:#b8860b;margin-bottom:8px">🔋 Optimizer non disponibile per questo portafoglio</div>
-        <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">
-          Il portafoglio ${names} opera con <strong>leva implicita</strong>
-          (esposizione notional &gt;100%). L'optimizer di Markowitz lavora con pesi che sommano
+      <div style="background:rgba(230,138,0,.07);border:1px solid rgba(230,138,0,.30);border-radius:var(--radius-sm);padding:20px 24px;margin:8px 0;line-height:1.7"> <div style="font-size:13.5px;font-weight:700;color:#b8860b;margin-bottom:8px">Optimizer non disponibile per questo portafoglio</div> <div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">Il portafoglio ${names} opera con <strong>leva implicita</strong> (esposizione notional &gt;100%). L'optimizer di Markowitz lavora con pesi che sommano
           al 100% e non può modellare la leva né il suo costo di finanziamento: i risultati
           sarebbero riferiti ai sottostanti senza leva, un portafoglio diverso da quello selezionato.
-        </div>
-        <div style="font-size:12px;color:var(--text3)">
-          Usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong> per analizzare
+        </div> <div style="font-size:12px;color:var(--text3)">Usa il <strong>Simulatore</strong> o il <strong>Monte Carlo Avanzato</strong> per analizzare
           questo portafoglio — modellano correttamente la leva e il costo di finanziamento.
           Nota: anche la <strong>Frontiera Efficiente</strong> e il <strong>VaR/CVaR</strong> di questa scheda espandono i composite nei sottostanti ma <strong>normalizzano i pesi al 100%</strong>, quindi non riflettono il rischio amplificato dalla leva (notional &gt;100%): per quei portafogli il rischio reale è superiore a quanto mostrato qui. Il riferimento corretto resta il Simulatore.
-        </div>
-      </div>`;
+        </div> </div>`;
     return;
   }
 
   el.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-      <!-- Pannello SINISTRO: asset + vincoli -->
-      <div class="sec" style="margin-bottom:0;padding:14px">
-        <div class="sec-label" style="margin-bottom:10px">1. Asset Class da includere</div>
-        <select id="optAssetSelector" multiple
-          style="width:100%;height:170px;font-size:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:6px;background:var(--bg);color:var(--text);margin-bottom:8px;font-family:'DM Sans',sans-serif">
-        </select>
-        <div style="font-size:11px;color:var(--text3);margin-bottom:14px">
-          Ctrl/Cmd+click per selezione multipla. Min 2, max 12 asset.
-        </div>
-
-        <div class="sec-label" style="margin-bottom:10px">2. Vincoli per asset (min %–max %)</div>
-        <div id="optBoundsContainer" style="max-height:280px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px;margin-bottom:14px">
-          <!-- popolato dinamicamente -->
-        </div>
-
-        <div class="sec-label" style="margin-bottom:10px">3. Vincoli di categoria</div>
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px">
-          <input type="checkbox" id="optEnableMaxEq" ${_optState.enableMaxEquity ? 'checked' : ''} style="cursor:pointer">
-          <label for="optEnableMaxEq" style="cursor:pointer">Limita totale azionario a max</label>
-          <input type="number" id="optMaxEquityInput" min="0" max="100" step="5"
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px"> <!-- Pannello SINISTRO: asset + vincoli --> <div class="sec" style="margin-bottom:0;padding:14px"> <div class="sec-label" style="margin-bottom:10px">1. Asset Class da includere</div> <select id="optAssetSelector" multiple
+          style="width:100%;height:170px;font-size:12px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:6px;background:var(--bg);color:var(--text);margin-bottom:8px;font-family:'DM Sans',sans-serif"> </select> <div style="font-size:11px;color:var(--text3);margin-bottom:14px">Ctrl/Cmd+click per selezione multipla. Min 2, max 12 asset.
+        </div> <div class="sec-label" style="margin-bottom:10px">2. Vincoli per asset (min %–max %)</div> <div id="optBoundsContainer" style="max-height:280px;overflow-y:auto;border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px;margin-bottom:14px"> <!-- popolato dinamicamente --> </div> <div class="sec-label" style="margin-bottom:10px">3. Vincoli di categoria</div> <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:12.5px"> <input type="checkbox" id="optEnableMaxEq" ${_optState.enableMaxEquity ? 'checked' : ''} style="cursor:pointer"> <label for="optEnableMaxEq" style="cursor:pointer">Limita totale azionario a max</label> <input type="number" id="optMaxEquityInput" min="0" max="100" step="5"
             value="${Math.round(_optState.maxEquity * 100)}"
             style="width:60px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;text-align:right"
             ${_optState.enableMaxEquity ? '' : 'disabled'}> %
-        </div>
-        <div style="font-size:11px;color:var(--text3)">Si applica alla somma di tutte le asset class azionarie (eq + fattori).</div>
-      </div>
-
-      <!-- Pannello DESTRO: obiettivo + run -->
-      <div class="sec" style="margin-bottom:0;padding:14px">
-        <div class="sec-label" data-info-id="info-quant-optimizer" style="margin-bottom:10px">4. Funzione obiettivo</div>
-        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px">
-          ${Object.entries(OBJ_META).map(([key, m]) => `
+        </div> <div style="font-size:11px;color:var(--text3)">Si applica alla somma di tutte le asset class azionarie (eq + fattori).</div> </div> <!-- Pannello DESTRO: obiettivo + run --> <div class="sec" style="margin-bottom:0;padding:14px"> <div class="sec-label" data-info-id="info-quant-optimizer" style="margin-bottom:10px">4. Funzione obiettivo</div> <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px"> ${Object.entries(OBJ_META).map(([key, m]) => `
             <button class="gbtn ${_optState.objective === key ? 'a-blue' : ''}"
               data-obj="${key}" onclick="optSetObjective('${key}')"
-              style="text-align:left;padding:10px 12px;font-size:12.5px">
-              <strong>${m.icon} ${m.label}</strong>
-              <div style="font-size:11px;color:var(--text3);font-weight:400;margin-top:3px;line-height:1.4">${m.desc}</div>
-            </button>
-          `).join('')}
-        </div>
-
-        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12.5px">
-          <span style="color:var(--text2)">TER applicato:</span>
-          <input type="number" id="optTerInput" min="0" max="3" step="0.05"
+              style="text-align:left;padding:10px 12px;font-size:12.5px"> <strong>${m.icon} ${m.label}</strong> <div style="font-size:11px;color:var(--text3);font-weight:400;margin-top:3px;line-height:1.4">${m.desc}</div> </button> `).join('')}
+        </div> <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;font-size:12.5px"> <span style="color:var(--text2)">TER applicato:</span> <input type="number" id="optTerInput" min="0" max="3" step="0.05"
             value="${_optState.ter.toFixed(2)}"
             style="width:70px;padding:4px 6px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:12px;text-align:right"> %
-        </div>
-
-        <div style="margin-bottom:14px;font-size:12.5px">
-          <div style="color:var(--text2);margin-bottom:6px">Base rendimenti attesi:</div>
-          <div style="display:flex;gap:6px">
-            <button class="gbtn ${_optState.returnBasis === 'forward' ? 'a-blue' : ''}"
-              onclick="optSetReturnBasis('forward')" style="flex:1;padding:8px;font-size:11.5px">
-              <strong>Forward-looking</strong>
-              <div style="font-size:10px;color:var(--text3);font-weight:400;margin-top:2px">μ prospettici (CAPE-adjusted)</div>
-            </button>
-            <button class="gbtn ${_optState.returnBasis === 'historical' ? 'a-blue' : ''}"
-              onclick="optSetReturnBasis('historical')" style="flex:1;padding:8px;font-size:11.5px">
-              <strong>Storici</strong>
-              <div style="font-size:10px;color:var(--text3);font-weight:400;margin-top:2px">CAGR 1970-2024</div>
-            </button>
-          </div>
-          <div style="font-size:10.5px;color:var(--text3);margin-top:6px;line-height:1.5">
-            ${_optState.returnBasis === 'forward'
-              ? '⚠️ Rendimenti forward conservativi + volatilità storiche → Sharpe più bassi ma realistici per il futuro.'
-              : 'ℹ️ Coerenza rendimento-volatilità storica → Sharpe più alti, ma i CAGR passati sono spesso non ripetibili (tassi in calo 1981-2021, de-rating valutazioni).'}
-          </div>
-        </div>
-
-        <button id="optRunBtn" onclick="optRunOptimization()"
-          style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">
-          📈 Esegui Ottimizzazione
-        </button>
-        <div id="optStatus" style="margin-top:10px;font-size:11.5px;color:var(--text3);text-align:center;min-height:16px"></div>
-      </div>
-    </div>
-
-    <!-- Output -->
-    <div id="optResultContainer"></div>
-
-    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin-top:16px;font-size:12px;color:var(--text3);line-height:1.7">
-      <strong>Metodologia:</strong> 8.000 portafogli casuali Dirichlet che rispettano i vincoli, seguiti da 300 iterazioni di local search adattiva (random perturbation greedy). Per Risk Parity: iterazione fixed-point con damping 0.5 e proiezione sui vincoli (max 300 iter). Rendimenti attesi e covarianze basati su dati storici 1970-2024 calibrati. Il risultato è ottimale dato il modello statistico — la realtà può differire (instabilità di Markowitz, errore di stima sui rendimenti attesi).
-    </div>
-  `;
+        </div> <div style="margin-bottom:14px;font-size:12.5px"> <div style="color:var(--text2);margin-bottom:6px">Base rendimenti attesi:</div> <div style="display:flex;gap:6px"> <button class="gbtn ${_optState.returnBasis === 'forward' ? 'a-blue' : ''}"
+              onclick="optSetReturnBasis('forward')" style="flex:1;padding:8px;font-size:11.5px"> <strong>Forward-looking</strong> <div style="font-size:10px;color:var(--text3);font-weight:400;margin-top:2px">μ prospettici (CAPE-adjusted)</div> </button> <button class="gbtn ${_optState.returnBasis === 'historical' ? 'a-blue' : ''}"
+              onclick="optSetReturnBasis('historical')" style="flex:1;padding:8px;font-size:11.5px"> <strong>Storici</strong> <div style="font-size:10px;color:var(--text3);font-weight:400;margin-top:2px">CAGR 1970-2024</div> </button> </div> <div style="font-size:10.5px;color:var(--text3);margin-top:6px;line-height:1.5"> ${_optState.returnBasis === 'forward'
+              ? 'Rendimenti forward conservativi + volatilità storiche → Sharpe più bassi ma realistici per il futuro.'
+              : 'Coerenza rendimento-volatilità storica → Sharpe più alti, ma i CAGR passati sono spesso non ripetibili (tassi in calo 1981-2021, de-rating valutazioni).'}
+          </div> </div> <button id="optRunBtn" onclick="optRunOptimization()"
+          style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">Esegui Ottimizzazione
+        </button> <div id="optStatus" style="margin-top:10px;font-size:11.5px;color:var(--text3);text-align:center;min-height:16px"></div> </div> </div> <!-- Output --> <div id="optResultContainer"></div> <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin-top:16px;font-size:12px;color:var(--text3);line-height:1.7"> <strong>Metodologia:</strong> 8.000 portafogli casuali Dirichlet che rispettano i vincoli, seguiti da 300 iterazioni di local search adattiva (random perturbation greedy). Per Risk Parity: iterazione fixed-point con damping 0.5 e proiezione sui vincoli (max 300 iter). Rendimenti attesi e covarianze basati su dati storici 1970-2024 calibrati. Il risultato è ottimale dato il modello statistico — la realtà può differire (instabilità di Markowitz, errore di stima sui rendimenti attesi).
+    </div> `;
 
   _populateOptAssetSelector();
   _renderOptBounds();
@@ -2057,16 +1857,14 @@ function _populateOptAssetSelector() {
     real: 'Real Assets', cash: 'Liquidità',
   };
   sel.innerHTML = Object.entries(cats).map(([cat, items]) => `
-    <optgroup label="${catLabels[cat] || cat}">
-      ${items.map(({ key, ac }) => `<option value="${key}">${ac.emoji || ''} ${ac.label} (μ=${((ac.mu||0)*100).toFixed(1)}% σ=${((ac.vol||0)*100).toFixed(1)}%)</option>`).join('')}
-    </optgroup>
-  `).join('');
+    <optgroup label="${catLabels[cat] || cat}"> ${items.map(({ key, ac }) => `<option value="${key}">${ac.label} (μ=${((ac.mu||0)*100).toFixed(1)}% σ=${((ac.vol||0)*100).toFixed(1)}%)</option>`).join('')}
+    </optgroup> `).join('');
   for (const opt of sel.options) opt.selected = _optState.assets.includes(opt.value);
 
   sel.onchange = function() {
     const newAssets = Array.from(sel.selectedOptions).map(o => o.value);
-    if (newAssets.length < 2) { _flashOptToast('⚠️ Seleziona almeno 2 asset class', 'orange'); return; }
-    if (newAssets.length > 12) { _flashOptToast('⚠️ Massimo 12 asset class', 'orange'); return; }
+    if (newAssets.length < 2) { _flashOptToast('Seleziona almeno 2 asset class', 'orange'); return; }
+    if (newAssets.length > 12) { _flashOptToast('Massimo 12 asset class', 'orange'); return; }
     _optState.assets = newAssets;
     // Rimuovi bounds per asset deselezionati
     for (const k of Object.keys(_optState.bounds)) {
@@ -2093,20 +1891,13 @@ function _renderOptBounds() {
     const b = _optState.bounds[k] || { min: 0, max: 1 };
     const isEq = _isEquityAsset(k);
     return `
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border2);font-size:12px">
-        <span style="flex:1;min-width:120px;color:${isEq ? 'var(--blue)' : 'var(--text2)'};${isEq ? 'font-weight:600' : ''}">${ac?.emoji || ''} ${ac?.label || k}</span>
-        <span style="color:var(--text3);font-size:11px">min</span>
-        <input type="number" min="0" max="100" step="5"
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 4px;border-bottom:1px solid var(--border2);font-size:12px"> <span style="flex:1;min-width:120px;color:${isEq ? 'var(--blue)' : 'var(--text2)'};${isEq ? 'font-weight:600' : ''}">${ac?.label || k}</span> <span style="color:var(--text3);font-size:11px">min</span> <input type="number" min="0" max="100" step="5"
           value="${Math.round(b.min * 100)}"
           onchange="optSetBound('${k}','min',this.value)"
-          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right">
-        <span style="color:var(--text3);font-size:11px">max</span>
-        <input type="number" min="0" max="100" step="5"
+          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right"> <span style="color:var(--text3);font-size:11px">max</span> <input type="number" min="0" max="100" step="5"
           value="${Math.round(b.max * 100)}"
           onchange="optSetBound('${k}','max',this.value)"
-          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right">
-        <span style="color:var(--text3);font-size:11px">%</span>
-      </div>`;
+          style="width:55px;padding:3px 5px;border:1px solid var(--border);border-radius:4px;font-family:'DM Mono',monospace;font-size:11px;text-align:right"> <span style="color:var(--text3);font-size:11px">%</span> </div>`;
   }).join('');
 }
 
@@ -2120,8 +1911,7 @@ window.optSetBound = function(key, type, val) {
 
 window.optSetObjective = function(obj) {
   _optState.objective = obj;
-  document.querySelectorAll('#quantOptimizerContent [data-obj]').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.obj === obj));
+  document.querySelectorAll('#quantOptimizerContent [data-obj]').forEach(b => b.classList.toggle('a-blue', b.dataset.obj === obj));
 };
 
 window.optSetReturnBasis = function(basis) {
@@ -2153,10 +1943,10 @@ window.optRunOptimization = function() {
   const btn = document.getElementById('optRunBtn');
   const status = document.getElementById('optStatus');
   if (!_optState.assets.length || _optState.assets.length < 2) {
-    if (status) { status.style.color = 'var(--red)'; status.textContent = '⚠️ Seleziona almeno 2 asset class'; }
+    if (status) { status.style.color = 'var(--red)'; status.textContent = 'Seleziona almeno 2 asset class'; }
     return;
   }
-  if (btn) { btn.disabled = true; btn.textContent = '⏳ Ottimizzazione in corso...'; btn.style.opacity = '0.7'; }
+  if (btn) { btn.disabled = true; btn.textContent = 'Ottimizzazione in corso...'; btn.style.opacity = '0.7'; }
   if (status) { status.style.color = 'var(--text3)'; status.textContent = 'Esecuzione 8.000 simulazioni + local search...'; }
 
   // Esegue in setTimeout per permettere repaint UI
@@ -2168,19 +1958,19 @@ window.optRunOptimization = function() {
       const dt = ((performance.now() - t0) / 1000).toFixed(2);
 
       if (result.error) {
-        if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ ' + result.error; }
-        if (btn) { btn.disabled = false; btn.textContent = '📈 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+        if (status) { status.style.color = 'var(--red)'; status.textContent = '' + result.error; }
+        if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
         return;
       }
 
       _optState.result = result;
       if (status) { status.style.color = 'var(--green)'; status.textContent = `✓ Completato in ${dt}s`; }
-      if (btn) { btn.disabled = false; btn.textContent = '📈 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
       _renderOptResult();
     } catch (e) {
       console.error('Optimizer error:', e);
-      if (status) { status.style.color = 'var(--red)'; status.textContent = '❌ Errore: ' + e.message; }
-      if (btn) { btn.disabled = false; btn.textContent = '📈 Esegui Ottimizzazione'; btn.style.opacity = '1'; }
+      if (status) { status.style.color = 'var(--red)'; status.textContent = 'Errore: ' + e.message; }
+      if (btn) { btn.disabled = false; btn.textContent = 'Esegui Ottimizzazione'; btn.style.opacity = '1'; }
     }
   }, 50);
 };
@@ -2206,110 +1996,43 @@ function _renderOptResult() {
   // Tabella allocazione
   const allocRows = _optState.assets.map((k, i) => {
     const ac = ASSET_CLASSES[k];
-    return { key: k, label: `${ac?.emoji || ''} ${ac?.label || k}`, w: r.weights[i], rc: rc[i] };
+    return { key: k, label: `${ac?.label || k}`, w: r.weights[i], rc: rc[i] };
   }).sort((a, b) => b.w - a.w);
 
   el.innerHTML = `
-    <div style="background:linear-gradient(135deg,${objMeta.color}15 0%,${objMeta.color}05 100%);border:1.5px solid ${objMeta.color};border-radius:var(--radius);padding:18px;margin-bottom:14px">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap">
-        <span style="font-size:24px">${objMeta.icon}</span>
-        <div>
-          <div style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.06em">Portafoglio ottimale</div>
-          <div style="font-size:16px;font-weight:700;color:${objMeta.color}">${objMeta.label}</div>
-        </div>
-        <button onclick="optApplyToSimulator()"
-          style="margin-left:auto;padding:9px 16px;background:${objMeta.color};color:#fff;border:none;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif">
-          ✓ Applica al Simulatore
-        </button>
-      </div>
-
-      <!-- KPI -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
-        ${[
+    <div style="background:linear-gradient(135deg,${objMeta.color}15 0%,${objMeta.color}05 100%);border:1.5px solid ${objMeta.color};border-radius:var(--radius);padding:18px;margin-bottom:14px"> <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap"> <span style="font-size:24px">${objMeta.icon}</span> <div> <div style="font-size:11px;color:var(--text3);text-transform:uppercase;font-weight:700;letter-spacing:.06em">Portafoglio ottimale</div> <div style="font-size:16px;font-weight:700;color:${objMeta.color}">${objMeta.label}</div> </div> <button onclick="optApplyToSimulator()"
+          style="margin-left:auto;padding:9px 16px;background:${objMeta.color};color:#fff;border:none;border-radius:var(--radius-sm);font-size:12.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif"> ✓ Applica al Simulatore
+        </button> </div> <!-- KPI --> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px"> ${[
           { l: 'Rendimento atteso', v: fmt(r.mu) + '/a', c: 'var(--blue)' },
           { l: 'Volatilità (σ)',     v: fmtP(r.sigma) + '/a', c: 'var(--orange)' },
           { l: 'Sharpe ratio',       v: sharpe.toFixed(2), c: sharpe > 0.5 ? 'var(--green)' : 'var(--text)' },
           { l: 'Sortino ratio',      v: sortino.toFixed(2), c: sortino > 0.7 ? 'var(--green)' : 'var(--text)' },
           { l: 'Rendimento reale*',  v: fmt(r.mu - (state.inflBottom || 2) / 100) + '/a', c: 'var(--teal)' },
         ].map(k => `
-          <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center">
-            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
-            <div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:${k.c}">${k.v}</div>
-          </div>`).join('')}
-      </div>
-      <div style="font-size:10.5px;color:var(--text3);margin-top:6px">* Rendimento reale = atteso − inflazione attesa (${state.inflBottom?.toFixed(1) || '2.0'}%). Il "Rendimento atteso" è nominale (lordo di inflazione): applicando al Simulatore, l'inflazione viene scontata una sola volta nella proiezione.${_optState.returnBasis === 'historical' ? ' <strong style="color:var(--orange)">Base storica attiva</strong>: il Simulatore userà i rendimenti forward-looking (più prudenti), quindi mostrerà un rendimento atteso inferiore a quello qui sopra — i pesi però restano identici.' : ''}</div>
-      <div style="font-size:10.5px;color:var(--text3);margin-top:5px;line-height:1.55;background:var(--bg);border-radius:var(--radius-sm);padding:7px 10px;border:1px solid var(--border)">
-        ⓘ <strong>Ottimizzazione parametrica:</strong> Markowitz lavora su rendimenti attesi forward-looking, volatilità e correlazioni <em>modellate</em> — non su una serie storica di prezzi. I risultati non sono un backtest: indicano l'allocazione efficiente secondo i parametri del modello, non ciò che sarebbe accaduto storicamente. Per asset come trend following e carry (incluso il Carry Commodities) questo è l'unico approccio possibile, poiché non esiste una serie storica mensile reale.
-      </div>
-    </div>
-
-    <!-- Grafici e tabella allocazione -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
-      <div class="sec" style="margin-bottom:0">
-        <div class="sec-label" style="margin-bottom:10px">Allocazione Ottimale</div>
-        <div style="position:relative;height:280px"><canvas id="optPieChart"></canvas></div>
-      </div>
-      <div class="sec" style="margin-bottom:0">
-        <div class="sec-label" style="margin-bottom:10px">Risk Contribution per Asset</div>
-        <div style="position:relative;height:280px"><canvas id="optRcChart"></canvas></div>
-        <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5">
-          Mostra quanto ogni asset contribuisce al rischio totale del portafoglio (σ²). Per Risk Parity → tutte le barre uguali.
-        </div>
-      </div>
-    </div>
-
-    <!-- Tabella dettagliata -->
-    <div class="tbl-outer" style="margin-bottom:14px">
-      <table>
-        <thead><tr>
-          <th style="text-align:left">Asset Class</th>
-          <th>Peso Ottimale</th>
-          <th>Risk Contribution</th>
-          <th>μ (asset)</th>
-          <th>σ (asset)</th>
-          <th>Vincolo applicato</th>
-        </tr></thead>
-        <tbody>
-          ${allocRows.map(row => {
+          <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;text-align:center"> <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div> <div style="font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:${k.c}">${k.v}</div> </div>`).join('')}
+      </div> <div style="font-size:10.5px;color:var(--text3);margin-top:6px">* Rendimento reale = atteso − inflazione attesa (${state.inflBottom?.toFixed(1) || '2.0'}%). Il "Rendimento atteso" è nominale (lordo di inflazione): applicando al Simulatore, l'inflazione viene scontata una sola volta nella proiezione.${_optState.returnBasis === 'historical' ? ' <strong style="color:var(--orange)">Base storica attiva</strong>: il Simulatore userà i rendimenti forward-looking (più prudenti), quindi mostrerà un rendimento atteso inferiore a quello qui sopra — i pesi però restano identici.' : ''}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:5px;line-height:1.55;background:var(--bg);border-radius:var(--radius-sm);padding:7px 10px;border:1px solid var(--border)"> ⓘ <strong>Ottimizzazione parametrica:</strong>Markowitz lavora su rendimenti attesi forward-looking, volatilità e correlazioni <em>modellate</em> — non su una serie storica di prezzi. I risultati non sono un backtest: indicano l'allocazione efficiente secondo i parametri del modello, non ciò che sarebbe accaduto storicamente. Per asset come trend following e carry (incluso il Carry Commodities) questo è l'unico approccio possibile, poiché non esiste una serie storica mensile reale.
+      </div> </div> <!-- Grafici e tabella allocazione --> <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px"> <div class="sec" style="margin-bottom:0"> <div class="sec-label" style="margin-bottom:10px">Allocazione Ottimale</div> <div style="position:relative;height:280px"><canvas id="optPieChart"></canvas></div> </div> <div class="sec" style="margin-bottom:0"> <div class="sec-label" style="margin-bottom:10px">Risk Contribution per Asset</div> <div style="position:relative;height:280px"><canvas id="optRcChart"></canvas></div> <div style="font-size:11px;color:var(--text3);margin-top:4px;line-height:1.5">Mostra quanto ogni asset contribuisce al rischio totale del portafoglio (σ²). Per Risk Parity → tutte le barre uguali.
+        </div> </div> </div> <!-- Tabella dettagliata --> <div class="tbl-outer" style="margin-bottom:14px"> <table> <thead><tr> <th style="text-align:left">Asset Class</th> <th>Peso Ottimale</th> <th>Risk Contribution</th> <th>μ (asset)</th> <th>σ (asset)</th> <th>Vincolo applicato</th> </tr></thead> <tbody> ${allocRows.map(row => {
             const ac = ASSET_CLASSES[row.key];
             const b = _optState.bounds[row.key] || { min: 0, max: 1 };
             const onMin = row.w <= b.min + 0.005;
             const onMax = row.w >= b.max - 0.005;
-            const constraintBadge = onMin && b.min > 0 ? `<span style="color:var(--orange);font-size:10.5px">⚠ vincolato a min ${(b.min*100).toFixed(0)}%</span>` :
-                                    onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px">⚠ vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
+            const constraintBadge = onMin && b.min > 0 ? `<span style="color:var(--orange);font-size:10.5px"> vincolato a min ${(b.min*100).toFixed(0)}%</span>` :
+                                    onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px"> vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
                                     `<span style="color:var(--text3);font-size:10.5px">libero (range ${(b.min*100).toFixed(0)}–${(b.max*100).toFixed(0)}%)</span>`;
             return `
-              <tr>
-                <td style="text-align:left">${row.label}</td>
-                <td><strong style="color:var(--blue)">${(row.w * 100).toFixed(1)}%</strong></td>
-                <td style="color:var(--purple)">${(row.rc * 100).toFixed(1)}%</td>
-                <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td>
-                <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td>
-                <td>${constraintBadge}</td>
-              </tr>`;
+              <tr> <td style="text-align:left">${row.label}</td> <td><strong style="color:var(--blue)">${(row.w * 100).toFixed(1)}%</strong></td> <td style="color:var(--purple)">${(row.rc * 100).toFixed(1)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td> <td>${constraintBadge}</td> </tr>`;
           }).join('')}
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Confronto vs portafoglio corrente -->
-    ${curr ? `
-    <div class="sec" style="margin-bottom:0">
-      <div class="sec-label" style="margin-bottom:10px">Confronto vs Portafoglio Corrente</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
-        ${[
+        </tbody> </table> </div> <!-- Confronto vs portafoglio corrente --> ${curr ? `
+    <div class="sec" style="margin-bottom:0"> <div class="sec-label" style="margin-bottom:10px">Confronto vs Portafoglio Corrente</div> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px"> ${[
           { l: 'Δ Rendimento',   v: ((r.mu - curr.mu) * 100).toFixed(2) + '%', good: r.mu > curr.mu },
           { l: 'Δ Volatilità',   v: ((r.sigma - curr.vol) * 100).toFixed(2) + '%', good: r.sigma < curr.vol },
           { l: 'Δ Sharpe',       v: (sharpe - curr.sharpe).toFixed(2), good: sharpe > curr.sharpe },
           { l: 'Sharpe Corrente', v: curr.sharpe.toFixed(2), good: null },
           { l: 'Sharpe Ottimo',   v: sharpe.toFixed(2), good: null },
         ].map(k => `
-          <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;text-align:center">
-            <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div>
-            <div style="font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:${k.good == null ? 'var(--text)' : k.good ? 'var(--green)' : 'var(--red)'}">${(k.good && !k.v.startsWith('-') ? '+' : '') + k.v}</div>
-          </div>`).join('')}
-      </div>
-    </div>` : ''}
+          <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 12px;text-align:center"> <div style="font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;letter-spacing:.05em;margin-bottom:4px">${k.l}</div> <div style="font-size:14px;font-weight:700;font-family:'DM Mono',monospace;color:${k.good == null ? 'var(--text)' : k.good ? 'var(--green)' : 'var(--red)'}">${(k.good && !k.v.startsWith('-') ? '+' : '') + k.v}</div> </div>`).join('')}
+      </div> </div>` : ''}
   `;
 
   _renderOptCharts(allocRows, rc);
@@ -2322,7 +2045,7 @@ function _renderOptCharts(allocRows, rc) {
   if (_optRcChart) { _optRcChart.destroy(); _optRcChart = null; }
 
   // Colori coerenti per asset
-  const colors = ['#9e1b32','#9334e6','#1e8e3e','#e37400','#00897b','#d93025','#fbbc04','#5f6368','#0097a7','#673ab7','#ff7043','#4caf50'];
+  const colors = ['#96151d','#9334e6','#1e8e3e','#e37400','#00897b','#d93025','#fbbc04','#5f6368','#0097a7','#673ab7','#ff7043','#4caf50'];
 
   // Pie chart allocazione
   const pieCanvas = document.getElementById('optPieChart');
@@ -2362,8 +2085,8 @@ function _renderOptCharts(allocRows, rc) {
           {
             label: 'Peso',
             data: allocRows.map(r => +(r.w * 100).toFixed(2)),
-            backgroundColor: 'rgba(158,27,50,0.6)',
-            borderColor: 'rgba(158,27,50,1)',
+            backgroundColor: 'rgba(150,21,29,0.6)',
+            borderColor: 'rgba(150,21,29,1)',
             borderWidth: 1,
           },
           {
@@ -2424,7 +2147,7 @@ window.optApplyToSimulator = function() {
 // ── Toast notification per optimizer ──────────────────────────────────────
 function _flashOptToast(msg, type) {
   type = type || 'green';
-  const colors = { green: '#1e8e3e', orange: '#e37400', red: '#d93025', blue: '#9e1b32' };
+  const colors = { green: '#1e8e3e', orange: '#e37400', red: '#d93025', blue: '#96151d' };
   const old = document.getElementById('optToast');
   if (old) old.remove();
   const el = document.createElement('div');
@@ -2443,8 +2166,7 @@ function _flashOptToast(msg, type) {
 // ── Override switchQuantMode per gestire 'optimizer' ──────────────────────
 window.switchQuantMode = function(mode) {
   _efState.mode = mode;
-  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.qm === mode));
+  document.querySelectorAll('#quantModeBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.qm === mode));
   const sections = {
     frontier:  document.getElementById('quantFrontierSection'),
     var:       document.getElementById('quantVaRSection'),

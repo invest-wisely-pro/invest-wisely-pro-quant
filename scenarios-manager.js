@@ -117,7 +117,7 @@ function _syncUIFromState() {
   const _s = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
   const _l = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
   const fmt2 = v => { const a = Math.abs(v), s = v < 0 ? '−' : ''; if (a >= 1e6) return s + '€' + (a/1e6).toFixed(2) + 'M'; if (a >= 1e3) return s + '€' + Math.round(a/1e3) + 'k'; return s + '€' + Math.round(a); };
-  const fmtN2 = v => Math.round(v).toLocaleString('it-IT');
+  const fmtN2 = v =>Math.round(v).toLocaleString('it-IT');
 
   _s('sW',          state.w);           _l('lW',          fmt2(state.w));
   _s('sP',          state.pac);         _l('lP',          '€' + fmtN2(state.pac) + '/m');
@@ -136,8 +136,7 @@ function _syncUIFromState() {
   }
 
   // Portafoglio
-  document.querySelectorAll('#allocBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-blue', b.dataset.k === state.portfolio));
+  document.querySelectorAll('#allocBtns .gbtn').forEach(b => b.classList.toggle('a-blue', b.dataset.k === state.portfolio));
 
   // Sequence risk toggle
   const seqTog  = document.getElementById('seqTog');
@@ -145,12 +144,9 @@ function _syncUIFromState() {
   if (seqTog)  seqTog.classList.toggle('on', !!state.seq.on);
   if (seqOpts) seqOpts.style.display = state.seq.on ? 'block' : 'none';
 
-  document.querySelectorAll('#sevBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-purple', b.dataset.s === state.seq.severity));
-  document.querySelectorAll('#timBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-amber', b.dataset.t === state.seq.timing));
-  document.querySelectorAll('#seqModeBtns .gbtn').forEach(b =>
-    b.classList.toggle('a-purple', b.dataset.sm === state.seq.mode));
+  document.querySelectorAll('#sevBtns .gbtn').forEach(b => b.classList.toggle('a-purple', b.dataset.s === state.seq.severity));
+  document.querySelectorAll('#timBtns .gbtn').forEach(b => b.classList.toggle('a-amber', b.dataset.t === state.seq.timing));
+  document.querySelectorAll('#seqModeBtns .gbtn').forEach(b => b.classList.toggle('a-purple', b.dataset.sm === state.seq.mode));
 
   // Re-render liste dinamiche se le funzioni esistono
   if (typeof renderPics      === 'function') renderPics();
@@ -347,11 +343,7 @@ function renderScenarioPanel() {
 
   if (!list.length) {
     panel.innerHTML = `
-      <div style="text-align:center;padding:24px 12px;color:var(--text3);font-size:13px">
-        <div style="font-size:28px;margin-bottom:8px">📂</div>
-        Nessuno scenario salvato ancora.<br>
-        <span style="font-size:12px">Inserisci un nome e clicca <strong>Salva</strong>.</span>
-      </div>`;
+      <div style="text-align:center;padding:24px 12px;color:var(--text3);font-size:13px"> <div style="font-size:28px;margin-bottom:8px"></div>Nessuno scenario salvato ancora.<br> <span style="font-size:12px">Inserisci un nome e clicca <strong>Salva</strong>.</span> </div>`;
     return;
   }
 
@@ -364,27 +356,10 @@ function renderScenarioPanel() {
   };
 
   panel.innerHTML = list.map(s => `
-    <div class="scenario-row" id="srow-${s.id}">
-      <div class="scenario-row-main">
-        <div class="scenario-info">
-          <span class="scenario-name">${_esc(s.name)}</span>
-          <span class="scenario-summary">${_esc(s.summary || '—')}</span>
-        </div>
-        <span class="scenario-date">${fmtDate(s.savedAt)}</span>
-      </div>
-      <div class="scenario-actions">
-        <button class="gbtn a-blue" onclick="scenarioLoad('${s.id}')" title="Carica questo scenario">
-          ↩ Carica
-        </button>
-        <button class="gbtn" onclick="scenarioOverwrite('${s.id}')" title="Aggiorna con lo stato corrente">
-          ↑ Aggiorna
-        </button>
-        <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--red);border-color:rgba(217,48,37,.3)">
-          ✕
-        </button>
-      </div>
-    </div>
-  `).join('');
+    <div class="scenario-row" id="srow-${s.id}"> <div class="scenario-row-main"> <div class="scenario-info"> <span class="scenario-name">${_esc(s.name)}</span> <span class="scenario-summary">${_esc(s.summary || '—')}</span> </div> <span class="scenario-date">${fmtDate(s.savedAt)}</span> </div> <div class="scenario-actions"> <button class="gbtn a-blue" onclick="scenarioLoad('${s.id}')" title="Carica questo scenario"> ↩ Carica
+        </button> <button class="gbtn" onclick="scenarioOverwrite('${s.id}')" title="Aggiorna con lo stato corrente"> ↑ Aggiorna
+        </button> <button class="gbtn" onclick="scenarioDelete('${s.id}')" title="Elimina scenario" style="color:var(--red);border-color:rgba(217,48,37,.3)"> ✕
+        </button> </div> </div> `).join('');
 }
 
 function _esc(s) {

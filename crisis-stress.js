@@ -104,8 +104,8 @@ const CRISIS_SCENARIOS = [
     id: 'eurocrisis1112',
     label: '2011\u201312 Crisi Euro Sovrana',
     shortLabel: '2011\u201312',
-    color: '#9e1b32',
-    bg: 'rgba(158,27,50,.10)',
+    color: '#96151d',
+    bg: 'rgba(150,21,29,.10)',
     startYr: 2011, startMo: 5,
     peakYr:  2011, peakMo:  7,
     troughYr:2011, troughMo: 9,
@@ -132,8 +132,8 @@ const CRISIS_SCENARIOS = [
     id: 'covid20',
     label: '2020 COVID-19 Crash',
     shortLabel: '2020',
-    color: '#9e1b32',
-    bg: 'rgba(158,27,50,.10)',
+    color: '#96151d',
+    bg: 'rgba(150,21,29,.10)',
     startYr: 2020, startMo:  1,
     peakYr:  2020, peakMo:   2,
     troughYr:2020, troughMo:  3,
@@ -310,83 +310,23 @@ function initCrisisStress() {
 function buildCrisisUI() {
   const pills = CRISIS_SCENARIOS.map((c, i) => `
     <button class="gbtn crisis-pill${i === 0 ? ' a-red' : ''}" data-crisis="${c.id}"
-      style="border-left:3px solid ${c.color};${i === 0 ? `background:${c.bg}` : ''}">
-      ${c.shortLabel}
+      style="border-left:3px solid ${c.color};${i === 0 ? `background:${c.bg}` : ''}"> ${c.shortLabel}
     </button>`).join('');
 
   return `
-  <div class="sec" style="margin-top:18px">
-    <div class="sec-label" data-info-id="info-crisis-stress" style="color:var(--red)">🔥 Stress Test Macro Storici — Path Mensile Ricostruito</div>
-    <p style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:14px">
-      Simulazione del percorso mensile <strong>preciso</strong> del tuo portafoglio durante le principali crisi storiche,
+  <div class="sec" style="margin-top:18px"> <div class="sec-label" data-info-id="info-crisis-stress" style="color:var(--red)">Stress Test Macro Storici — Path Mensile Ricostruito</div> <p style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:14px">Simulazione del percorso mensile <strong>preciso</strong> del tuo portafoglio durante le principali crisi storiche,
       usando la serie mensile 1970–2024: totali annui e mesi-crisi chiave ancorati ai dati storici reali, distribuzione degli altri mesi ricostruita.
       Il capitale di riferimento è quello impostato nel simulatore principale.
-    </p>
-    <!-- Pills crisi -->
-    <div class="btn-group" id="crisisPills" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">${pills}</div>
-
-    <!-- Modalità di versamento -->
-    <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Modalità di versamento</div>
-    <div class="btn-group" id="crisisModeBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn a-red" data-mode="solo_cap">🏔️ Solo capitale</button>
-      <button class="gbtn" data-mode="cap_pac">💵 Capitale + PAC</button>
-      <button class="gbtn" data-mode="solo_pac">📅 Solo PAC</button>
-    </div>
-
-    <!-- Stadio del piano (quando arriva la crisi) -->
-    <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">A che punto del piano arriva la crisi</div>
-    <div class="btn-group" id="crisisStageBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">
-      <button class="gbtn" data-stage="inizio">🌱 Inizio piano</button>
-      <button class="gbtn a-red" data-stage="meta">⏳ Metà piano</button>
-      <button class="gbtn" data-stage="fine">🏹 Fine piano</button>
-    </div>
-
-    <!-- Contesto crisi -->
-    <div id="crisisContext" style="padding:14px 16px;border-radius:10px;font-size:12.5px;line-height:1.7;margin-bottom:16px;border:1px solid var(--border2);background:var(--bg2)"></div>
-
-    <!-- Metriche crisi -->
-    <div id="crisisMetrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px"></div>
-
-    <!-- Grafico path mensile -->
-    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">
-      📈 Portafoglio normalizzato (base 100 = inizio crisi)
-    </div>
-    <div class="chart-wrap" style="height:300px;margin-bottom:16px"><canvas id="chCrisisPath"></canvas></div>
-
-    <!-- Grafico drawdown mensile -->
-    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">
-      🔻 Drawdown mensile dal picco (%)
-    </div>
-    <div class="chart-wrap" style="height:200px;margin-bottom:18px"><canvas id="chCrisisDD"></canvas></div>
-
-    <!-- Tabella mesi peggiori -->
-    <div id="crisisWorstMonths" style="margin-bottom:16px"></div>
-
-    <!-- Confronto tutte le crisi -->
-    <div style="margin-top:4px">
-      <button class="gbtn" id="btnAllCrises" onclick="renderAllCrisesCompare()"
-        style="background:var(--bg2);border:1px solid var(--border2);font-weight:600;padding:9px 18px">
-        📋 Confronta tutte le crisi con questo portafoglio
-      </button>
-    </div>
-
-    <!-- Sezione confronto -->
-    <div id="crisisCompareSection" style="display:none;margin-top:16px">
-      <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">
-        Confronto Crisi — Drawdown Portafoglio Attuale
-      </div>
-      <div id="crisisCompareTable" style="margin-bottom:16px"></div>
-      <div class="chart-wrap" style="height:320px"><canvas id="chCrisisCompare"></canvas></div>
-    </div>
-
-    <!-- Nota metodologica -->
-    <div style="margin-top:14px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;font-size:11.5px;color:var(--text3);line-height:1.7">
-      <strong>Metodologia:</strong> I rendimenti mensili provengono da HIST_MONTHLY — serie mensile ricostruita: totali annui e mesi-crisi chiave ancorati ai dati reali (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA EUR), distribuzione infra-annuale stimata. I mesi delle grandi crisi (ott 1987, ott 2008, mar 2020…) corrispondono ai valori storici di fine mese. I pesi del portafoglio sono quelli attuali del simulatore.
+    </p> <!-- Pills crisi --> <div class="btn-group" id="crisisPills" style="flex-wrap:wrap;gap:6px;margin-bottom:16px">${pills}</div> <!-- Modalità di versamento --> <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Modalità di versamento</div> <div class="btn-group" id="crisisModeBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px"> <button class="gbtn a-red" data-mode="solo_cap">Solo capitale</button> <button class="gbtn" data-mode="cap_pac">Capitale + PAC</button> <button class="gbtn" data-mode="solo_pac">Solo PAC</button> </div> <!-- Stadio del piano (quando arriva la crisi) --> <div style="font-size:11.5px;color:var(--text3);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">A che punto del piano arriva la crisi</div> <div class="btn-group" id="crisisStageBtns" style="flex-wrap:wrap;gap:6px;margin-bottom:16px"> <button class="gbtn" data-stage="inizio">Inizio piano</button> <button class="gbtn a-red" data-stage="meta">Metà piano</button> <button class="gbtn" data-stage="fine">Fine piano</button> </div> <!-- Contesto crisi --> <div id="crisisContext" style="padding:14px 16px;border-radius:10px;font-size:12.5px;line-height:1.7;margin-bottom:16px;border:1px solid var(--border2);background:var(--bg2)"></div> <!-- Metriche crisi --> <div id="crisisMetrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px"></div> <!-- Grafico path mensile --> <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Portafoglio normalizzato (base 100 = inizio crisi)
+    </div> <div class="chart-wrap" style="height:300px;margin-bottom:16px"><canvas id="chCrisisPath"></canvas></div> <!-- Grafico drawdown mensile --> <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;letter-spacing:.04em;text-transform:uppercase">Drawdown mensile dal picco (%)
+    </div> <div class="chart-wrap" style="height:200px;margin-bottom:18px"><canvas id="chCrisisDD"></canvas></div> <!-- Tabella mesi peggiori --> <div id="crisisWorstMonths" style="margin-bottom:16px"></div> <!-- Confronto tutte le crisi --> <div style="margin-top:4px"> <button class="gbtn" id="btnAllCrises" onclick="renderAllCrisesCompare()"
+        style="background:var(--bg2);border:1px solid var(--border2);font-weight:600;padding:9px 18px">Confronta tutte le crisi con questo portafoglio
+      </button> </div> <!-- Sezione confronto --> <div id="crisisCompareSection" style="display:none;margin-top:16px"> <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">Confronto Crisi — Drawdown Portafoglio Attuale
+      </div> <div id="crisisCompareTable" style="margin-bottom:16px"></div> <div class="chart-wrap" style="height:320px"><canvas id="chCrisisCompare"></canvas></div> </div> <!-- Nota metodologica --> <div style="margin-top:14px;padding:10px 14px;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;font-size:11.5px;color:var(--text3);line-height:1.7"> <strong>Metodologia:</strong>I rendimenti mensili provengono da HIST_MONTHLY — serie mensile ricostruita: totali annui e mesi-crisi chiave ancorati ai dati reali (MSCI World Net EUR, Bloomberg Euro Aggregate, oro LBMA EUR), distribuzione infra-annuale stimata. I mesi delle grandi crisi (ott 1987, ott 2008, mar 2020…) corrispondono ai valori storici di fine mese. I pesi del portafoglio sono quelli attuali del simulatore.
       TER applicato mensilmente. Capitale, PAC e stadio del piano sono quelli impostati: lo stadio scala il capitale
       esposto al crollo (a inizio piano poco, a fine piano molto), coerente con la sezione Rischio di Sequenza del Backtesting.
       Drawdown calcolato rispetto al picco della finestra mostrata, non al picco assoluto storico.
-    </div>
-  </div>`;
+    </div> </div>`;
 }
 
 function bindCrisisEvents() {
@@ -497,10 +437,7 @@ function renderCrisis(crisisId) {
     ctx.style.background = crisis.bg;
     ctx.style.borderColor = crisis.color + '44';
     ctx.innerHTML = `
-      <div style="font-size:13px;font-weight:700;color:${crisis.color};margin-bottom:6px">${crisis.label}</div>
-      <div style="color:var(--text2)">${crisis.context}</div>
-      <div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,.5);border-radius:6px;font-size:11.5px;color:var(--text3)">
-        <strong>💡 Cosa imparare:</strong> ${crisis.lessons}
+      <div style="font-size:13px;font-weight:700;color:${crisis.color};margin-bottom:6px">${crisis.label}</div> <div style="color:var(--text2)">${crisis.context}</div> <div style="margin-top:10px;padding:8px 12px;background:rgba(255,255,255,.5);border-radius:6px;font-size:11.5px;color:var(--text3)"> <strong>Cosa imparare:</strong> ${crisis.lessons}
       </div>`;
   }
 
@@ -531,10 +468,7 @@ function renderCrisis(crisisId) {
   ];
 
   document.getElementById('crisisMetrics').innerHTML = metrics.map(m => `
-    <div class="bt-stat-card" style="min-width:140px">
-      <div class="lbl">${m.l}</div>
-      <div class="val" style="color:${m.c};font-size:13.5px">${m.v}</div>
-      ${m.sub ? `<div style="font-size:10.5px;color:var(--text3);margin-top:1px">${m.sub}</div>` : ''}
+    <div class="bt-stat-card" style="min-width:140px"> <div class="lbl">${m.l}</div> <div class="val" style="color:${m.c};font-size:13.5px">${m.v}</div> ${m.sub ? `<div style="font-size:10.5px;color:var(--text3);margin-top:1px">${m.sub}</div>` : ''}
     </div>`).join('');
 
   // ─── Grafico path mensile ───
@@ -654,31 +588,10 @@ function renderCrisis(crisisId) {
   // ─── Tabella 10 mesi peggiori ───
   const sortedByRet = [...sim.path].sort((a, b) => a.portRet - b.portRet).slice(0, 10);
   document.getElementById('crisisWorstMonths').innerHTML = `
-    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">
-      📋 I 10 mesi peggiori in questo scenario
-    </div>
-    <div class="tbl-outer"><table>
-      <thead><tr>
-        <th>Mese</th>
-        <th>Rendim. portaf.</th>
-        <th>Azioni</th>
-        <th>Obbligaz.</th>
-        <th>Oro</th>
-        <th>Portaf. (base 100)</th>
-        <th>Drawdown</th>
-      </tr></thead>
-      <tbody>${sortedByRet.map(p => `
-        <tr>
-          <td style="font-family:'DM Mono',monospace;font-weight:600">${p.label}</td>
-          <td class="${p.portRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace;font-weight:700">${(p.portRet*100).toFixed(2)}%</td>
-          <td class="${p.eqRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.eqRet*100).toFixed(2)}%</td>
-          <td class="${p.obRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.obRet*100).toFixed(2)}%</td>
-          <td class="${p.goldRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.goldRet*100).toFixed(2)}%</td>
-          <td style="font-family:'DM Mono',monospace">${p.cumValue.toFixed(1)}</td>
-          <td class="neg" style="font-family:'DM Mono',monospace">${p.drawdown.toFixed(2)}%</td>
-        </tr>`).join('')}
-      </tbody>
-    </table></div>`;
+    <div style="font-size:12px;font-weight:700;color:var(--text2);margin-bottom:8px;letter-spacing:.04em;text-transform:uppercase">I 10 mesi peggiori in questo scenario
+    </div> <div class="tbl-outer"><table> <thead><tr> <th>Mese</th> <th>Rendim. portaf.</th> <th>Azioni</th> <th>Obbligaz.</th> <th>Oro</th> <th>Portaf. (base 100)</th> <th>Drawdown</th> </tr></thead> <tbody>${sortedByRet.map(p => `
+        <tr> <td style="font-family:'DM Mono',monospace;font-weight:600">${p.label}</td> <td class="${p.portRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace;font-weight:700">${(p.portRet*100).toFixed(2)}%</td> <td class="${p.eqRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.eqRet*100).toFixed(2)}%</td> <td class="${p.obRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.obRet*100).toFixed(2)}%</td> <td class="${p.goldRet < 0 ? 'neg' : 'pos'}" style="font-family:'DM Mono',monospace">${(p.goldRet*100).toFixed(2)}%</td> <td style="font-family:'DM Mono',monospace">${p.cumValue.toFixed(1)}</td> <td class="neg" style="font-family:'DM Mono',monospace">${p.drawdown.toFixed(2)}%</td> </tr>`).join('')}
+      </tbody> </table></div>`;
 }
 
 // ── Confronto tutte le crisi con il portafoglio corrente ─────
@@ -699,35 +612,11 @@ function renderAllCrisesCompare() {
   const rows = results.map(({ crisis: c, sim }) => {
     const ddColor = sim.maxDD < -0.30 ? 'var(--red)' : sim.maxDD < -0.15 ? 'var(--orange)' : 'var(--green)';
     const recStr  = sim.recoveryMonth != null ? `${sim.recoveryMonth} mesi` : `>${c.windowMonths} mesi`;
-    return `<tr>
-      <td style="font-weight:700;color:${c.color};white-space:nowrap">${c.shortLabel}</td>
-      <td style="font-size:11.5px;color:var(--text2);max-width:160px">${c.label.split(' ').slice(1).join(' ')}</td>
-      <td style="font-family:'DM Mono',monospace;font-weight:700;color:${ddColor}">${(sim.maxDD*100).toFixed(1)}%</td>
-      <td style="font-family:'DM Mono',monospace;color:var(--red)">−€${Math.abs(sim.lossEur).toLocaleString('it-IT')}</td>
-      <td style="font-family:'DM Mono',monospace;color:var(--text2)">${(sim.worstMonthRet*100).toFixed(2)}%</td>
-      <td style="font-family:'DM Mono',monospace;color:${sim.recoveryMonth != null && sim.recoveryMonth < 24 ? 'var(--green)' : 'var(--orange)'}">${recStr}</td>
-      <td style="font-family:'DM Mono',monospace">${sim.finalValue.toFixed(1)}</td>
-    </tr>`;
+    return `<tr> <td style="font-weight:700;color:${c.color};white-space:nowrap">${c.shortLabel}</td> <td style="font-size:11.5px;color:var(--text2);max-width:160px">${c.label.split(' ').slice(1).join(' ')}</td> <td style="font-family:'DM Mono',monospace;font-weight:700;color:${ddColor}">${(sim.maxDD*100).toFixed(1)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--red)">−€${Math.abs(sim.lossEur).toLocaleString('it-IT')}</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${(sim.worstMonthRet*100).toFixed(2)}%</td> <td style="font-family:'DM Mono',monospace;color:${sim.recoveryMonth != null && sim.recoveryMonth < 24 ? 'var(--green)' : 'var(--orange)'}">${recStr}</td> <td style="font-family:'DM Mono',monospace">${sim.finalValue.toFixed(1)}</td> </tr>`;
   });
 
   document.getElementById('crisisCompareTable').innerHTML = `
-    <div style="font-size:11.5px;color:var(--text2);margin-bottom:8px">
-      Portafoglio: <strong>${portLabel}</strong> · Capitale: <strong>€${capitalEur.toLocaleString('it-IT')}</strong>
-    </div>
-    <div class="tbl-outer"><table>
-      <thead><tr>
-        <th>Crisi</th>
-        <th>Evento</th>
-        <th title="Max Drawdown portafoglio nella finestra di crisi">Max DD</th>
-        <th title="Perdita massima in euro sul capitale iniziale">Perdita max (€)</th>
-        <th title="Rendimento del mese peggiore">Mese peggiore</th>
-        <th title="Mesi per recuperare il livello iniziale">Recovery</th>
-        <th title="Valore finale normalizzato (base 100 = inizio crisi)">Fine finestra</th>
-      </tr></thead>
-      <tbody>${rows.join('')}</tbody>
-    </table></div>
-    <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">
-      ⚠️ Il Recovery è calcolato rispetto al livello di <em>inizio finestra</em> mostrata, non al picco assoluto pre-crisi.
+    <div style="font-size:11.5px;color:var(--text2);margin-bottom:8px">Portafoglio: <strong>${portLabel}</strong> · Capitale: <strong>€${capitalEur.toLocaleString('it-IT')}</strong> </div> <div class="tbl-outer"><table> <thead><tr> <th>Crisi</th> <th>Evento</th> <th title="Max Drawdown portafoglio nella finestra di crisi">Max DD</th> <th title="Perdita massima in euro sul capitale iniziale">Perdita max (€)</th> <th title="Rendimento del mese peggiore">Mese peggiore</th> <th title="Mesi per recuperare il livello iniziale">Recovery</th> <th title="Valore finale normalizzato (base 100 = inizio crisi)">Fine finestra</th> </tr></thead> <tbody>${rows.join('')}</tbody> </table></div> <div style="font-size:11px;color:var(--text3);margin-top:8px;line-height:1.6">Il Recovery è calcolato rispetto al livello di <em>inizio finestra</em> mostrata, non al picco assoluto pre-crisi.
       La finestra include alcuni mesi pre-crisi per contesto. Nessun PAC aggiuntivo applicato.
     </div>`;
 

@@ -116,7 +116,7 @@ const HIST_MONTHLY = (function(){
 // storici di fine mese; la distribuzione infra-annuale restante è ricostruita.
 // Audit indipendente (vs S&P Shiller/LBMA): corr annua 0.83 eq / 0.95 oro.
 //
-// ⚠️ LIMITE NOTO — STRUTTURA INTRA-MENSILE (validato vs SWDA/iShares MSCI World reale,
+//  LIMITE NOTO — STRUTTURA INTRA-MENSILE (validato vs SWDA/iShares MSCI World reale,
 //    2010-2024): i RENDIMENTI ANNUI di row[0] combaciano col MSCI World reale entro
 //    ~1pt OGNI anno (CAGR 2010-24: motore 12.9% vs reale 12.5% — fondazione solida).
 //    MA il co-movimento MENSILE è ricostruito, non storico: la correlazione mese-su-mese
@@ -721,7 +721,7 @@ function runAdvancedMC() {
       // Confronto tutti i modelli
       renderAdvMCComparison();
     } catch(e){ console.error('AdvMC error',e); }
-    btn.disabled=false; btn.textContent='🧮 Esegui Simulazione Avanzata';
+    btn.disabled=false; btn.textContent='Esegui Simulazione Avanzata';
   }, 80);
 }
 
@@ -731,7 +731,7 @@ function renderAdvMCResults() {
   const modelLabel = { gaussian:'Gaussiano', student:'t di Student', garch:'GARCH(1,1)', regime:'Regime-Switching', bootstrap:'Bootstrap Storico' }[model] || model;
   const statsEl = document.getElementById('advMcStats');
   if (modelFallbackNote && statsEl) {
-    statsEl.insertAdjacentHTML('beforebegin', `<div id="advMcFallbackNote" style="grid-column:1/-1;font-size:12px;color:#b8860b;background:rgba(230,138,0,.08);border:1px solid rgba(230,138,0,.3);border-radius:6px;padding:8px 12px;margin-bottom:10px">⚠️ ${modelFallbackNote}</div>`);
+    statsEl.insertAdjacentHTML('beforebegin', `<div id="advMcFallbackNote" style="grid-column:1/-1;font-size:12px;color:#b8860b;background:rgba(230,138,0,.08);border:1px solid rgba(230,138,0,.3);border-radius:6px;padding:8px 12px;margin-bottom:10px"> ${modelFallbackNote}</div>`);
   } else {
     const old = document.getElementById('advMcFallbackNote'); if (old) old.remove();
   }
@@ -761,10 +761,10 @@ function renderAdvMCResults() {
   chartAdvMC=new Chart(document.getElementById('chAdvMC'),{type:'line',data:{labels:ages,datasets:[
     {label:'P10',data:p10,borderColor:'rgba(217,48,37,.22)',borderWidth:1,pointRadius:0,fill:false,tension:.35},
     {label:'P25',data:p25,borderColor:'rgba(217,48,37,.32)',borderWidth:1,pointRadius:0,fill:{target:0,above:'rgba(217,48,37,.10)',below:'transparent'},tension:.35},
-    {label:'P50',data:p50,borderColor:'#9e1b32',borderWidth:2.5,pointRadius:0,fill:{target:1,above:'rgba(158,27,50,.09)',below:'transparent'},tension:.35},
+    {label:'P50',data:p50,borderColor:'#96151d',borderWidth:2.5,pointRadius:0,fill:{target:1,above:'rgba(150,21,29,.09)',below:'transparent'},tension:.35},
     {label:'P75',data:p75,borderColor:'rgba(30,142,62,.32)',borderWidth:1,pointRadius:0,fill:{target:2,above:'rgba(30,142,62,.10)',below:'transparent'},tension:.35},
     {label:'P90',data:p90,borderColor:'rgba(30,142,62,.22)',borderWidth:1,pointRadius:0,fill:{target:3,above:'rgba(30,142,62,.07)',below:'transparent'},tension:.35},
-    {label:'Media',data:mArr,borderColor:'rgba(158,27,50,.5)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:.35},
+    {label:'Media',data:mArr,borderColor:'rgba(150,21,29,.5)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:.35},
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{font:{size:11}}},tooltip:{callbacks:{title:c=>'Età '+c[0].label,label:c=>' '+c.dataset.label+': '+fmt(c.raw)},backgroundColor:'#fff',borderColor:'#dadce0',borderWidth:1,titleColor:'#202124',bodyColor:'#5f6368',padding:10}},scales:{x:{ticks:{color:tC,font:{size:11,family:'DM Mono'},maxTicksLimit:12},grid:{color:gC}},y:{ticks:{color:tC,font:{size:11,family:'DM Mono'},callback:v=>fmt(v)},grid:{color:gC}}}}});
 
   // GARCH vol chart
@@ -781,7 +781,7 @@ function renderAdvMCResults() {
     const bears=regimeHistory.length-bulls;
     document.getElementById('regimeStats').innerHTML=`<div class="grid-3"><div class="mcard"><div class="ml">Anni in Bull</div><div class="mv" style="color:var(--green)">${bulls} (${(bulls/regimeHistory.length*100).toFixed(0)}%)</div></div><div class="mcard"><div class="ml">Anni in Bear</div><div class="mv" style="color:var(--red)">${bears} (${(bears/regimeHistory.length*100).toFixed(0)}%)</div></div><div class="mcard"><div class="ml">Transizioni Bear→Bull</div><div class="mv" style="color:var(--blue)">${regimeHistory.filter((s,i)=>i>0&&s==='bull'&&regimeHistory[i-1]==='bear').length}</div></div></div>`;
     if (chartRegime) { chartRegime.destroy(); chartRegime=null; }
-    chartRegime=new Chart(document.getElementById('chRegime'),{type:'bar',data:{labels:regimeHistory.map((_,i)=>'A'+(i+1)),datasets:[{label:'Regime',data:regimeHistory.map(s=>s==='bull'?1:-1),backgroundColor:regimeHistory.map(s=>s==='bull'?'rgba(30,142,62,.7)':'rgba(217,48,37,.7)'),borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===1?' Bull Market':' Bear Market'}}},scales:{x:{display:false},y:{ticks:{color:tC,callback:v=>v===1?'Bull':v===-1?'Bear':''},min:-1.5,max:1.5}}}});
+    chartRegime=new Chart(document.getElementById('chRegime'),{type:'bar',data:{labels:regimeHistory.map((_,i)=>'A'+(i+1)),datasets:[{label:'Regime',data:regimeHistory.map(s=>s==='bull'?1:-1),backgroundColor:regimeHistory.map(s=>s==='bull'?'rgba(30,142,62,.7)':'rgba(217,48,37,.7)'),borderRadius:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.raw===1?'Bull Market':'Bear Market'}}},scales:{x:{display:false},y:{ticks:{color:tC,callback:v=>v===1?'Bull':v===-1?'Bear':''},min:-1.5,max:1.5}}}});
   } else document.getElementById('regimeSection').style.display='none';
 
   // Istogramma distribuzione dei capitali finali (legge dati già calcolati)
@@ -849,7 +849,7 @@ function renderAdvMCHistogram(results, P, model) {
         ctx.save(); ctx.translate(px + 3, top + 4); ctx.fillText(text, 0, 8); ctx.restore();
         ctx.restore();
       };
-      draw(p50, '#9e1b32', 'Mediana');
+      draw(p50, '#96151d', 'Mediana');
       draw(invested, '#5f6368', 'Versato');
     }
   };
@@ -894,7 +894,7 @@ function renderAdvMCComparison() {
   // Esegui tutti i modelli (N ridotto per velocità)
   const Ncomp = 500, years = state.years, ages = Array.from({length:years+1},(_,i)=>state.age+i);
   const models = ['gaussian','student','garch','regime','bootstrap','bootstrap5y'];
-  const modelColors = {gaussian:'#5f6368',student:'#9e1b32',garch:'#9334e6',regime:'#1e8e3e',bootstrap:'#e37400',bootstrap5y:'#c5221f'};
+  const modelColors = {gaussian:'#5f6368',student:'#96151d',garch:'#9334e6',regime:'#1e8e3e',bootstrap:'#e37400',bootstrap5y:'#c5221f'};
   const modelLabels = {gaussian:'Gaussiano',student:'t-Student',garch:'GARCH',regime:'Regime-Switch',bootstrap:'Bootstrap 1a',bootstrap5y:'Bootstrap 5a'};
   const p50s = {};
   const compRows = [];
@@ -983,18 +983,13 @@ function renderAdvMCComparison() {
     p50s[model] = Array.from({length:years+1},(_,y)=>pct(ts[y],.50));
     const finalVals = ts[years].sort((a,b)=>a-b);
     compRows.push(
-      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap">
-        <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span>
-        <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div>
-        <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--blue);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div>
-        <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div>
-      </div>`
+      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap"> <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--blue);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div> </div>`
     );
   }
   document.getElementById('advMcComparison').innerHTML = compRows.join('');
   // Grafico confronto P50
   if (chartAdvComp) { chartAdvComp.destroy(); chartAdvComp=null; }
   const gC='rgba(0,0,0,.05)',tC='rgba(0,0,0,.45)';
-  chartAdvComp=new Chart(document.getElementById('chAdvMCComp'),{type:'line',data:{labels:ages,datasets:models.map(m=>({label:modelLabels[m],data:p50s[m],borderColor:modelColors[m],borderWidth:2.5,pointRadius:0,fill:false,tension:.35,borderDash:m==='gaussian'?[5,4]:m==='bootstrap'?[3,2]:[]}))},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{font:{size:11}}},tooltip:{callbacks:{title:c=>'Età '+c[0].label,label:c=>' '+c.dataset.label+' P50: '+fmt(c.raw)},backgroundColor:'#fff',borderColor:'#dadce0',borderWidth:1,titleColor:'#202124',bodyColor:'#5f6368',padding:10}},scales:{x:{ticks:{color:tC,font:{size:11,family:'DM Mono'},maxTicksLimit:12},grid:{color:gC}},y:{ticks:{color:tC,font:{size:11,family:'DM Mono'},callback:v=>fmt(v)},grid:{color:gC}}}}});
+  chartAdvComp=new Chart(document.getElementById('chAdvMCComp'),{type:'line',data:{labels:ages,datasets:models.map(m=>({label:modelLabels[m],data:p50s[m],borderColor:modelColors[m],borderWidth:2.5,pointRadius:0,fill:false,tension:.35,borderDash:m==='gaussian'?[5,4]:m==='bootstrap'?[3,2]:[]}))},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{font:{size:11}}},tooltip:{callbacks:{title:c=>'Età '+c[0].label,label:c=>' '+c.dataset.label+'P50: '+fmt(c.raw)},backgroundColor:'#fff',borderColor:'#dadce0',borderWidth:1,titleColor:'#202124',bodyColor:'#5f6368',padding:10}},scales:{x:{ticks:{color:tC,font:{size:11,family:'DM Mono'},maxTicksLimit:12},grid:{color:gC}},y:{ticks:{color:tC,font:{size:11,family:'DM Mono'},callback:v=>fmt(v)},grid:{color:gC}}}}});
 }
 

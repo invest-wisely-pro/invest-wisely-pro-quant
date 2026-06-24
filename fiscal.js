@@ -19,8 +19,8 @@ let fiscMinusId = 0;
 let chartFisc = null, chartFiscComp = null;
 
 const FISC_REGIME_DESC = {
-  amministrato: `<strong>Regime Amministrato (art. 6 D.Lgs. 461/1997):</strong> Il broker/banca agisce da <em>sostituto d'imposta</em> — calcola e versa le tasse automaticamente. <strong>Vantaggi:</strong> semplicità, nessun obbligo dichiarativo. <strong>Limiti:</strong> le minusvalenze compensano solo redditi diversi (ETF non-UCITS, azioni, derivati) — <strong>non</strong> i redditi di capitale (cedole, dividendi, rendimento ETF UCITS). Metodo obbligatorio: <strong>costo medio ponderato</strong> per ETF. Imposta di bollo detratta direttamente dal conto.`,
-  dichiarativo: `<strong>Regime Dichiarativo (art. 5 D.Lgs. 461/1997):</strong> L'investitore dichiara autonomamente plusvalenze e minusvalenze nel Modello Redditi. <strong>Vantaggi:</strong> <em>compensazione totale</em> tra redditi diversi (incluso offset più ampio di minus vs plus), possibilità di usare metodo LIFO. <strong>Limiti:</strong> obbligo dichiarativo, pagamento imposte con F24 entro le scadenze. Adatto a portafogli complessi con strumenti diversificati e uso attivo dello zainetto fiscale.`,
+  amministrato: `<strong>Regime Amministrato (art. 6 D.Lgs. 461/1997):</strong>Il broker/banca agisce da <em>sostituto d'imposta</em> — calcola e versa le tasse automaticamente. <strong>Vantaggi:</strong> semplicità, nessun obbligo dichiarativo. <strong>Limiti:</strong> le minusvalenze compensano solo redditi diversi (ETF non-UCITS, azioni, derivati) — <strong>non</strong> i redditi di capitale (cedole, dividendi, rendimento ETF UCITS). Metodo obbligatorio: <strong>costo medio ponderato</strong> per ETF. Imposta di bollo detratta direttamente dal conto.`,
+  dichiarativo: `<strong>Regime Dichiarativo (art. 5 D.Lgs. 461/1997):</strong>L'investitore dichiara autonomamente plusvalenze e minusvalenze nel Modello Redditi. <strong>Vantaggi:</strong> <em>compensazione totale</em> tra redditi diversi (incluso offset più ampio di minus vs plus), possibilità di usare metodo LIFO. <strong>Limiti:</strong> obbligo dichiarativo, pagamento imposte con F24 entro le scadenze. Adatto a portafogli complessi con strumenti diversificati e uso attivo dello zainetto fiscale.`,
 };
 
 const STRUMENTO_DESC = {
@@ -83,14 +83,7 @@ function renderFiscMinusList() {
   const el = document.getElementById('fiscMinusList');
   if (!fiscState.minusvalenze.length) { el.innerHTML='<div class="empty-entry">Nessuna minusvalenza in zainetto</div>'; return; }
   el.innerHTML = fiscState.minusvalenze.map(m=>`
-    <div class="erow">
-      <span class="elab">€ minus.</span>
-      <input class="einput" type="number" min="0" step="100" value="${m.amount}" onchange="(function(){fiscState.minusvalenze.find(x=>x.id===${m.id}).amount=+this.value;renderFiscale()}).call(this)">
-      <span class="elab">Anno</span>
-      <input class="einput" type="number" min="2018" max="2030" value="${m.year}" onchange="(function(){const x=fiscState.minusvalenze.find(x=>x.id===${m.id});x.year=+this.value;x.scadenza=+this.value+4;renderFiscale()}).call(this)" style="width:70px">
-      <span style="font-size:10.5px;color:var(--text3);font-family:'DM Mono',monospace">scad. ${m.year+4}</span>
-      <button class="dbtn" onclick="delFiscMinus(${m.id})">✕</button>
-    </div>`).join('');
+    <div class="erow"> <span class="elab">€ minus.</span> <input class="einput" type="number" min="0" step="100" value="${m.amount}" onchange="(function(){fiscState.minusvalenze.find(x=>x.id===${m.id}).amount=+this.value;renderFiscale()}).call(this)"> <span class="elab">Anno</span> <input class="einput" type="number" min="2018" max="2030" value="${m.year}" onchange="(function(){const x=fiscState.minusvalenze.find(x=>x.id===${m.id});x.year=+this.value;x.scadenza=+this.value+4;renderFiscale()}).call(this)" style="width:70px"> <span style="font-size:10.5px;color:var(--text3);font-family:'DM Mono',monospace">scad. ${m.year+4}</span> <button class="dbtn" onclick="delFiscMinus(${m.id})">✕</button> </div>`).join('');
 }
 
 function importFiscFromSim() {
@@ -98,7 +91,7 @@ function importFiscFromSim() {
   fiscState.w = state.w;
   fiscState.years = state.years;
   fiscState.loaded = true;
-  document.getElementById('fiscImportStatus').innerHTML = `<strong style="color:var(--green)">✅ Importato:</strong> Capitale €${fmtN(state.w)}, PAC €${fmtN(state.pac)}/m, ${state.years} anni`;
+  document.getElementById('fiscImportStatus').innerHTML = `<strong style="color:var(--green)">Importato:</strong>Capitale €${fmtN(state.w)}, PAC €${fmtN(state.pac)}/m, ${state.years} anni`;
   renderFiscale();
 }
 
@@ -179,7 +172,7 @@ function calcTaxOnSell(sellAmount, currentPrice, lots, method, regime, strumento
 
   // Utilizzo zainetto fiscale (solo se regime dichiarativo o strumento compensabile)
   // La compensabilita' dipende dalla CATEGORIA DI REDDITO dello strumento, non dal regime:
-  // plus da ETF UCITS = redditi di capitale -> MAI compensabili (in amministrato e dichiarativo);
+  // plus da ETF UCITS = redditi di capitale ->MAI compensabili (in amministrato e dichiarativo);
   // plus da cessione di azioni, ETF non-UCITS, BTP = redditi diversi -> compensabili in entrambi.
   // Il regime cambia chi dichiara/versa e l'ampiezza pratica dello zainetto, non la categoria.
   const canUseMinus = strDesc.compensabile;
@@ -222,7 +215,7 @@ function renderFiscale() {
   const labels = yearlyData.map(d=>'Anno '+d.year);
   const gC='rgba(0,0,0,.05)',tC='rgba(0,0,0,.45)';
   chartFisc=new Chart(document.getElementById('chFisc'),{type:'line',data:{labels,datasets:[
-    {label:'Valore di mercato',data:yearlyData.map(d=>d.currentValue),borderColor:'#9e1b32',borderWidth:2.5,pointRadius:0,fill:true,backgroundColor:'rgba(158,27,50,.08)',tension:.35},
+    {label:'Valore di mercato',data:yearlyData.map(d=>d.currentValue),borderColor:'#96151d',borderWidth:2.5,pointRadius:0,fill:true,backgroundColor:'rgba(150,21,29,.08)',tension:.35},
     {label:'Capitale investito',data:yearlyData.map(d=>d.totalInvested),borderColor:'#1e8e3e',borderWidth:2,pointRadius:0,fill:false,borderDash:[5,4],tension:.35},
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true},tooltip:{callbacks:{title:c=>c[0].label,label:c=>' '+c.dataset.label+': '+fmt(c.raw)},backgroundColor:'#fff',borderColor:'#dadce0',borderWidth:1,titleColor:'#202124',bodyColor:'#5f6368',padding:10}},scales:{x:{ticks:{color:tC,font:{size:11,family:'DM Mono'},maxTicksLimit:15},grid:{color:gC}},y:{ticks:{color:tC,font:{size:11,family:'DM Mono'},callback:v=>fmt(v)},grid:{color:gC}}}}});
 
@@ -231,16 +224,7 @@ function renderFiscale() {
   const avgCostFinal = finalData ? finalData.avgCost : 0;
   const strDesc = STRUMENTO_DESC[strumento];
   document.getElementById('fiscLotSummary').innerHTML = `
-    <div class="grid-4" style="margin-bottom:12px">
-      <div class="mcard"><div class="ml">Valore finale</div><div class="mv" style="color:var(--blue)">${fmt(finalData?.currentValue||0)}</div></div>
-      <div class="mcard"><div class="ml">Totale investito</div><div class="mv" style="color:var(--green)">${fmt(finalData?.totalInvested||0)}</div></div>
-      <div class="mcard"><div class="ml">Plusvalenza lorda</div><div class="mv" style="color:var(--green)">${fmt((finalData?.currentValue||0)-(finalData?.totalInvested||0))}</div></div>
-      <div class="mcard"><div class="ml">Costo medio ponderato</div><div class="mv" style="color:var(--text)">€${avgCostFinal.toFixed(2)}</div><div class="ms">per quota (norm. €100)</div></div>
-    </div>
-    <div style="padding:12px 16px;background:${strDesc.compensabile?'var(--green-dim)':'var(--orange-dim)'};border:1px solid ${strDesc.compensabile?'rgba(30,142,62,.3)':'rgba(227,116,0,.3)'};border-radius:var(--radius-sm);font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong style="color:${strDesc.compensabile?'var(--green)':'var(--orange)'}">${strDesc.label} — ${strDesc.tipo}</strong> · Aliquota: <strong>${strDesc.aliq}</strong><br>
-      ${strDesc.note}<br>
-      <strong>Compensazione minus:</strong> ${strDesc.compensabile?'✅ Sì (reddito diverso)':'❌ No in regime amm. (reddito di capitale)'} · <strong>Metodo:</strong> ${method==='avg'?'Costo Medio Ponderato':method==='lifo'?'LIFO':'FIFO'}
+    <div class="grid-4" style="margin-bottom:12px"> <div class="mcard"><div class="ml">Valore finale</div><div class="mv" style="color:var(--blue)">${fmt(finalData?.currentValue||0)}</div></div> <div class="mcard"><div class="ml">Totale investito</div><div class="mv" style="color:var(--green)">${fmt(finalData?.totalInvested||0)}</div></div> <div class="mcard"><div class="ml">Plusvalenza lorda</div><div class="mv" style="color:var(--green)">${fmt((finalData?.currentValue||0)-(finalData?.totalInvested||0))}</div></div> <div class="mcard"><div class="ml">Costo medio ponderato</div><div class="mv" style="color:var(--text)">€${avgCostFinal.toFixed(2)}</div><div class="ms">per quota (norm. €100)</div></div> </div> <div style="padding:12px 16px;background:${strDesc.compensabile?'var(--green-dim)':'var(--orange-dim)'};border:1px solid ${strDesc.compensabile?'rgba(30,142,62,.3)':'rgba(227,116,0,.3)'};border-radius:var(--radius-sm);font-size:12.5px;color:var(--text2);line-height:1.7"> <strong style="color:${strDesc.compensabile?'var(--green)':'var(--orange)'}">${strDesc.label} — ${strDesc.tipo}</strong> · Aliquota: <strong>${strDesc.aliq}</strong><br> ${strDesc.note}<br> <strong>Compensazione minus:</strong> ${strDesc.compensabile?'Sì (reddito diverso)':'No in regime amm. (reddito di capitale)'} · <strong>Metodo:</strong> ${method==='avg'?'Costo Medio Ponderato':method==='lifo'?'LIFO':'FIFO'}
     </div>`;
 
   // Simulazione vendita parziale
@@ -251,16 +235,8 @@ function renderFiscale() {
     const currentPriceAtSell = lotsAtSell.yearlyData[lotsAtSell.yearlyData.length-1]?.price || finalPrice;
     const taxResult = calcTaxOnSell(Math.min(sellAmount, sellYearData.currentValue), currentPriceAtSell, lotsAtSell.lots, method, regime, strumento, aliqGain, aliqOb, minusvalenze, 2025+sellYear);
     document.getElementById('fiscSellResult').innerHTML = `
-      <div class="grid-4" style="margin-bottom:12px">
-        <div class="mcard"><div class="ml">Provento lordo</div><div class="mv" style="color:var(--text)">${fmtFull(taxResult.sellAmount)}</div></div>
-        <div class="mcard"><div class="ml">Base di costo (${method})</div><div class="mv" style="color:var(--blue)">${fmtFull(taxResult.costBasis)}</div></div>
-        <div class="mcard"><div class="ml">Plusvalenza tassabile</div><div class="mv" style="color:${taxResult.grossGain>0?'var(--orange)':'var(--green)}'}">${fmtFull(taxResult.taxableGain)}</div></div>
-        <div class="mcard"><div class="ml">Imposta dovuta (${taxResult.aliq}%)</div><div class="mv" style="color:var(--red)">${fmtFull(taxResult.tax)}</div></div>
-        <div class="mcard"><div class="ml">Netto incassato</div><div class="mv" style="color:var(--green)">${fmtFull(taxResult.netProceeds)}</div></div>
-        <div class="mcard"><div class="ml">Aliquota effettiva</div><div class="mv" style="color:var(--text)">${taxResult.effectiveRate.toFixed(1)}%</div></div>
-        ${taxResult.minusUsed>0?`<div class="mcard"><div class="ml">Minus utilizzate</div><div class="mv" style="color:var(--green)">−${fmtFull(taxResult.minusUsed)}</div><div class="ms">dallo zainetto</div></div>`:''}
-      </div>
-      ${!taxResult.canUseMinus&&regime==='amministrato'&&strDesc.compensabile===false?`<div style="padding:10px 14px;background:var(--orange-dim);border:1px solid rgba(227,116,0,.3);border-radius:var(--radius-sm);font-size:12.5px;color:var(--orange)">⚠️ In regime amministrato con ${strDesc.label}, le minusvalenze pregresse <strong>non possono</strong> essere utilizzate in compensazione. Passare al regime dichiarativo per ottimizzare il carico fiscale.</div>`:''}`;
+      <div class="grid-4" style="margin-bottom:12px"> <div class="mcard"><div class="ml">Provento lordo</div><div class="mv" style="color:var(--text)">${fmtFull(taxResult.sellAmount)}</div></div> <div class="mcard"><div class="ml">Base di costo (${method})</div><div class="mv" style="color:var(--blue)">${fmtFull(taxResult.costBasis)}</div></div> <div class="mcard"><div class="ml">Plusvalenza tassabile</div><div class="mv" style="color:${taxResult.grossGain>0?'var(--orange)':'var(--green)}'}">${fmtFull(taxResult.taxableGain)}</div></div> <div class="mcard"><div class="ml">Imposta dovuta (${taxResult.aliq}%)</div><div class="mv" style="color:var(--red)">${fmtFull(taxResult.tax)}</div></div> <div class="mcard"><div class="ml">Netto incassato</div><div class="mv" style="color:var(--green)">${fmtFull(taxResult.netProceeds)}</div></div> <div class="mcard"><div class="ml">Aliquota effettiva</div><div class="mv" style="color:var(--text)">${taxResult.effectiveRate.toFixed(1)}%</div></div> ${taxResult.minusUsed>0?`<div class="mcard"><div class="ml">Minus utilizzate</div><div class="mv" style="color:var(--green)">−${fmtFull(taxResult.minusUsed)}</div><div class="ms">dallo zainetto</div></div>`:''}
+      </div> ${!taxResult.canUseMinus&&regime==='amministrato'&&strDesc.compensabile===false?`<div style="padding:10px 14px;background:var(--orange-dim);border:1px solid rgba(227,116,0,.3);border-radius:var(--radius-sm);font-size:12.5px;color:var(--orange)">In regime amministrato con ${strDesc.label}, le minusvalenze pregresse <strong>non possono</strong> essere utilizzate in compensazione. Passare al regime dichiarativo per ottimizzare il carico fiscale.</div>`:''}`;
   }
 
   // Confronto regimi — simulazione piano completo
@@ -296,15 +272,12 @@ function renderFiscale() {
   const bestNet = Math.max(...scResults.map(s=>s.net));
 
   document.getElementById('fiscCompare').innerHTML = `
-    <div class="tbl-outer" style="margin-bottom:14px"><table>
-      <thead><tr><th style="text-align:left">Regime + Metodo</th><th>Valore lordo</th><th>Imposta CG</th><th>Bollo (cum.)</th><th>Netto finale</th><th>Risparmio vs peggiore</th></tr></thead>
-      <tbody>${scResults.map(s=>{const isBest=s.net===bestNet;const worst=Math.min(...scResults.map(x=>x.net));const saving=s.net-worst;return`<tr style="${isBest?'background:var(--green-dim)':''}"><td style="text-align:left;font-weight:${isBest?700:400}">${isBest?'🌟 ':''}${s.l}</td><td>${fmt(s.totalValue)}</td><td style="color:var(--red)">−${fmt(s.totalTax)}</td><td style="color:var(--orange)">−${fmt(s.bolloTot)}</td><td style="color:${isBest?'var(--green)':'var(--text)'};font-weight:${isBest?700:400}">${fmt(s.net)}</td><td class="${saving>0?'pos':'neutral'}">${saving>0?'+'+fmt(saving):'—'}</td></tr>`;}).join('')}</tbody>
-    </table></div>`;
+    <div class="tbl-outer" style="margin-bottom:14px"><table> <thead><tr><th style="text-align:left">Regime + Metodo</th><th>Valore lordo</th><th>Imposta CG</th><th>Bollo (cum.)</th><th>Netto finale</th><th>Risparmio vs peggiore</th></tr></thead> <tbody>${scResults.map(s=>{const isBest=s.net===bestNet;const worst=Math.min(...scResults.map(x=>x.net));const saving=s.net-worst;return`<tr style="${isBest?'background:var(--green-dim)':''}"><td style="text-align:left;font-weight:${isBest?700:400}">${isBest?'':''}${s.l}</td><td>${fmt(s.totalValue)}</td><td style="color:var(--red)">−${fmt(s.totalTax)}</td><td style="color:var(--orange)">−${fmt(s.bolloTot)}</td><td style="color:${isBest?'var(--green)':'var(--text)'};font-weight:${isBest?700:400}">${fmt(s.net)}</td><td class="${saving>0?'pos':'neutral'}">${saving>0?'+'+fmt(saving):'—'}</td></tr>`;}).join('')}</tbody> </table></div>`;
 
   // Chart confronto
   if (chartFiscComp) { chartFiscComp.destroy(); chartFiscComp=null; }
-  const colors=['#9e1b32','#9334e6','#1e8e3e','#00897b'];
-  chartFiscComp=new Chart(document.getElementById('chFiscComp'),{type:'bar',data:{labels:scResults.map(s=>s.l),datasets:[{label:'Netto finale',data:scResults.map(s=>s.net),backgroundColor:colors.map((c,i)=>scResults[i].net===bestNet?c+'dd':c+'66'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' Netto: '+fmt(c.raw)}}},scales:{x:{ticks:{color:tC,font:{size:11}}},y:{ticks:{color:tC,font:{size:11},callback:v=>fmt(v)},grid:{color:gC}}}}});
+  const colors=['#96151d','#9334e6','#1e8e3e','#00897b'];
+  chartFiscComp=new Chart(document.getElementById('chFiscComp'),{type:'bar',data:{labels:scResults.map(s=>s.l),datasets:[{label:'Netto finale',data:scResults.map(s=>s.net),backgroundColor:colors.map((c,i)=>scResults[i].net===bestNet?c+'dd':c+'66'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Netto: '+fmt(c.raw)}}},scales:{x:{ticks:{color:tC,font:{size:11}}},y:{ticks:{color:tC,font:{size:11},callback:v=>fmt(v)},grid:{color:gC}}}}});
 
   // Bollo nel tempo
   let bolloDetails='';
@@ -319,10 +292,8 @@ function renderFiscale() {
     bolloDetails+=`<div class="infl-swr-row"><span style="font-weight:600;color:var(--orange)">Anno ${yy}</span><span>Patrimonio: <strong>${fmt(yd.currentValue)}</strong></span><span>Bollo anno: <strong style="color:var(--orange)">${fmt(yd.currentValue*(bollo/100))}</strong></span><span>Bollo cum.: <strong style="color:var(--red)">${fmt(cumB)}</strong></span></div>`;
   }
   document.getElementById('fiscBollo').innerHTML=`
-    <div style="padding:12px 16px;background:#fff3e0;border:1px solid #ffe0b2;border-radius:var(--radius-sm);font-size:12.5px;color:#795548;margin-bottom:10px">
-      Imposta di bollo: <strong>${bollo.toFixed(2)}%/a</strong> sul valore del dossier titoli (D.L. 201/2011). Applicata sul saldo medio annuo. Soglia minima: €34,20 (pers. fisiche); nessuna franchigia per pers. giuridiche. Alcune banche applicano il bollo proporzionale al controvalore effettivo di fine periodo.
-    </div>
-    <div style="background:#fff;border:1px solid #ffe0b2;border-radius:var(--radius-sm);padding:14px">${bolloDetails||'<span style="color:var(--text3)">Nessun dato</span>'}</div>`;
+    <div style="padding:12px 16px;background:#fff3e0;border:1px solid #ffe0b2;border-radius:var(--radius-sm);font-size:12.5px;color:#795548;margin-bottom:10px">Imposta di bollo: <strong>${bollo.toFixed(2)}%/a</strong> sul valore del dossier titoli (D.L. 201/2011). Applicata sul saldo medio annuo. Soglia minima: €34,20 (pers. fisiche); nessuna franchigia per pers. giuridiche. Alcune banche applicano il bollo proporzionale al controvalore effettivo di fine periodo.
+    </div> <div style="background:#fff;border:1px solid #ffe0b2;border-radius:var(--radius-sm);padding:14px">${bolloDetails||'<span style="color:var(--text3)">Nessun dato</span>'}</div>`;
 
   // Zainetto
   const currentYearN = 2025;
@@ -332,16 +303,7 @@ function renderFiscale() {
   const totExpired = expiredMinus.reduce((s,m)=>s+m.amount,0);
   document.getElementById('fiscZainetto').innerHTML = minusvalenze.length===0
     ? `<div class="info-box">Nessuna minusvalenza inserita. Usa il pannello in alto per aggiungere minusvalenze pregresse allo zainetto fiscale.</div>`
-    : `<div class="grid-4" style="margin-bottom:12px">
-        <div class="mcard"><div class="ml">Minus valide totali</div><div class="mv" style="color:var(--green)">${fmt(totValid)}</div></div>
-        <div class="mcard"><div class="ml">Minus scadute</div><div class="mv" style="color:var(--red)">${fmt(totExpired)}</div></div>
-        <div class="mcard"><div class="ml">Utilizzabili (regime amm.)</div><div class="mv" style="color:var(--blue)">${STRUMENTO_DESC[strumento].compensabile?fmt(totValid):'€0'}</div><div class="ms">${STRUMENTO_DESC[strumento].compensabile?'reddito diverso':'reddito di capitale — non compensabile'}</div></div>
-        <div class="mcard"><div class="ml">Utilizzabili (dich.)</div><div class="mv" style="color:var(--purple)">${fmt(totValid)}</div><div class="ms">compensazione totale</div></div>
-      </div>
-      <div class="tbl-outer"><table>
-        <thead><tr><th style="text-align:left">Anno maturazione</th><th>Importo</th><th>Scadenza</th><th>Stato</th><th>Risparmio fiscale potenziale (${aliqGain}%)</th></tr></thead>
-        <tbody>${minusvalenze.map(m=>{const valid=m.scadenza>=currentYearN;return`<tr><td style="text-align:left">${m.year}</td><td>${fmt(m.amount)}</td><td>${m.year+4}</td><td class="${valid?'pos':'neg'}">${valid?'✅ Valida':'❌ Scaduta'}</td><td class="${valid?'pos':'neutral'}">${valid?'+'+fmt(m.amount*(aliqGain/100)):'—'}</td></tr>`;}).join('')}</tbody>
-      </table></div>`;
+    : `<div class="grid-4" style="margin-bottom:12px"> <div class="mcard"><div class="ml">Minus valide totali</div><div class="mv" style="color:var(--green)">${fmt(totValid)}</div></div> <div class="mcard"><div class="ml">Minus scadute</div><div class="mv" style="color:var(--red)">${fmt(totExpired)}</div></div> <div class="mcard"><div class="ml">Utilizzabili (regime amm.)</div><div class="mv" style="color:var(--blue)">${STRUMENTO_DESC[strumento].compensabile?fmt(totValid):'€0'}</div><div class="ms">${STRUMENTO_DESC[strumento].compensabile?'reddito diverso':'reddito di capitale — non compensabile'}</div></div> <div class="mcard"><div class="ml">Utilizzabili (dich.)</div><div class="mv" style="color:var(--purple)">${fmt(totValid)}</div><div class="ms">compensazione totale</div></div> </div> <div class="tbl-outer"><table> <thead><tr><th style="text-align:left">Anno maturazione</th><th>Importo</th><th>Scadenza</th><th>Stato</th><th>Risparmio fiscale potenziale (${aliqGain}%)</th></tr></thead> <tbody>${minusvalenze.map(m=>{const valid=m.scadenza>=currentYearN;return`<tr><td style="text-align:left">${m.year}</td><td>${fmt(m.amount)}</td><td>${m.year+4}</td><td class="${valid?'pos':'neg'}">${valid?'Valida':'Scaduta'}</td><td class="${valid?'pos':'neutral'}">${valid?'+'+fmt(m.amount*(aliqGain/100)):'—'}</td></tr>`;}).join('')}</tbody> </table></div>`;
 }
 
 // ══════════════════════════════════════════════════════════════
