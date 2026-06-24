@@ -378,7 +378,7 @@ function getBondSignal(yield10y, inflExpected = 0.025) {
 }
 
 const SIGNAL_COLORS = {
-  cheap: '#36d490', fair: '#1a73e8', expensive: '#e37400', very_expensive: '#d93025',
+  cheap: '#36d490', fair: '#9e1b32', expensive: '#e37400', very_expensive: '#d93025',
   attractive: '#36d490', poor: '#e37400', very_poor: '#d93025',
 };
 const SIGNAL_LABELS_IT = {
@@ -604,7 +604,7 @@ function renderLiveDataBanner() {
 
   if (d.yield_eur_10y) chips.push(`
     <span class="live-chip" title="Yield sovrano EUR 10 anni AAA (BCE). Usato come proxy rendimento atteso obbligazionario EUR.">
-      Yield EUR 10a <strong style="color:${bondColor}">${(d.yield_eur_10y*100).toFixed(2)}%</strong>
+      🏦 Yield EUR 10a <strong style="color:${bondColor}">${(d.yield_eur_10y*100).toFixed(2)}%</strong>
       <span class="live-signal" style="background:${bondColor}">${SIGNAL_LABELS_IT[d.signal_bond]}</span>
     </span>`);
 
@@ -615,18 +615,18 @@ function renderLiveDataBanner() {
 
   if (d.hicp_eu != null) chips.push(`
     <span class="live-chip" title="Inflazione HICP Eurozona (tendenziale, ultimo dato disponibile).">
-      HICP EU <strong>${(d.hicp_eu*100).toFixed(1)}%</strong>/a
+      📈 HICP EU <strong>${(d.hicp_eu*100).toFixed(1)}%</strong>/a
     </span>`);
 
   // Rendimenti forward
   if (d.fwd_eq_usa) chips.push(`
     <span class="live-chip live-fwd" title="Rendimento nominale atteso azionario USA su 10 anni: regressione CAPE di Shiller blended ${lambdaPct}% CAPE + ${100-lambdaPct}% storico.">
-      Fwd Eq USA <strong>${(d.fwd_eq_usa*100).toFixed(1)}%</strong>/a
+      📋 Fwd Eq USA <strong>${(d.fwd_eq_usa*100).toFixed(1)}%</strong>/a
     </span>`);
 
   if (d.fwd_bond_eur) chips.push(`
     <span class="live-chip live-fwd" title="Rendimento obbligazionario EUR atteso: yield corrente (buy-and-hold a scadenza).">
-      Fwd Bond EUR <strong>${(d.fwd_bond_eur*100).toFixed(1)}%</strong>/a
+      📋 Fwd Bond EUR <strong>${(d.fwd_bond_eur*100).toFixed(1)}%</strong>/a
     </span>`);
 
   const partial = d.status === 'partial' ? `<span style="font-size:10.5px;color:var(--text3);margin-left:4px">(dati parziali)</span>` : '';
@@ -805,7 +805,7 @@ function renderValuationStress() {
   const liveNote = document.getElementById('valLiveNote');
 
   if (!d || d.status === 'loading') {
-    if (liveNote) liveNote.textContent = 'Caricamento dati live in corso...';
+    if (liveNote) liveNote.textContent = '⌛ Caricamento dati live in corso...';
     return;
   }
   if (!d.cape_sp500) {
@@ -826,7 +826,7 @@ function renderValuationStress() {
       liveNote.innerHTML = `⚠️ Dati CAPE live non disponibili (API esterne irraggiungibili). Usando valore di riferimento hardcoded (${d.cape_sp500.toFixed(1)}). <button class="gbtn" onclick="fetchLiveMarketData()" style="font-size:11px;margin-left:6px">↺ Riprova</button>`;
     } else if (d.status === 'ok' || d.status === 'partial') {
       liveNote.style.display = 'block';
-      liveNote.style.color = 'var(--blue, #1a73e8)';
+      liveNote.style.color = 'var(--blue, #9e1b32)';
       liveNote.textContent = `✓ Dati live aggiornati${d.fetchedAt ? ' alle ' + new Date(d.fetchedAt).toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'}) : ''}.${d.status === 'partial' ? ' (dati parziali)' : ''}`;
     } else {
       liveNote.style.display = 'none';
@@ -846,6 +846,7 @@ function renderValuationStress() {
   function getPortfolioBlendedCape(portKey, capeUSA, capeEU) {
     if (!capeUSA) return capeUSA;
     const cEU = capeEU || estimateCapeEurope(capeUSA);
+    let _capeTiltFactor = 1.0; // sconto strutturale CAPE per fattori value-tilted (1.0 = nessuno)
     // Peso geografico azionario stimato per portafoglio
     // usa state se disponibile, altrimenti fallback conservativo
     let usaW = 0.65, euW = 0.25; // default MSCI World-like
@@ -860,17 +861,37 @@ function renderValuationStress() {
           let euSlotW = 0, usaSlotW = 0, totalEqW = 0;
           const slots = state.customPortfolio?.slots || [];
           const total = slots.reduce((s, sl) => s + (sl.pct || 0), 0) || 1;
+          // Sconto strutturale sul CAPE per fattori "value-tilted": questi asset
+          // scambiano storicamente a multipli più bassi del mercato (è il loro tratto
+          // distintivo), quindi hanno meno "rendimento speculativo" da sgonfiare in una
+          // mean-reversion. Sconti conservativi su evidenza accademica (FF value spread,
+          // CAPE per stile MSCI/Research Affiliates): value/small ~ -30%, dividendi -25%.
+          // Momentum e Quality NON sono economici → nessuno sconto. EM ha già CAPE proprio.
+          const CAPE_TILT = {
+            eq_small_value: 0.70, // SCV: forte sconto value+size
+            fat_valore:     0.70, // value puro
+            fat_size:       0.80, // small cap: meno caro ma non value puro
+            fat_dividendi:  0.75, // high dividend: value-tilted
+            fat_low_vol:    0.85, // low-vol leggermente difensivo/value
+            fat_multifat:   0.85, // mix: sconto attenuato
+          };
+          let capeTiltW = 0; // somma pesata degli sconti (1.0 = nessuno sconto)
           for (const sl of slots) {
             const ac = typeof ASSET_CLASSES !== 'undefined' ? ASSET_CLASSES[sl.ac] : null;
             if (!ac || !ac.isEq) continue;
             const w = sl.pct / total;
             totalEqW += w;
+            capeTiltW += w * (CAPE_TILT[sl.ac] ?? 1.0);
             if (sl.ac === 'eq_europa')      { euSlotW += w * 1.0; usaSlotW += w * 0.0; }
             else if (sl.ac === 'eq_usa')     { euSlotW += w * 0.0; usaSlotW += w * 1.0; }
             else if (sl.ac === 'eq_em')      { euSlotW += w * 0.0; usaSlotW += w * 0.3; }
             else                             { euSlotW += w * 0.25; usaSlotW += w * 0.65; }
           }
-          if (totalEqW > 0) { euW = euSlotW / totalEqW; usaW = usaSlotW / totalEqW; }
+          if (totalEqW > 0) {
+            euW = euSlotW / totalEqW; usaW = usaSlotW / totalEqW;
+            // sconto medio ponderato applicato al CAPE blended geografico (sotto)
+            _capeTiltFactor = capeTiltW / totalEqW;
+          }
         } else if (portKey2 === 'permanent' || portKey2 === 'all_seasons') {
           usaW = 0.50; euW = 0.20; // questi portafogli hanno meno USA
         } else if (portKey2 === 'larry') {
@@ -880,7 +901,10 @@ function renderValuationStress() {
     } catch(_) {}
     const emW = Math.max(0, 1 - usaW - euW);
     const capeEM = 14; // EM: media storica ~14, nessun CAPE live affidabile
-    return usaW * capeUSA + euW * cEU + emW * capeEM;
+    const capeGeo = usaW * capeUSA + euW * cEU + emW * capeEM;
+    // Applica lo sconto strutturale dei fattori value-tilted (se presenti nel custom).
+    // Un portafoglio value/small ha multipli più bassi → meno mean-reversion attesa.
+    return capeGeo * _capeTiltFactor;
   }
 
   const portKey = (typeof state !== 'undefined') ? state?.portfolio : 'eq60';
@@ -912,7 +936,7 @@ function renderValuationStress() {
       : (d.fetchedAt ? `✓ live ${new Date(d.fetchedAt).toLocaleTimeString('it-IT', {hour:'2-digit',minute:'2-digit'})}${d.status === 'partial' ? ' (parziali)' : ''} · ` : '');
     liveNote.style.display = 'block';
     liveNote.style.color = d._capeIsFallback ? 'var(--orange)' : 'var(--blue)';
-    liveNote.innerHTML = `${srcPrefix}CAPE portafoglio: <strong>${capePort.toFixed(1)}</strong>${capeBlendNote} · Media storica USA: 17 · Percentile: stima ${capeUSA > 33 ? '95°+' : capeUSA > 29 ? '90°' : capeUSA > 23 ? '75°' : '65°'}`;
+    liveNote.innerHTML = `${srcPrefix}🔋 CAPE portafoglio: <strong>${capePort.toFixed(1)}</strong>${capeBlendNote} · Media storica USA: 17 · Percentile: stima ${capeUSA > 33 ? '95°+' : capeUSA > 29 ? '90°' : capeUSA > 23 ? '75°' : '65°'}`;
   }
 
   // Live stats panel
@@ -937,7 +961,7 @@ function renderValuationStress() {
   const histMeanPort = Math.round(capePort < capeUSA * 0.85 ? 14 : capePort < capeUSA * 0.95 ? 15.5 : 17);
   const scenarios = [
     { label: 'Soft Landing', capeT: Math.max(capeNow * 0.85, histMeanPort + 5), icon: '🟡', desc: 'CAPE scende del 15% (multipli si comprimono leggermente)' },
-    { label: 'Mean-Reversion Storica', capeT: histMeanPort, icon: '', desc: `CAPE torna alla media storica ${histMeanPort} (portafoglio blended, ${years}a)` },
+    { label: 'Mean-Reversion Storica', capeT: histMeanPort, icon: '📋', desc: `CAPE torna alla media storica ${histMeanPort} (portafoglio blended, ${years}a)` },
     { label: 'Crash Valutazioni', capeT: 12, icon: '🔴', desc: 'CAPE ai minimi ciclici (1982, 2009)' },
     { label: 'Espansione Multipli', capeT: Math.min(capeNow * 1.20, 50), icon: '🟢', desc: 'CAPE sale ulteriormente (+20%)' },
   ];
@@ -986,7 +1010,7 @@ function renderValuationStress() {
     data: {
       labels: capeRange,
       datasets: [
-        { label: 'Rend. Totale', data: retRange, borderColor: '#1a73e8', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .3 },
+        { label: 'Rend. Totale', data: retRange, borderColor: '#9e1b32', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .3 },
         { label: 'Rend. Fondamentale', data: fundRange, borderColor: '#36d490', borderWidth: 1.5, borderDash: [5, 3], pointRadius: 0, fill: false, tension: .3 },
         { label: 'Rend. Speculativo', data: specRange, borderColor: '#e37400', borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0, fill: false, tension: .3 },
       ],
@@ -1008,7 +1032,7 @@ function renderValuationStress() {
           annotations: {
             currentCape: { type: 'line', xMin: capeNow.toFixed(1), xMax: capeNow.toFixed(1), borderColor: 'rgba(217,48,37,.7)', borderWidth: 2, borderDash: [4, 3], label: { display: true, content: `Port. ${capeNow.toFixed(1)}`, position: 'start', font: { size: 10 } } },
             usaCape: { type: 'line', xMin: capeUSA.toFixed(1), xMax: capeUSA.toFixed(1), borderColor: 'rgba(217,48,37,.35)', borderWidth: 1, borderDash: [2, 4], label: { display: capeUSA.toFixed(1) !== capeNow.toFixed(1), content: `S&P ${capeUSA.toFixed(1)}`, position: 'end', font: { size: 9 } } },
-            histMean: { type: 'line', xMin: histMeanPort.toFixed(1), xMax: histMeanPort.toFixed(1), borderColor: 'rgba(26,115,232,.5)', borderWidth: 1.5, borderDash: [3, 3], label: { display: true, content: `Media ${histMeanPort}`, position: 'end', font: { size: 10 } } },
+            histMean: { type: 'line', xMin: histMeanPort.toFixed(1), xMax: histMeanPort.toFixed(1), borderColor: 'rgba(158,27,50,.5)', borderWidth: 1.5, borderDash: [3, 3], label: { display: true, content: `Media ${histMeanPort}`, position: 'end', font: { size: 10 } } },
           }
         }
       },
@@ -1031,7 +1055,7 @@ function renderValuationStress() {
       ? ` (USA ${capeUSA.toFixed(1)}, EU ${capeEU.toFixed(1)} → blended ${capePort.toFixed(1)} per ${portLabel})`
       : ` (S&P500)`;
     bogleEl.innerHTML = `
-      <div class="sec-label" style="margin-bottom:12px">Decomposizione Bogle — CAPE${capeBlendDesc} → target ${capeTarget} in ${years} anni</div>
+      <div class="sec-label" style="margin-bottom:12px">📖 Decomposizione Bogle — CAPE${capeBlendDesc} → target ${capeTarget} in ${years} anni</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px">
         ${[
           ['Div. Yield', (divYield*100).toFixed(2)+'%', 'Cedola implicita del mercato (E/P x 38% payout — S&P500 2020-2024)', 'var(--blue)'],

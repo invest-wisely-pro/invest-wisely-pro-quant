@@ -31,16 +31,16 @@
         color:#202124;
       ">
         <div style="flex:1;min-width:240px;line-height:1.6">
-          <strong>Questo sito usa localStorage</strong> per salvare le impostazioni del simulatore
+          🍪 <strong>Questo sito usa localStorage</strong> per salvare le impostazioni del simulatore
           <strong>solo sul tuo dispositivo</strong> — nessun dato viene inviato a server esterni,
           nessun tracciamento, nessuna profilazione.
           <a href="#" onclick="showView('cookie');document.getElementById('cookieConsentBanner').remove();return false;"
-             style="color:#1a73e8;margin-left:4px">Leggi la Cookie Policy</a>
+             style="color:#9e1b32;margin-left:4px">Leggi la Cookie Policy</a>
         </div>
         <div style="display:flex;gap:10px;flex-shrink:0">
           <button id="cookieAcceptBtn" style="
             padding:9px 20px; border-radius:8px; border:none;
-            background:#1a73e8; color:#fff; font-size:13px; font-weight:600;
+            background:#9e1b32; color:#fff; font-size:13px; font-weight:600;
             cursor:pointer; font-family:'DM Sans',sans-serif;
           ">Accetta</button>
           <button id="cookieDeclineBtn" style="
@@ -145,7 +145,7 @@
           </p>
         </div>
         <button id="disclaimerAcceptBtn" style="
-          width:100%; padding:13px; background:#1a73e8; color:#fff;
+          width:100%; padding:13px; background:#9e1b32; color:#fff;
           border:none; border-radius:8px; font-size:14px; font-weight:700;
           cursor:pointer; font-family:'DM Sans',sans-serif; letter-spacing:.01em;
         ">✓ Ho capito — continua</button>
@@ -238,7 +238,7 @@ function renderContextualWarnings() {
     const terDragApprox = normalNet ? (Math.pow(1 + normalNet + state.ter / 100, state.years) - Math.pow(1 + normalNet, state.years)) : null;
     warnings.push({
       type: 'orange',
-      icon: '',
+      icon: '💸',
       title: 'TER elevato — costo composto significativo',
       msg: `Un TER di ${state.ter.toFixed(2)}% è alto rispetto agli ETF a basso costo (0.07–0.25%). Su ${state.years} anni il costo composto erode una quota rilevante del montante. Considera ETF equivalenti con TER inferiore.`,
     });
@@ -261,7 +261,7 @@ function renderContextualWarnings() {
     if (realNet < 0 && p) {
       warnings.push({
         type: 'orange',
-        icon: '',
+        icon: '🔻',
         title: 'Rendimento reale negativo nello scenario base',
         msg: `Con rendimento nominale netto ${(normalNet * 100).toFixed(2)}%/a e inflazione attesa ${(inflExp * 100).toFixed(1)}%/a, il rendimento reale è <strong style="color:var(--red)">${(realNet * 100).toFixed(2)}%/a</strong>. Il portafoglio perde potere d'acquisto in termini reali nello scenario base.`,
       });
@@ -272,7 +272,7 @@ function renderContextualWarnings() {
   if (state.age >= 55 && eqW >= 0.8 && state.portfolio !== 'lifecycle') {
     warnings.push({
       type: 'orange',
-      icon: '',
+      icon: '🕐',
       title: 'Allocazione aggressiva in fase avanzata',
       msg: `A ${state.age} anni, un'allocazione ${Math.round(eqW * 100)}% azionaria lascia poco tempo per recuperare da un mercato avverso. Il portafoglio Lifecycle riduce automaticamente il rischio con l'età.`,
     });
@@ -298,7 +298,7 @@ function renderContextualWarnings() {
   const colorMap = {
     red:    { bg: 'var(--red-dim)',    border: 'rgba(217,48,37,.35)',    text: 'var(--red)' },
     orange: { bg: 'var(--orange-dim)', border: 'rgba(227,116,0,.35)',    text: 'var(--orange)' },
-    blue:   { bg: 'var(--blue-dim)',   border: 'rgba(26,115,232,.25)',   text: 'var(--blue)' },
+    blue:   { bg: 'var(--blue-dim)',   border: 'rgba(158,27,50,.25)',   text: 'var(--blue)' },
   };
 
   container.innerHTML = warnings.map(w => {
@@ -536,7 +536,7 @@ function renderGoalTab() {
 
     ${result.mode === 'pac' ? `
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>Come leggere il risultato:</strong> Il PAC nello scenario base (${fmt(result.normal)}/mese)
+      <strong>💡 Come leggere il risultato:</strong> Il PAC nello scenario base (${fmt(result.normal)}/mese)
       è quello necessario assumendo il rendimento storico medio del portafoglio ${portLabel},
       al netto del TER. Lo scenario pessimistico richiede un PAC più alto perché il rendimento
       atteso è inferiore. Se il capitale iniziale (${fmt(goalState.w0)}) è già sufficiente a
@@ -545,7 +545,7 @@ function renderGoalTab() {
 
     ${result.mode === 'years' ? `
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese e
+      <strong>💡 Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese e
       portafoglio ${portLabel} (netto TER ${goalState.ter.toFixed(2)}%),
       raggiungeresti ${fmt(goalState.targetCapital)} in ${fmtYears(result.normal)} nello scenario base.
       La differenza tra scenario pessimistico e ottimistico mostra la forchetta di incertezza del mercato.
@@ -553,7 +553,7 @@ function renderGoalTab() {
 
     ${result.mode === 'target' ? `
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
-      <strong>Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese per ${goalState.years} anni
+      <strong>💡 Come leggere il risultato:</strong> Con PAC di ${fmt(goalState.pac)}/mese per ${goalState.years} anni
       e portafoglio ${portLabel} (netto TER ${goalState.ter.toFixed(2)}%), il tuo patrimonio
       raggiungerebbe ${fmt(result.normal)} nello scenario base.
       La forchetta pessimistico–ottimistico (${fmt(result.worst)} – ${fmt(result.best)}) rappresenta

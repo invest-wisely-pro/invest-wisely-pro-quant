@@ -20,18 +20,19 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+<script src="lucide.min.js"></script>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="top-nav">
-  <div class="brand">Suite Patrimoniale Pro <small>v2</small></div>
+  <div class="brand">📋 Suite Patrimoniale Pro <small>v2</small></div>
   <div class="navlinks">
-    <button id="nav-home" class="active" onclick="showView('home')">Home</button>
-    <button id="nav-app" onclick="showView('app')">Simulatore</button>
-    <button id="nav-guide" onclick="showView('guide')">Guida</button>
-    <button id="nav-privacy" onclick="showView('privacy')">Privacy</button>
-    <button id="nav-cookie" onclick="showView('cookie')">Cookie</button>
+    <button id="nav-home" class="active" onclick="showView('home')">🏠 Home</button>
+    <button id="nav-app" onclick="showView('app')">📈 Simulatore</button>
+    <button id="nav-guide" onclick="showView('guide')">📖 Guida</button>
+    <button id="nav-privacy" onclick="showView('privacy')">🔒 Privacy</button>
+    <button id="nav-cookie" onclick="showView('cookie')">🍪 Cookie</button>
   </div>
 </div>
 
@@ -47,7 +48,7 @@
   </div>
   <div class="home-cards">
     <button class="home-card sim" onclick="showView('app')">
-      <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg></div>
+      <div class="icon">📈</div>
       <h2>Vai al Simulatore Patrimoniale</h2>
       <p>Inserisci patrimonio, PAC e orizzonte: ottieni proiezioni multi-scenario, distribuzione Monte Carlo, scenari macro-economici e analisi del decumulo.</p>
       <ul>
@@ -58,7 +59,7 @@
       <span class="cta">Inizia la simulazione →</span>
     </button>
     <button class="home-card guide" onclick="showView('guide')">
-      <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></div>
+      <div class="icon">📖</div>
       <h2>Vai alla Guida all'Utilizzo</h2>
       <p>Scopri come usare ogni scheda, quali parametri modificare e come ogni input influisce sui risultati. Scaricabile anche in PDF.</p>
       <ul>
@@ -73,7 +74,7 @@
   <div class="home-tier-section">
     <div class="home-tier-banner">
       <div class="home-tier-banner-text">
-        <div class="home-tier-banner-title">Versione Base &nbsp;·&nbsp; Suite Pro completa</div>
+        <div class="home-tier-banner-title">📋 Versione Base &nbsp;·&nbsp; 📈 Suite Pro completa</div>
         <div class="home-tier-banner-sub">La versione <strong>Base</strong> include Simulatore, Scenari, A/B Confronto, Monte Carlo, Decumulo e Backtesting Storico. La versione <strong>Pro</strong> aggiunge MC Avanzato (GARCH), Fiscalità IT, Piano Pensione, Stress Valutazioni, Obiettivo Inverso e Quant Analytics.</div>
       </div>
       <div class="home-tier-btns">
@@ -127,8 +128,8 @@
       o a strumenti basati su dati su licenza (es. <a href="https://curvo.eu" target="_blank" rel="noopener" style="color:var(--blue)">Curvo.eu</a>). MSCI, Bloomberg, LBMA, FTSE Nareit e AQR sono marchi dei rispettivi proprietari, citati a solo scopo identificativo delle serie di riferimento; nessuna affiliazione o sponsorizzazione è implicita.
     </div>
     <div class="footer-links">
-      <button onclick="showView('privacy')" class="footer-link-btn">Privacy Policy</button>
-      <button onclick="showView('cookie')" class="footer-link-btn">Cookie Policy</button>
+      <button onclick="showView('privacy')" class="footer-link-btn">🔒 Privacy Policy</button>
+      <button onclick="showView('cookie')" class="footer-link-btn">🍪 Cookie Policy</button>
     </div>
   </div>
 </div>
@@ -137,8 +138,8 @@
 <div id="view-guide" class="view">
   <div class="guide-wrap">
     <div class="guide-head">
-      <h1>Guida all'utilizzo del Simulatore</h1>
-      <button class="guide-dl" id="guideDlBtn" onclick="downloadGuidePDF()">️ Scarica guida in PDF</button>
+      <h1>📖 Guida all'utilizzo del Simulatore</h1>
+      <button class="guide-dl" id="guideDlBtn" onclick="downloadGuidePDF()">⬇️ Scarica guida in PDF</button>
     </div>
     <p class="guide-intro">Questa guida spiega passo-passo come utilizzare ciascuna scheda della suite, quali parametri inserire e — soprattutto — <b>come ogni modifica incide sui risultati finali</b>. Tutti i dati restano nel tuo browser: non viene inviato nulla a server esterni.</p>
 
@@ -159,10 +160,10 @@
         <li><a href="#g10c">Cambio EUR/USD e Volatilità di Stress</a></li>
         <li><a href="#g11">Come leggere il Report PDF ed Excel</a></li>
         <li><a href="#g12">Errori comuni &amp; consigli pratici</a></li>
-        <li><a href="#g13">Scenari Salvati</a></li>
-        <li><a href="#g14">Obiettivo Inverso</a></li>
+        <li><a href="#g13">💾 Scenari Salvati</a></li>
+        <li><a href="#g14">🏆 Obiettivo Inverso</a></li>
         <li><a href="#g15">⚠️ Avvisi Contestuali</a></li>
-        <li><a href="#g16">Quant Analytics</a></li>
+        <li><a href="#g16">📏 Quant Analytics</a></li>
       </ol>
     </div>
 
@@ -273,7 +274,7 @@
     </div>
 
     <div class="guide-sec" id="g8">
-      <h2><span class="num">6</span> Scheda <b>Monte Carlo Avanzato</b> </h2>
+      <h2><span class="num">6</span> Scheda <b>Monte Carlo Avanzato</b> 🧮</h2>
       <p>Quattro modelli stocastici avanzati rispetto alla gaussiana standard. Permettono di simulare distribuzioni di rendimento più realistiche, con crash più frequenti e volatilità variabile nel tempo.</p>
       <h3>Modelli disponibili</h3>
       <ul>
@@ -289,7 +290,7 @@
     </div>
 
     <div class="guide-sec" id="g7bt">
-      <h2><span class="num">7</span> Scheda <b>Backtesting Storico</b> </h2>
+      <h2><span class="num">7</span> Scheda <b>Backtesting Storico</b> 📅</h2>
       <p>Il Backtesting Storico risponde alla domanda <b>"Cosa sarebbe successo se avessi iniziato il mio piano in un anno specifico?"</b> — usando i rendimenti mensili effettivi reali 1970–2024 (non simulazioni parametriche). È la verifica più concreta della robustezza del tuo piano.</p>
       <h3>Come funziona il motore</h3>
       <p>Il simulatore usa 660 osservazioni mensili (Gen 1970 – Dic 2024). Le tre asset class di base &mdash; <b>azioni mercati sviluppati</b> (MSCI World equiv.), <b>obbligazioni aggregate</b> (Bloomberg Euro Agg equiv.) e <b>oro spot</b> &mdash; hanno serie mensile ricostruita: totali annui e mesi-crisi chiave ancorati ai dati reali, distribuzione infra-annuale stimata. Gli asset aggiuntivi (fattori azionari Small Cap Value, Momentum, Value, Quality, Investment, Size; Bassa Volatilità; Immobiliare Quotato REITs; Mercati Emergenti) usano <b>serie storiche reali dedicate</b> (Kenneth French Data Library, AQR, FTSE Nareit) convertite in EUR, anziché comportarsi come proxy del mercato sviluppato. I pesi del portafoglio selezionato vengono applicati ai rendimenti mensili di ogni periodo. Il TER viene sottratto mensilmente. Il PAC viene aggiunto a inizio mese prima di applicare il rendimento.</p>
@@ -317,7 +318,7 @@
     </div>
 
     <div class="guide-sec" id="g9">
-      <h2><span class="num">9</span> Scheda <b>Fiscalità IT</b> </h2>
+      <h2><span class="num">9</span> Scheda <b>Fiscalità IT</b> 🏛️</h2>
       <p>Analisi completa della fiscalità italiana sugli investimenti finanziari. Calcola l'impatto reale delle tasse sui rendimenti e confronta i diversi regimi e metodi di calcolo delle plusvalenze.</p>
       <h3>Confronto regimi fiscali</h3>
       <p>La tabella <b>"Confronto Regimi e Metodi"</b> simula il piano completo su 4 combinazioni e mostra quale produce il netto maggiore:</p>
@@ -354,7 +355,7 @@
 
     <div class="guide-sec" id="g10b">
       <h2><span class="num">10b</span> Decumulo Storico su Sequenze Reali</h2>
-      <p>Nella scheda <b>Decumulo</b> trovi il pulsante <b>Esegui Backtest Storico</b>. È il test più severo del sequence risk: ripercorre il piano di prelievo su <b>tutti gli anni di partenza disponibili (1970-1994 per piani 30 anni)</b> usando i rendimenti mensili storici reali calibrati e l'inflazione effettiva di ogni anno.</p>
+      <p>Nella scheda <b>Decumulo</b> trovi il pulsante <b>📅 Esegui Backtest Storico</b>. È il test più severo del sequence risk: ripercorre il piano di prelievo su <b>tutti gli anni di partenza disponibili (1970-1994 per piani 30 anni)</b> usando i rendimenti mensili storici reali calibrati e l'inflazione effettiva di ogni anno.</p>
 
       <h3>Come funziona</h3>
       <ul>
@@ -389,7 +390,7 @@
         <li><b>Unhedged</b>: aggiunge la volatilità EUR/USD (~8.5%/a storica) proporzionalmente all'esposizione → portafoglio MSCI World per investitore EUR ha vol effettiva ~17-18% invece di 15-16%</li>
         <li><b>Hedged</b>: rimuove la vol valutaria ma costa ~0.30%/a (differenziale tassi forward)</li>
       </ul>
-      <p>Per attivare l'hedging, clicca il chip viola <b>FX</b> nel Custom builder. Il simulatore ricalcola immediatamente μ, σ, best/worst.</p>
+      <p>Per attivare l'hedging, clicca il chip viola <b>💶 FX</b> nel Custom builder. Il simulatore ricalcola immediatamente μ, σ, best/worst.</p>
 
       <div class="guide-impact">
         <b>Regola empirica</b>: l'hedging migliora il Sharpe per portafogli obbligazionari globali e per orizzonti brevi (&lt;10 anni). Per portafogli azionari globali a lungo termine (&gt;15 anni) i benefici si attenuano: EUR/USD oscilla senza trend forti nel lungo periodo.
@@ -428,9 +429,9 @@
         <li><b>Monte Carlo</b> — percentili P5–P95, media e numero simulazioni (se già eseguito).</li>
         <li><b>Backtesting</b> — tabella comparativa tutti i periodi storici: CAGR, Max Drawdown, valore finale, totale versato.</li>
         <li><b>Sequence Risk Multiplo</b> — confronto singolo/doppio/triplo crash con gap vs scenario base.</li>
-        <li><b>Decumulo Storico</b> — esiti per ogni anno di partenza disponibile (Trinity-style), statistiche aggregate e detail anno per anno.</li>
+        <li><b>Decumulo Storico</b> 🆕 — esiti per ogni anno di partenza disponibile (Trinity-style), statistiche aggregate e detail anno per anno.</li>
         <li><b>Portfolio Custom</b> — dettaglio asset class (se portafoglio personalizzato).</li>
-        <li><b>FX & Stress Vol</b> — esposizione cambio, costo hedging, vol in regime normale vs stress (solo per custom).</li>
+        <li><b>FX & Stress Vol</b> 🆕 — esposizione cambio, costo hedging, vol in regime normale vs stress (solo per custom).</li>
       </ul>
     </div>
 
@@ -449,31 +450,31 @@
     </div>
 
     <div class="guide-sec" id="g13">
-      <h2><span class="num">13</span> Scenari Salvati</h2>
+      <h2><span class="num">13</span> 💾 Scenari Salvati</h2>
       <p>Il pannello <b>Scenari Salvati</b> è visibile in cima al tab Simulatore. Permette di salvare, ricaricare ed eliminare configurazioni complete con nome personalizzato. Tutto viene conservato nel tuo browser (localStorage) — nessun dato viene inviato a server esterni.</p>
       <h3>Come funziona</h3>
       <ul>
-        <li><b>Salvare uno scenario</b> — inserisci un nome nel campo di testo (es. "Pensione 60a aggressivo") e clicca <b>Salva corrente</b>. Viene salvato l'intero stato della suite: portafoglio, PAC, variazioni PAC, entrate/uscite straordinarie, sequence risk, stateB (A/B Confronto), parametri decumulo, portafoglio custom.</li>
+        <li><b>Salvare uno scenario</b> — inserisci un nome nel campo di testo (es. "Pensione 60a aggressivo") e clicca <b>💾 Salva corrente</b>. Viene salvato l'intero stato della suite: portafoglio, PAC, variazioni PAC, entrate/uscite straordinarie, sequence risk, stateB (A/B Confronto), parametri decumulo, portafoglio custom.</li>
         <li><b>Caricare uno scenario</b> — clicca <b>↩ Carica</b> accanto allo scenario desiderato. Tutti i parametri vengono ripristinati e ogni slider si riallinea automaticamente. Il simulatore ricalcola immediatamente.</li>
         <li><b>Aggiornare uno scenario esistente</b> — clicca <b>↑ Aggiorna</b> per sovrascrivere lo scenario con lo stato corrente, mantenendo il nome originale.</li>
         <li><b>Eliminare</b> — clicca <b>✕</b>: viene chiesta conferma prima della cancellazione definitiva.</li>
       </ul>
       <h3>Export e import</h3>
       <ul>
-        <li><b>Esporta JSON</b> — scarica tutti gli scenari salvati come file <code>.json</code>. Utile come backup o per condividere una configurazione.</li>
-        <li><b>Importa JSON</b> — importa scenari da un file JSON precedentemente esportato. Gli scenari con ID duplicato vengono ignorati automaticamente. Limite massimo: 20 scenari.</li>
+        <li><b>⬇ Esporta JSON</b> — scarica tutti gli scenari salvati come file <code>.json</code>. Utile come backup o per condividere una configurazione.</li>
+        <li><b>⬆ Importa JSON</b> — importa scenari da un file JSON precedentemente esportato. Gli scenari con ID duplicato vengono ignorati automaticamente. Limite massimo: 20 scenari.</li>
       </ul>
       <div class="guide-callout"><b>Consiglio:</b> crea almeno 3 scenari standard — uno conservativo (portafoglio difensivo, inflazione alta), uno base e uno ottimistico. Confrontali rapidamente senza dover reimpostare ogni volta i parametri.</div>
     </div>
 
     <div class="guide-sec" id="g14">
-      <h2><span class="num">14</span> Obiettivo Inverso</h2>
+      <h2><span class="num">14</span> 🏆 Obiettivo Inverso</h2>
       <p>Il tab <b>Obiettivo Inverso</b> risponde alla domanda inversa rispetto al Simulatore: invece di "dato il PAC, quanto accumulo?", calcola cosa serve per raggiungere un obiettivo dato. Usa gli stessi parametri di portafoglio e TER del simulatore principale.</p>
       <h3>Tre modalità</h3>
       <ul>
-        <li><b>PAC necessario</b> — inserisci l'obiettivo patrimoniale e l'orizzonte in anni: il calcolatore restituisce il versamento mensile necessario nei tre scenari (pessimistico, base, ottimistico). Se il capitale iniziale è già sufficiente, il PAC risultante è €0.</li>
-        <li><b>Anni necessari</b> — inserisci obiettivo e PAC mensile: calcola in quanti anni raggiungi il target in ciascuno scenario. Utile per capire quanto tempo guadagni aumentando il PAC.</li>
-        <li><b>Capitale raggiungibile</b> — inserisci PAC e orizzonte: mostra il montante accumulabile nei tre scenari. Equivale al Simulatore principale ma senza tutti i dettagli.</li>
+        <li><b>💵 PAC necessario</b> — inserisci l'obiettivo patrimoniale e l'orizzonte in anni: il calcolatore restituisce il versamento mensile necessario nei tre scenari (pessimistico, base, ottimistico). Se il capitale iniziale è già sufficiente, il PAC risultante è €0.</li>
+        <li><b>📅 Anni necessari</b> — inserisci obiettivo e PAC mensile: calcola in quanti anni raggiungi il target in ciascuno scenario. Utile per capire quanto tempo guadagni aumentando il PAC.</li>
+        <li><b>📈 Capitale raggiungibile</b> — inserisci PAC e orizzonte: mostra il montante accumulabile nei tre scenari. Equivale al Simulatore principale ma senza tutti i dettagli.</li>
       </ul>
       <h3>Parametri</h3>
       <ul>
@@ -495,9 +496,9 @@
       <ul>
         <li><b style="color:var(--red)">🔴 Portafoglio aggressivo su orizzonte breve</b> — azionario ≥80% con orizzonte ≤5 anni. Su orizzonti brevi c'è poco tempo per recuperare da un mercato avverso alla scadenza.</li>
         <li><b style="color:var(--orange)">⚠️ SWR potenzialmente insufficiente</b> — il montante atteso genera con SWR 4% una rendita inferiore al PAC annuo attuale. Segnala che l'obiettivo di accumulo potrebbe essere sottodimensionato rispetto allo stile di vita corrente.</li>
-        <li><b style="color:var(--orange)">TER elevato</b> — TER ≥1,0%. Su orizzonti lunghi l'erosione composta è significativa. L'avviso mostra il numero di anni della simulazione per contestualizzare l'impatto.</li>
-        <li><b style="color:var(--orange)">Rendimento reale negativo</b> — il rendimento nominale netto (dopo TER) è inferiore all'inflazione attesa. Il portafoglio perde potere d'acquisto nello scenario base.</li>
-        <li><b style="color:var(--orange)">Età avanzata con allocazione aggressiva</b> — età ≥55 con azionario ≥80%. Suggerisce di valutare il portafoglio Lifecycle che riduce automaticamente il rischio con l'età.</li>
+        <li><b style="color:var(--orange)">💸 TER elevato</b> — TER ≥1,0%. Su orizzonti lunghi l'erosione composta è significativa. L'avviso mostra il numero di anni della simulazione per contestualizzare l'impatto.</li>
+        <li><b style="color:var(--orange)">🔻 Rendimento reale negativo</b> — il rendimento nominale netto (dopo TER) è inferiore all'inflazione attesa. Il portafoglio perde potere d'acquisto nello scenario base.</li>
+        <li><b style="color:var(--orange)">🕐 Età avanzata con allocazione aggressiva</b> — età ≥55 con azionario ≥80%. Suggerisce di valutare il portafoglio Lifecycle che riduce automaticamente il rischio con l'età.</li>
         <li><b style="color:var(--blue)">ℹ️ Nessun versamento impostato</b> — PAC e patrimonio iniziale entrambi molto bassi su orizzonte lungo. Le proiezioni mostrano crescita minima.</li>
         <li><b style="color:var(--blue)">ℹ️ PAC dominante su orizzonte breve</b> — i versamenti annui superano il 50% del patrimonio iniziale su orizzonte ≤3 anni. Le proiezioni dipendono più dai versamenti che dalla crescita composta.</li>
       </ul>
@@ -505,10 +506,10 @@
     </div>
 
     <div class="guide-sec" id="g16">
-      <h2><span class="num">16</span> Quant Analytics</h2>
+      <h2><span class="num">16</span> 📏 Quant Analytics</h2>
       <p>Il tab <b>Quant Analytics</b> raccoglie quattro strumenti di analisi quantitativa professionale del portafoglio. Tutti si sincronizzano automaticamente con il portafoglio impostato nel Simulatore tramite il pulsante <b>↩ Importa dal Simulatore</b>.</p>
 
-      <h3>Frontiera Efficiente di Markowitz</h3>
+      <h3>📈 Frontiera Efficiente di Markowitz</h3>
       <p>Seleziona 2-8 asset class dal menu multi-selezione (Ctrl/Cmd+click). Il sistema calcola la <b>frontiera efficiente</b>: la curva dei portafogli ottimali che massimizzano il rendimento atteso per ogni livello di rischio (volatilità). Il grafico mostra:</p>
       <ul>
         <li><b>Curva blu</b> — frontiera efficiente, colorata per Sharpe ratio (blu scuro = Sharpe alto).</li>
@@ -519,7 +520,7 @@
       <p>Le statistiche comparative mostrano rendimento atteso, volatilità e Sharpe ratio dei tre punti a confronto. La matrice di correlazione usata è calibrata su dati storici 1970-2024 (26×26 asset class).</p>
       <div class="guide-callout"><b>Nota metodologica:</b> i rendimenti attesi sono forward-looking conservativi — non storici. Piccole variazioni negli input possono spostare significativamente il portafoglio ottimale (instabilità di Markowitz). Usare come guida qualitativa, non come prescrizione assoluta.</div>
 
-      <h3>VaR / CVaR</h3>
+      <h3>🏹 VaR / CVaR</h3>
       <p>Calcola le misure di rischio standard del portafoglio su 4 orizzonti (1, 3, 5, 10 anni) con tre metodi in parallelo:</p>
       <ul>
         <li><b>Parametrico Gaussiano</b> — formula analitica log-normale. Veloce ma sottostima le code grasse — ottimistico in scenari estremi.</li>
@@ -528,7 +529,7 @@
       </ul>
       <p>La tabella mostra <b>VaR 95%, 99%, 99.9%</b> e <b>CVaR 95%, 99%, 99.9%</b> in euro e percentuale per tutti e tre i metodi. Il CVaR (Expected Shortfall) misura quanto si perde <em>oltre</em> il VaR — è la misura preferita dai regolatori (Basilea III, Solvency II) perché è coerente nel senso di Artzner et al. (1999).</p>
 
-      <h3>Factor Decomposition — Fama-French 5 fattori + Momentum</h3>
+      <h3>📏 Factor Decomposition — Fama-French 5 fattori + Momentum</h3>
       <p>Scompone il rendimento atteso del portafoglio in contributi fattoriali secondo il modello a 6 fattori (FF5 + Momentum):</p>
       <ul>
         <li><b>MKT — Market beta</b>: esposizione al mercato azionario (equity risk premium). Premio stimato ~5.0%/a forward-looking.</li>
@@ -541,13 +542,13 @@
       <p>Il risultato mostra: barra di decomposizione visuale, tabella loadings per fattore con contributo in %/a, dettaglio per asset class, e grafico radar con i factor loadings del portafoglio. L'<b>alpha</b> è il rendimento non spiegato dai fattori.</p>
       <div class="guide-callout"><b>Come usare i risultati:</b> un portafoglio con beta MKT elevato e SMB/HML bassi è un portafoglio "growth large cap" — cattura il mercato ma non i premi fattoriali. Aggiungere small cap (SMB) e value (HML) aumenta l'esposizione ai premi documentati da Fama & French (2015), a costo di maggiore volatilità.</div>
 
-      <h3>️ Portfolio Optimizer</h3>
+      <h3>⚙️ Portfolio Optimizer</h3>
       <p>Ottimizza automaticamente l'allocazione tra le asset class selezionate secondo 4 obiettivi:</p>
       <ul>
-        <li><b>Massimo Sharpe Ratio</b> — massimizza (μ−RF)/σ: miglior rendimento per unità di rischio totale. Tasso risk-free: 2.5%.</li>
-        <li><b>️ Minima Varianza</b> — minimizza la volatilità del portafoglio — allocazione più difensiva possibile.</li>
-        <li><b>Massimo Sortino Ratio</b> — massimizza (μ−RF)/σ_down: come lo Sharpe ma penalizza solo la volatilità negativa (downside), non quella positiva.</li>
-        <li><b>Risk Parity</b> — ogni asset contribuisce in egual misura al rischio totale del portafoglio (equal risk contribution). Non dipende dalle stime di rendimento — solo dalle volatilità e correlazioni.</li>
+        <li><b>🌟 Massimo Sharpe Ratio</b> — massimizza (μ−RF)/σ: miglior rendimento per unità di rischio totale. Tasso risk-free: 2.5%.</li>
+        <li><b>🔰 Minima Varianza</b> — minimizza la volatilità del portafoglio — allocazione più difensiva possibile.</li>
+        <li><b>🔻 Massimo Sortino Ratio</b> — massimizza (μ−RF)/σ_down: come lo Sharpe ma penalizza solo la volatilità negativa (downside), non quella positiva.</li>
+        <li><b>⚖️ Risk Parity</b> — ogni asset contribuisce in egual misura al rischio totale del portafoglio (equal risk contribution). Non dipende dalle stime di rendimento — solo dalle volatilità e correlazioni.</li>
       </ul>
       <p>È possibile impostare <b>vincoli personalizzati</b>: peso minimo e massimo per ogni asset class, e un cap aggregato sull'azionario totale. Il risultato mostra i pesi ottimali con grafico a torta, il Risk Contribution Chart (contributo al rischio per asset), e le metriche del portafoglio ottimizzato (rendimento, volatilità, Sharpe, Sortino). Il pulsante <b>Applica al Simulatore</b> trasferisce direttamente i pesi ottimali nel portafoglio Custom del Simulatore.</p>
       <div class="guide-callout"><b>Risk Parity vs Max Sharpe:</b> il Risk Parity è spesso preferito dai gestori professionali perché non dipende dalle stime di rendimento atteso (molto incerte) — usa solo le covarianze storiche. Max Sharpe è ottimale in teoria ma molto sensibile agli input. Per un investitore retail, Risk Parity è generalmente più robusto.</div>
@@ -559,7 +560,7 @@
 <!-- ════════════════════════════ PRIVACY VIEW ════════════════════════════ -->
 <div id="view-privacy" class="view">
   <div class="guide-wrap">
-    <div class="guide-head"><h1>Privacy Policy</h1></div>
+    <div class="guide-head"><h1>🔒 Privacy Policy</h1></div>
     <p class="guide-intro">Ultimo aggiornamento: maggio 2026. Questa Privacy Policy descrive il trattamento dei dati personali nell'utilizzo del sito <b>Suite Patrimoniale Pro</b>, strumento informativo gratuito, senza scopo di lucro, accessibile liberamente e senza alcuna registrazione.</p>
 
     <div class="guide-sec">
@@ -618,7 +619,7 @@
 <!-- ════════════════════════════ COOKIE VIEW ════════════════════════════ -->
 <div id="view-cookie" class="view">
   <div class="guide-wrap">
-    <div class="guide-head"><h1>Cookie Policy</h1></div>
+    <div class="guide-head"><h1>🍪 Cookie Policy</h1></div>
     <p class="guide-intro">Ultimo aggiornamento: maggio 2026. Questa Cookie Policy descrive l'utilizzo di cookie e tecnologie analoghe sul sito <b>Suite Patrimoniale Pro</b>, strumento informativo gratuito senza scopo di lucro.</p>
 
     <div class="guide-sec">
@@ -698,8 +699,8 @@
     <div class="pblock"><div class="plabel"><span>PAC mensile (base)</span><span class="pval" id="lP">€0/m</span></div><input type="range" id="sP" min="0" max="15000" step="50" value="0"><div class="range-hints"><span>€0</span><span>€15.000</span></div></div>
     <div class="pblock"><div class="plabel"><span>Età iniziale</span><span class="pval" id="lA">0 anni</span></div><input type="range" id="sA" min="0" max="80" step="1" value="0"><div class="range-hints"><span>0</span><span>80</span></div></div>
     <div class="pblock"><div class="plabel"><span>Orizzonte temporale</span><span class="pval" id="lY">35 anni</span></div><input type="range" id="sY" min="1" max="50" step="1" value="35"><div class="range-hints"><span>1 anno</span><span>50 anni</span></div></div>
-    <div class="pblock"><div class="plabel"><span class="opt-tooltip-wrap">Soglia Optionality <span class="opt-tooltip-icon" tabindex="0">?<span class="opt-tooltip-bubble"><strong style="color:var(--blue)">Cos'è la Soglia di Optionality?</strong><br>Livello patrimoniale a cui il portafoglio ti dà <em>opzioni di vita reali</em> — part-time, sabbatico, cambio carriera — prima della libertà finanziaria totale (FIRE). Distinta dal FIRE (100% copertura): questa è il punto di <strong>"abbastanza per avere scelta"</strong>. Il grafico mostra la linea tratteggiata per vedere quando ogni scenario la raggiunge.</span></span></span><span class="pval" id="lO">€450.000</span></div><input type="range" id="sO" min="50000" max="3000000" step="25000" value="450000"><div class="range-hints"><span>€50k</span><span>€3M</span></div></div>
-    <div class="pblock"><div class="plabel"><span>TER ETF <span class="ter-badge">costo fondo</span></span><span class="pval" id="lTer">0.20%</span></div><input type="range" id="sTer" min="0" max="2.0" step="0.05" value="0.20"><div class="range-hints"><span>0%</span><span>2.0%</span></div></div>
+    <div class="pblock"><div class="plabel"><span class="opt-tooltip-wrap">✨ Soglia Optionality <span class="opt-tooltip-icon" tabindex="0">?<span class="opt-tooltip-bubble"><strong style="color:var(--blue)">Cos'è la Soglia di Optionality?</strong><br>Livello patrimoniale a cui il portafoglio ti dà <em>opzioni di vita reali</em> — part-time, sabbatico, cambio carriera — prima della libertà finanziaria totale (FIRE). Distinta dal FIRE (100% copertura): questa è il punto di <strong>"abbastanza per avere scelta"</strong>. Il grafico mostra la linea tratteggiata per vedere quando ogni scenario la raggiunge.</span></span></span><span class="pval" id="lO">€450.000</span></div><input type="range" id="sO" min="50000" max="3000000" step="25000" value="450000"><div class="range-hints"><span>€50k</span><span>€3M</span></div></div>
+    <div class="pblock"><div class="plabel"><span>TER ETF <span class="ter-badge">💸 costo fondo</span></span><span class="pval" id="lTer">0.20%</span></div><input type="range" id="sTer" min="0" max="2.0" step="0.05" value="0.20"><div class="range-hints"><span>0%</span><span>2.0%</span></div></div>
     <div class="pblock"><div class="plabel"><span>Tasse Azionario</span><span class="pval" id="lTeq">26.0%</span></div><input type="range" id="sTeq" min="0" max="40" step="0.5" value="26.0"><div class="range-hints"><span>0%</span><span>40%</span></div></div>
     <div class="pblock"><div class="plabel"><span>Tasse Obbligaz. (Gov.)</span><span class="pval" id="lTob">12.5%</span></div><input type="range" id="sTob" min="0" max="40" step="0.5" value="12.5"><div class="range-hints"><span>0%</span><span>40%</span></div></div>
   </div>
@@ -712,7 +713,7 @@
 <div class="scenario-panel sec" id="scenarioPanel">
   <div class="scenario-panel-header" onclick="toggleScenarioPanel()" style="cursor:pointer;user-select:none;display:flex;align-items:center">
     <span class="sec-label" data-info-id="info-scenari-salvati" style="margin-bottom:0;cursor:pointer;flex:1">
-      Scenari Salvati
+      💾 Scenari Salvati
       <span id="scenarioCount" style="font-size:10px;background:var(--blue-dim);color:var(--blue);border-radius:10px;padding:1px 7px;margin-left:4px;font-weight:700"></span>
     </span>
     <span id="scenarioChevron" style="font-size:11px;color:var(--text3);transition:transform .2s;display:inline-block">▼</span>
@@ -729,10 +730,10 @@
         style="flex:1;min-width:180px;width:auto;font-size:13px;padding:7px 10px"
         maxlength="60"
       />
-      <button id="scenarioSaveBtn" class="gbtn a-green" style="white-space:nowrap">Salva corrente</button>
-      <button class="gbtn" onclick="scenarioExportJSON()" title="Esporta tutti gli scenari come file JSON" style="white-space:nowrap">Esporta JSON</button>
+      <button id="scenarioSaveBtn" class="gbtn a-green" style="white-space:nowrap">💾 Salva corrente</button>
+      <button class="gbtn" onclick="scenarioExportJSON()" title="Esporta tutti gli scenari come file JSON" style="white-space:nowrap">⬇ Esporta JSON</button>
       <label class="gbtn" style="cursor:pointer;white-space:nowrap" title="Importa scenari da file JSON">
-        Importa JSON
+        ⬆ Importa JSON
         <input id="scenarioImportInput" type="file" accept=".json" style="display:none">
       </label>
     </div>
@@ -752,16 +753,16 @@
     <button class="gbtn" data-k="eq40">40/60</button>
     <button class="gbtn" data-k="eq20">20/80</button>
     <button class="gbtn" data-k="ob100">100% Ob.</button>
-    <button class="gbtn" data-k="lifecycle">Lifecycle</button>
-    <button class="gbtn" data-k="golden_butterfly">Golden Butterfly</button>
-    <button class="gbtn" data-k="permanent">Permanent</button>
-    <button class="gbtn" data-k="all_seasons">️ All Seasons</button>
-    <button class="gbtn" data-k="larry">Larry</button>
-    <button class="gbtn" data-k="global_market">Global Market</button>
-    <button class="gbtn" data-k="ec_us_9060">Eff.Core 90/60 US</button>
-    <button class="gbtn" data-k="ec_glob_9060">Eff.Core 90/60 Glob</button>
-    <button class="gbtn" data-k="return_stack">Return Stacking</button>
-    <button class="gbtn" data-k="custom">Custom</button>
+    <button class="gbtn" data-k="lifecycle">♻ Lifecycle</button>
+    <button class="gbtn" data-k="golden_butterfly">🎴 Golden Butterfly</button>
+    <button class="gbtn" data-k="permanent">🏛️ Permanent</button>
+    <button class="gbtn" data-k="all_seasons">🌤️ All Seasons</button>
+    <button class="gbtn" data-k="larry">📏 Larry</button>
+    <button class="gbtn" data-k="global_market">🗺️ Global Market</button>
+    <button class="gbtn" data-k="ec_us_9060">🔋 Eff.Core 90/60 US</button>
+    <button class="gbtn" data-k="ec_glob_9060">🔋 Eff.Core 90/60 Glob</button>
+    <button class="gbtn" data-k="return_stack">♻️ Return Stacking</button>
+    <button class="gbtn" data-k="custom">🔧 Custom</button>
   </div>
 
   <div id="customBuilder" class="custom-builder"></div>
@@ -779,7 +780,7 @@
 
 <!-- VOLATILITY TOGGLE -->
 <div class="vol-toggle" style="margin-top:14px">
-  <div class="tog-row" onclick="toggleVolBands()"><div class="tog" id="volBandsTog"></div><span class="tog-label">Mostra bande di volatilità storica (fan chart)</span></div>
+  <div class="tog-row" onclick="toggleVolBands()"><div class="tog" id="volBandsTog"></div><span class="tog-label">📋 Mostra bande di volatilità storica (fan chart)</span></div>
   <span style="font-size:12px;color:var(--text3)">Aggiunge percentile 10°/25°/75°/90° basati sulla volatilità storica del portafoglio selezionato</span>
 </div>
 
@@ -799,12 +800,12 @@
 <div id="contextualWarnings" style="margin-bottom:0"></div>
 <div class="grid-3" id="metrics" style="margin-bottom:10px"></div>
 
-<div class="ter-drag-bar"><div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap">TER Drag</div><div id="terDragContent" style="font-size:13px;color:var(--text2);flex:1">—</div></div>
+<div class="ter-drag-bar"><div style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;font-family:'DM Mono',monospace;white-space:nowrap">💸 TER Drag</div><div id="terDragContent" style="font-size:13px;color:var(--text2);flex:1">—</div></div>
 
 <div class="sec liq-box" style="margin-bottom:10px">
   <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px">
     <div><div class="sec-label" data-info-id="info-liquidazione" style="margin-bottom:4px;color:var(--blue)">Liquidazione Fiscale Finale (Nominale)</div><div style="font-size:12.5px;color:var(--text2)">Capital Gain a fine periodo — età <strong id="liqAge">—</strong>.</div></div>
-    <button class="gbtn a-blue" id="liqBtn" onclick="toggleLiq()" style="font-weight:600;font-size:13px;padding:8px 16px">Simula Vendita Totale (Netto)</button>
+    <button class="gbtn a-blue" id="liqBtn" onclick="toggleLiq()" style="font-weight:600;font-size:13px;padding:8px 16px">💵 Simula Vendita Totale (Netto)</button>
   </div>
   <div id="liqData" style="display:none;margin-top:18px;border-top:1px solid rgba(26,115,232,.2);padding-top:18px"></div>
 </div>
@@ -813,7 +814,7 @@
 
 <!-- INFLAZIONE AVANZATA -->
 <div class="infl-box">
-  <div class="sec-label" data-info-id="info-inflazione" style="color:#e65100;margin-bottom:8px">Modulo Inflazione Avanzato — Nominale → Reale con Correlazione Asset</div>
+  <div class="sec-label" data-info-id="info-inflazione" style="color:#e65100;margin-bottom:8px">🌡️ Modulo Inflazione Avanzato — Nominale → Reale con Correlazione Asset</div>
   <div style="font-size:12.5px;color:#795548;margin-bottom:12px;line-height:1.6">
     I valori del simulatore sono <strong>nominali</strong>. Questo modulo considera la <strong>correlazione storica tra asset e inflazione</strong>: le azioni tendono a batterla nel lungo periodo (+2/3% reale), le obbligazioni nominali ne soffrono in stagflazione, l'oro tende a tracciarla. Gli scenari inflazionistici sono generati con distribuzione realistica (non solo un numero fisso).
   </div>
@@ -832,7 +833,7 @@
   <div id="inflCorrTable" style="margin-top:14px"></div>
 </div>
 
-<div class="cx-banner" style="margin-bottom:10px"><span></span><span id="cxText">—</span></div>
+<div class="cx-banner" style="margin-bottom:10px"><span>🔋</span><span id="cxText">—</span></div>
 
 <div class="ivr-sec">
   <div class="sec-label" data-info-id="info-capitale-plusvalenza" style="margin-bottom:8px">Capitale versato vs Plusvalenza Lorda Nominale — scenario base</div>
@@ -855,7 +856,7 @@
     <!-- NUOVI CONTROLLI: multi-crash e correlazioni dinamiche -->
     <div style="display:flex;gap:24px;flex-wrap:wrap;align-items:flex-start;margin-bottom:12px">
       <div>
-        <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Modalità Crash</div>
+        <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;font-weight:600">🆕 Modalità Crash</div>
         <div class="btn-group" id="seqModeBtns">
           <button class="gbtn a-purple" data-sm="single">Singolo crash</button>
           <button class="gbtn" data-sm="double">2 crash (realistico)</button>
@@ -863,7 +864,7 @@
         </div>
       </div>
       <div>
-        <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;font-weight:600">Correlazioni in crisi</div>
+        <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;font-weight:600">🆕 Correlazioni in crisi</div>
         <div class="tog-row" onclick="toggleDynCorr()"><div class="tog" id="dynCorrTog"></div><span class="tog-label" style="font-size:12.5px">Correlazioni dinamiche (salgono a 1 in crisi)</span></div>
       </div>
     </div>
@@ -898,10 +899,10 @@
 </div>
 
 <div class="pdf-section">
-  <div class="pdf-section-text"><h3>Esporta Report</h3><p>PDF completo multi-scheda o Excel con proiezione annuale, parametri, Monte Carlo e asset class custom.</p></div>
+  <div class="pdf-section-text"><h3>📋 Esporta Report</h3><p>PDF completo multi-scheda o Excel con proiezione annuale, parametri, Monte Carlo e asset class custom.</p></div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-left:auto">
-    <button class="pdf-btn" id="excelBtn" onclick="exportExcel()" style="background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(30,142,62,.3)"><span></span> Esporta Excel</button>
-    <button class="pdf-btn" id="pdfBtn" onclick="generatePDF()"><span></span> Scarica Report PDF</button>
+    <button class="pdf-btn" id="excelBtn" onclick="exportExcel()" style="background:var(--green);color:#fff;box-shadow:0 2px 8px rgba(30,142,62,.3)"><span>📋</span> Esporta Excel</button>
+    <button class="pdf-btn" id="pdfBtn" onclick="generatePDF()"><span>📄</span> Scarica Report PDF</button>
   </div>
 </div>
 
@@ -910,21 +911,21 @@
 <!-- ══════════════════════════════════════════════════════ TAB 2: SCENARI ECONOMICI -->
 <div class="tab-content" id="tab-scenarios">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-scenari-eco">Scenari Economici — Simulazione Multi-Regime</div>
+  <div class="sec-label" data-info-id="info-scenari-eco">🌐 Scenari Economici — Simulazione Multi-Regime</div>
   <div id="ecoSyncBanner" style="margin:0 0 12px;padding:10px 14px;background:var(--blue-dim);border:1px solid rgba(26,115,232,.25);border-radius:var(--radius-sm);font-size:12.5px;font-family:'DM Mono',monospace"></div>
 
   <div style="margin-bottom:14px;padding:12px 14px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm)">
-    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Fase in cui avviene lo scenario</div>
+    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">⏱ Fase in cui avviene lo scenario</div>
     <div class="btn-group" id="ecoTimBtns">
-      <button class="gbtn a-blue" data-t="early">Inizio</button>
-      <button class="gbtn" data-t="mid">Metà</button>
-      <button class="gbtn" data-t="late">Fine</button>
+      <button class="gbtn a-blue" data-t="early">🌅 Inizio</button>
+      <button class="gbtn" data-t="mid">🌤 Metà</button>
+      <button class="gbtn" data-t="late">🌆 Fine</button>
     </div>
     <div id="ecoTimDesc" style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.6"></div>
   </div>
   <div class="info-box" style="margin-bottom:16px">
     Ogni scenario rappresenta un <strong>regime economico storico/plausibile</strong> con parametri di rendimento, inflazione e volatilità calibrati sui dati storici reali. Lo stesso portafoglio si comporta molto diversamente in ciascun regime. Seleziona uno scenario per vedere la proiezione dedicata e il confronto con lo scenario base.
-    <br><br><span style="color:var(--text3);font-size:11.5px"><strong>Nota tecnica:</strong> i rendimenti per asset-class qui (Az. 7%, Ob. 3%, Oro 4%) sono moltiplicati per i coefficienti di ciascun regime. La baseline può differire leggermente da quella del Simulatore, che usa rendimenti calibrati per portafoglio. Il toggle <em>Sequence Risk</em> del Simulatore è invece rispettato.</span>
+    <br><br><span style="color:var(--text3);font-size:11.5px">⚙ <strong>Nota tecnica:</strong> i rendimenti per asset-class qui (Az. 7%, Ob. 3%, Oro 4%) sono moltiplicati per i coefficienti di ciascun regime. La baseline può differire leggermente da quella del Simulatore, che usa rendimenti calibrati per portafoglio. Il toggle <em>Sequence Risk</em> del Simulatore è invece rispettato.</span>
   </div>
   <div class="eco-scenario-grid" id="ecoScenarioGrid">
     <!-- filled by JS -->
@@ -950,7 +951,7 @@
 
 <!-- ════════════ SEZIONE MULTI-REGIME STOCASTICO ════════════ -->
 <div class="sec" style="border-top:2px solid var(--border2);margin-top:8px;padding-top:20px">
-  <div class="sec-label" data-info-id="info-multi-regime" style="font-size:15px">Simulazione Multi-Regime Stocastica
+  <div class="sec-label" data-info-id="info-multi-regime" style="font-size:15px">♻️ Simulazione Multi-Regime Stocastica
     <span style="font-size:11px;font-weight:400;color:var(--text3);margin-left:8px">1.000 percorsi · sequenza di regimi consecutivi lungo il piano</span>
   </div>
 
@@ -967,9 +968,9 @@
     <div style="font-size:11.5px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em">Modalità</div>
     <div class="btn-group" id="mrModeBtns">
       <button class="gbtn a-blue" data-mr="auto"
-              onclick="multiRegimeState.mode='auto';renderMultiRegimeControls()">Automatico</button>
+              onclick="multiRegimeState.mode='auto';renderMultiRegimeControls()">🎲 Automatico</button>
       <button class="gbtn" data-mr="manual"
-              onclick="multiRegimeState.mode='manual';renderMultiRegimeControls()">Manuale avanzato</button>
+              onclick="multiRegimeState.mode='manual';renderMultiRegimeControls()">🛠 Manuale avanzato</button>
     </div>
   </div>
 
@@ -979,12 +980,12 @@
       Regime di partenza
     </div>
     <div class="btn-group" id="mrStartBtns" style="flex-wrap:wrap">
-      <button class="gbtn a-blue" data-sr="normal_growth" onclick="multiRegimeState.startRegime='normal_growth';renderMultiRegimeControls()">Crescita</button>
-      <button class="gbtn" data-sr="stagflation"   onclick="multiRegimeState.startRegime='stagflation';renderMultiRegimeControls()">Stagflazione</button>
-      <button class="gbtn" data-sr="recession"     onclick="multiRegimeState.startRegime='recession';renderMultiRegimeControls()">Recessione</button>
-      <button class="gbtn" data-sr="deflation"     onclick="multiRegimeState.startRegime='deflation';renderMultiRegimeControls()">Deflazione</button>
-      <button class="gbtn" data-sr="bull_market"   onclick="multiRegimeState.startRegime='bull_market';renderMultiRegimeControls()">Bull Market</button>
-      <button class="gbtn" data-sr="high_rates"    onclick="multiRegimeState.startRegime='high_rates';renderMultiRegimeControls()">Rialzo Tassi</button>
+      <button class="gbtn a-blue" data-sr="normal_growth" onclick="multiRegimeState.startRegime='normal_growth';renderMultiRegimeControls()">📈 Crescita</button>
+      <button class="gbtn" data-sr="stagflation"   onclick="multiRegimeState.startRegime='stagflation';renderMultiRegimeControls()">🔥 Stagflazione</button>
+      <button class="gbtn" data-sr="recession"     onclick="multiRegimeState.startRegime='recession';renderMultiRegimeControls()">🔻 Recessione</button>
+      <button class="gbtn" data-sr="deflation"     onclick="multiRegimeState.startRegime='deflation';renderMultiRegimeControls()">🧊 Deflazione</button>
+      <button class="gbtn" data-sr="bull_market"   onclick="multiRegimeState.startRegime='bull_market';renderMultiRegimeControls()">📈 Bull Market</button>
+      <button class="gbtn" data-sr="high_rates"    onclick="multiRegimeState.startRegime='high_rates';renderMultiRegimeControls()">📋 Rialzo Tassi</button>
     </div>
     <div style="margin-top:10px;font-size:11.5px;color:var(--text3);line-height:1.6">
       La simulazione parte dal regime selezionato e usa la <strong>matrice di transizione storica</strong>
@@ -999,12 +1000,12 @@
       Costruisci la sequenza di regimi
     </div>
     <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-      <button class="gbtn" style="border-color:rgba(30,142,62,.4);color:#1e8e3e"  onclick="mrAddPhase('normal_growth')">+ Crescita</button>
-      <button class="gbtn" style="border-color:rgba(227,116,0,.4);color:#e37400"  onclick="mrAddPhase('stagflation')">+ Stagflazione</button>
-      <button class="gbtn" style="border-color:rgba(217,48,37,.4);color:#d93025"  onclick="mrAddPhase('recession')">+ Recessione</button>
-      <button class="gbtn" style="border-color:rgba(0,151,167,.4);color:#0097a7"  onclick="mrAddPhase('deflation')">+ Deflazione</button>
-      <button class="gbtn" style="border-color:rgba(147,52,230,.4);color:#9334e6" onclick="mrAddPhase('bull_market')">+ Bull Market</button>
-      <button class="gbtn" style="border-color:rgba(0,137,123,.4);color:#00897b"  onclick="mrAddPhase('high_rates')">+ Rialzo Tassi</button>
+      <button class="gbtn" style="border-color:rgba(30,142,62,.4);color:#1e8e3e"  onclick="mrAddPhase('normal_growth')">+ 📈 Crescita</button>
+      <button class="gbtn" style="border-color:rgba(227,116,0,.4);color:#e37400"  onclick="mrAddPhase('stagflation')">+ 🔥 Stagflazione</button>
+      <button class="gbtn" style="border-color:rgba(217,48,37,.4);color:#d93025"  onclick="mrAddPhase('recession')">+ 🔻 Recessione</button>
+      <button class="gbtn" style="border-color:rgba(0,151,167,.4);color:#0097a7"  onclick="mrAddPhase('deflation')">+ 🧊 Deflazione</button>
+      <button class="gbtn" style="border-color:rgba(147,52,230,.4);color:#9334e6" onclick="mrAddPhase('bull_market')">+ 📈 Bull Market</button>
+      <button class="gbtn" style="border-color:rgba(0,137,123,.4);color:#00897b"  onclick="mrAddPhase('high_rates')">+ 📋 Rialzo Tassi</button>
     </div>
     <div id="mrManualList"></div>
     <div style="margin-top:8px;font-size:11.5px;color:var(--text3)">
@@ -1021,7 +1022,7 @@
 
   <!-- Placeholder pre-simulazione -->
   <div id="mrPlaceholder" style="text-align:center;padding:28px 16px;color:var(--text3);font-size:13px;border:1px dashed var(--border2);border-radius:var(--radius-sm);margin-bottom:16px">
-    <div style="font-size:28px;margin-bottom:8px"></div>
+    <div style="font-size:28px;margin-bottom:8px">♻️</div>
     Configura le opzioni e premi <strong>Lancia simulazione</strong> per generare i 1.000 percorsi multi-regime.
   </div>
 
@@ -1058,10 +1059,10 @@
 <!-- ══════════════════════════════════════════════════════ TAB 3: A/B -->
 <div class="tab-content" id="tab-ab">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-ab">A/B Confronto — Due Strategie</div>
+  <div class="sec-label" data-info-id="info-ab">⚖️ A/B Confronto — Due Strategie</div>
   <div class="info-box" style="margin-bottom:10px">Stessa configurazione base (PAC, patrimonio, età, orizzonte, tasse). Solo portafoglio, TER e PAC possono differire.</div>
   <div id="abSyncBanner" style="padding:10px 14px;background:var(--blue-dim);border:1px solid rgba(26,115,232,.25);border-radius:var(--radius-sm);font-size:12px;color:var(--text2);margin-bottom:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
-    <span style="font-weight:600;color:var(--blue)">Ereditato dal Simulatore (uguale per A e B):</span>
+    <span style="font-weight:600;color:var(--blue)">📋 Ereditato dal Simulatore (uguale per A e B):</span>
     <span id="abSyncDetails">—</span>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex-wrap:wrap">
@@ -1074,10 +1075,10 @@
           <button class="gbtn" data-k="eq100">100% Az.</button><button class="gbtn" data-k="eq80">80/20</button>
           <button class="gbtn" data-k="eq60">60/40</button><button class="gbtn a-purple" data-k="eq50">50/50</button>
           <button class="gbtn" data-k="eq40">40/60</button><button class="gbtn" data-k="eq20">20/80</button>
-          <button class="gbtn" data-k="ob100">100% Ob.</button><button class="gbtn" data-k="lifecycle">LC</button>
-          <button class="gbtn" data-k="golden_butterfly">GB</button><button class="gbtn" data-k="permanent">PP</button>
-          <button class="gbtn" data-k="all_seasons">️ AS</button><button class="gbtn" data-k="larry">Larry</button>
-          <button class="gbtn" data-k="global_market">GMP</button>
+          <button class="gbtn" data-k="ob100">100% Ob.</button><button class="gbtn" data-k="lifecycle">♻ LC</button>
+          <button class="gbtn" data-k="golden_butterfly">🎴 GB</button><button class="gbtn" data-k="permanent">🏛️ PP</button>
+          <button class="gbtn" data-k="all_seasons">🌤️ AS</button><button class="gbtn" data-k="larry">📏 Larry</button>
+          <button class="gbtn" data-k="global_market">🗺️ GMP</button>
         </div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
@@ -1105,15 +1106,15 @@
 <!-- ══════════════════════════════════════════════════════ TAB 4: MC SUCCESS -->
 <div class="tab-content" id="tab-mc">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-mc-prob">Probabilità di Successo (Monte Carlo 1.000 Scenari)</div>
+  <div class="sec-label" data-info-id="info-mc-prob">🏹 Probabilità di Successo (Monte Carlo 1.000 Scenari)</div>
   <div class="info-box" style="margin-bottom:16px">Calcola quante volte il portafoglio rimane positivo per tutta la durata del prelievo. Piano con &gt;90% = robusto secondo i financial planner professionisti.</div>
   <div class="grid-2" style="margin-bottom:16px">
     <div class="pblock"><div class="plabel"><span>Prelievo annuo target</span><span class="pval" id="lMcW">€24.000/a</span></div><input type="range" id="sMcW" min="0" max="300000" step="1000" value="24000"><div class="range-hints"><span>€0</span><span>€300k/anno</span></div></div>
     <div class="pblock"><div class="plabel"><span>Anni di prelievo (post-accumulo)</span><span class="pval" id="lMcY">25 anni</span></div><input type="range" id="sMcY" min="5" max="50" step="1" value="25"><div class="range-hints"><span>5</span><span>50 anni</span></div></div>
     <div class="pblock"><div class="plabel"><span>Indicizzazione prelievo/anno</span><span class="pval" id="lMcI">2.0%</span></div><input type="range" id="sMcI" min="0" max="5" step="0.5" value="2.0"><div class="range-hints"><span>0%</span><span>5%/anno</span></div></div>
-    <div style="display:flex;align-items:flex-end"><button class="gbtn a-blue" onclick="runSuccessMC()" style="padding:10px 20px;font-size:13.5px;font-weight:600;width:100%">Calcola Probabilità</button></div>
+    <div style="display:flex;align-items:flex-end"><button class="gbtn a-blue" onclick="runSuccessMC()" style="padding:10px 20px;font-size:13.5px;font-weight:600;width:100%">🏹 Calcola Probabilità</button></div>
   </div>
-  <div class="info-box"><strong>Come funziona:</strong> 1.000 percorsi <strong>Monte Carlo parametrico</strong> con rendimento atteso e volatilità del portafoglio selezionato — coerente con gli scenari Base / Ottimistico / Pessimistico. Accumulo per <span id="mcAccYears">35</span> anni, poi prelievo annuale rivalutato per l'inflazione impostata. Fallisce se il portafoglio arriva a zero. <em>Per analisi non-gaussiana usa la scheda "Monte Carlo Avanzato".</em></div>
+  <div class="info-box">💡 <strong>Come funziona:</strong> 1.000 percorsi <strong>Monte Carlo parametrico</strong> con rendimento atteso e volatilità del portafoglio selezionato — coerente con gli scenari Base / Ottimistico / Pessimistico. Accumulo per <span id="mcAccYears">35</span> anni, poi prelievo annuale rivalutato per l'inflazione impostata. Fallisce se il portafoglio arriva a zero. <em>Per analisi non-gaussiana usa la scheda "Monte Carlo Avanzato".</em></div>
 </div>
 <div id="mc-success-result"><div class="info-box" style="text-align:center;padding:32px;color:var(--text3)">Clicca "Calcola" per eseguire la simulazione.</div></div>
 </div><!-- /tab-mc -->
@@ -1121,10 +1122,10 @@
 <!-- ══════════════════════════════════════════════════════ TAB 5: DECUMULO -->
 <div class="tab-content" id="tab-decumulo">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-decumulo">Simulatore Decumulo — Fase di Prelievo</div>
+  <div class="sec-label" data-info-id="info-decumulo">🔻 Simulatore Decumulo — Fase di Prelievo</div>
   <div class="info-box" style="margin-bottom:16px">Simula la <strong>fase di decumulo</strong>. Tre strategie disponibili, dalla più semplice alla più sofisticata (Guyton-Klinger).</div>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap">
-    <button class="gbtn a-blue" onclick="importFromSim()" style="padding:8px 16px;font-size:13px;font-weight:600">️ Importa dal Simulatore</button>
+    <button class="gbtn a-blue" onclick="importFromSim()" style="padding:8px 16px;font-size:13px;font-weight:600">⬇️ Importa dal Simulatore</button>
     <span id="importStatus" style="font-size:12px;color:var(--text3)">Usa parametri manuali oppure importa il valore finale simulato</span>
   </div>
   <div class="grid-2" style="margin-bottom:16px">
@@ -1138,10 +1139,10 @@
         <button class="gbtn" data-k="eq100">100% Az.</button><button class="gbtn" data-k="eq80">80/20</button>
         <button class="gbtn a-blue" data-k="eq60">60/40</button><button class="gbtn" data-k="eq50">50/50</button>
         <button class="gbtn" data-k="eq40">40/60</button><button class="gbtn" data-k="ob100">100% Ob.</button>
-        <button class="gbtn" data-k="golden_butterfly">GB</button><button class="gbtn" data-k="permanent">PP</button>
-        <button class="gbtn" data-k="all_seasons">️ AS</button><button class="gbtn" data-k="larry">Larry</button>
-        <button class="gbtn" data-k="global_market">GMP</button>
-        <button class="gbtn" data-k="custom">️ Mia allocazione (dal Simulatore)</button>
+        <button class="gbtn" data-k="golden_butterfly">🎴 GB</button><button class="gbtn" data-k="permanent">🏛️ PP</button>
+        <button class="gbtn" data-k="all_seasons">🌤️ AS</button><button class="gbtn" data-k="larry">📏 Larry</button>
+        <button class="gbtn" data-k="global_market">🗺️ GMP</button>
+        <button class="gbtn" data-k="custom">⚙️ Mia allocazione (dal Simulatore)</button>
       </div>
       <div id="decAllocWarn" style="display:none;font-size:11.5px;color:var(--orange,#e37400);background:var(--orange-dim,#3a2a00);border-radius:6px;padding:8px 10px;margin-top:8px;line-height:1.5"></div>
       <div id="decFxBadge" style="font-size:11px;color:var(--text3);margin-top:6px;line-height:1.4"></div>
@@ -1151,9 +1152,9 @@
   <div style="margin-bottom:16px">
     <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;font-weight:600">Strategia di Prelievo</div>
     <div class="btn-group" id="decStratBtns" style="margin-bottom:10px">
-      <button class="gbtn" data-s="fixed">Fisso Nominale</button>
-      <button class="gbtn a-blue" data-s="inflation">Indicizzato Inflazione</button>
-      <button class="gbtn" data-s="gk">️ Guyton-Klinger</button>
+      <button class="gbtn" data-s="fixed">📌 Fisso Nominale</button>
+      <button class="gbtn a-blue" data-s="inflation">📈 Indicizzato Inflazione</button>
+      <button class="gbtn" data-s="gk">⚙️ Guyton-Klinger</button>
     </div>
     <div id="decStratDesc" class="adv-desc"></div>
   </div>
@@ -1183,18 +1184,18 @@
   </div>
 </div>
 <div class="sec">
-  <div class="sec-label" data-info-id="info-decumulo-overlay">Scenario Economico (opzionale)</div>
+  <div class="sec-label" data-info-id="info-decumulo-overlay">🌐 Scenario Economico (opzionale)</div>
   <div class="info-box" style="margin-bottom:12px">Sovrapponi un regime macro per testare la resilienza del decumulo. Le righe viola in tabella indicano gli anni del regime attivo.</div>
   <div id="decOverlapWarn" style="display:none;background:var(--amber-bg);border:1px solid var(--amber);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:12.5px;color:var(--text2)"></div>
   <div class="btn-group" id="decEcoBtns" style="flex-wrap:wrap;margin-bottom:10px">
     <button class="gbtn a-blue" data-e="none">— Nessuno</button>
   </div>
   <div id="decEcoTimRow" style="display:none">
-    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Fase temporale del regime</div>
+    <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">⏱ Fase temporale del regime</div>
     <div class="btn-group" id="decEcoTimBtns">
-      <button class="gbtn a-blue" data-t="early">Inizio decumulo</button>
-      <button class="gbtn" data-t="mid">Metà decumulo</button>
-      <button class="gbtn" data-t="late">Fine decumulo</button>
+      <button class="gbtn a-blue" data-t="early">🌅 Inizio decumulo</button>
+      <button class="gbtn" data-t="mid">🌤 Metà decumulo</button>
+      <button class="gbtn" data-t="late">🌆 Fine decumulo</button>
     </div>
     <div id="decEcoTimDesc" style="font-size:12px;color:var(--text3);margin-top:8px;line-height:1.6"></div>
   </div>
@@ -1213,11 +1214,11 @@
 
 <!-- ═══════ DECUMULO STORICO REALE ═══════ -->
 <div class="sec" style="background:linear-gradient(135deg,#fff8e1 0%,#fff3e0 100%);border:1.5px solid var(--amber)">
-  <div class="sec-label" data-info-id="info-decumulo-storico">Decumulo su Sequenze Storiche Reali (1970-2024)</div>
+  <div class="sec-label" data-info-id="info-decumulo-storico">📅 Decumulo su Sequenze Storiche Reali (1970-2024)</div>
   <div style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:12px">
     <strong>"Cosa sarebbe successo se fossi andato in pensione nel <em>year</em>?"</strong> — esegue il piano di decumulazione su <strong>tutti gli anni di partenza disponibili</strong> usando rendimenti mensili storici reali (calibrati) e inflazione storica effettiva. È il test più severo del sequence risk: incorpora oil shock 1973, stagflazione, dot-com bust, GFC, COVID, inflazione 2022.
   </div>
-  <button class="pdf-btn" id="decHistBtn" onclick="runDecHistorical()" style="background:var(--amber);color:#fff;margin-bottom:14px"><span></span> Esegui Backtest Storico</button>
+  <button class="pdf-btn" id="decHistBtn" onclick="runDecHistorical()" style="background:var(--amber);color:#fff;margin-bottom:14px"><span>📅</span> Esegui Backtest Storico</button>
   <div id="decHistResults"></div>
 </div>
 </div><!-- /tab-decumulo -->
@@ -1226,7 +1227,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB 7: ADVANCED MC -->
 <div class="tab-content" id="tab-advmc">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-advmc">Monte Carlo Avanzato — Gaussiano · Fat Tail · GARCH · Regime-Switching</div>
+  <div class="sec-label" data-info-id="info-advmc">🧮 Monte Carlo Avanzato — Gaussiano · Fat Tail · GARCH · Regime-Switching</div>
   <div class="info-box" style="margin-bottom:14px">
     Quattro modelli stocastici parametrici, tutti calibrati su <strong>PORT.normal</strong> del portafoglio selezionato con correzioni di drift specifiche per modello. <strong>Gaussiano</strong>: baseline con correzione Itō (μ<sub>arith</sub>=μ+σ²/2). <strong>t di Student</strong>: code grasse con varianza effettiva σ²·ν/(ν−2) — più crash estremi. <strong>GARCH(1,1)</strong>: volatility clustering, la volatilità si autoalimenta nei periodi turbolenti. <strong>Regime-Switching (Hamilton 1989)</strong>: alternanza Bull/Bear Markoviana con correzione drift per-portafoglio — crash prolungati emergono naturalmente.
   </div>
@@ -1234,12 +1235,12 @@
     <div>
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Modello stocastico</div>
       <div class="btn-group" id="advMcModelBtns" style="flex-direction:column;align-items:flex-start">
-        <button class="gbtn" data-m="gaussian" style="width:100%;text-align:left">Gaussiano (standard)</button>
-        <button class="gbtn a-blue" data-m="student" style="width:100%;text-align:left">t di Student ν=4 (fat tail)</button>
-        <button class="gbtn" data-m="garch" style="width:100%;text-align:left">GARCH(1,1) — volatility clustering</button>
-        <button class="gbtn" data-m="regime" style="width:100%;text-align:left">Regime-Switching Bull/Bear (Hamilton)</button>
-        <button class="gbtn" data-m="bootstrap" style="width:100%;text-align:left">Block Bootstrap — Dati Storici Reali (1970–2024)</button>
-        <button class="gbtn" data-m="bootstrap5y" style="width:100%;text-align:left">Block Bootstrap 5 anni — Cicli Storici Completi (1970–2024)</button>
+        <button class="gbtn" data-m="gaussian" style="width:100%;text-align:left">📋 Gaussiano (standard)</button>
+        <button class="gbtn a-blue" data-m="student" style="width:100%;text-align:left">📏 t di Student ν=4 (fat tail)</button>
+        <button class="gbtn" data-m="garch" style="width:100%;text-align:left">📈 GARCH(1,1) — volatility clustering</button>
+        <button class="gbtn" data-m="regime" style="width:100%;text-align:left">🔄 Regime-Switching Bull/Bear (Hamilton)</button>
+        <button class="gbtn" data-m="bootstrap" style="width:100%;text-align:left">🔁 Block Bootstrap — Dati Storici Reali (1970–2024)</button>
+        <button class="gbtn" data-m="bootstrap5y" style="width:100%;text-align:left">🔗 Block Bootstrap 5 anni — Cicli Storici Completi (1970–2024)</button>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px">
@@ -1253,7 +1254,7 @@
         <input type="range" id="sAdvNu" min="2" max="30" step="1" value="4">
         <div class="range-hints"><span>2 (pesante)</span><span>30 ≈ normale</span></div>
       </div>
-      <button class="gbtn a-purple" onclick="runAdvancedMC()" style="padding:10px 18px;font-size:13.5px;font-weight:700;margin-top:4px">Esegui Simulazione Avanzata</button>
+      <button class="gbtn a-purple" onclick="runAdvancedMC()" style="padding:10px 18px;font-size:13.5px;font-weight:700;margin-top:4px">🧮 Esegui Simulazione Avanzata</button>
     </div>
   </div>
   <div id="advMcModelDesc" class="adv-desc" style="margin-bottom:0"></div>
@@ -1291,7 +1292,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB: BACKTESTING STORICO -->
 <div class="tab-content" id="tab-backtest">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-backtest">Backtesting Storico — "Cosa sarebbe successo se..."</div>
+  <div class="sec-label" data-info-id="info-backtest">📅 Backtesting Storico — "Cosa sarebbe successo se..."</div>
   <div class="info-box" style="margin-bottom:14px">
     Simula il tuo piano PAC su <strong>periodi storici reali</strong> usando i rendimenti mensili effettivi 1970–2024 (azioni sviluppati, obbligazioni aggregate, oro). Scopri come avresti performato partendo in anni critici come il <strong>1973 (stagflazione)</strong>, <strong>2000 (dot-com)</strong> o <strong>2008 (crisi finanziaria)</strong>. I dati includono le <strong>correlazioni dinamiche reali</strong> — in crisi le correlazioni sono quelle storicamente osservate, non quelle "normali".
   </div>
@@ -1317,9 +1318,9 @@
       <div class="btn-group" id="btPortBtns" style="flex-wrap:wrap">
         <button class="gbtn" data-k="eq100">100% Az.</button>
         <button class="gbtn a-blue" data-k="eq60">60/40</button>
-        <button class="gbtn" data-k="golden_butterfly">GB</button>
-        <button class="gbtn" data-k="permanent">PP</button>
-        <button class="gbtn" data-k="all_seasons">️ AS</button>
+        <button class="gbtn" data-k="golden_butterfly">🎴 GB</button>
+        <button class="gbtn" data-k="permanent">🏛️ PP</button>
+        <button class="gbtn" data-k="all_seasons">🌤️ AS</button>
         <button class="gbtn" data-k="sim">↩ Usa Simulatore</button>
       </div>
       <div style="margin-top:10px">
@@ -1337,8 +1338,8 @@
   </div>
 
   <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
-    <button class="gbtn a-blue" onclick="runBacktest()" style="padding:10px 20px;font-size:13.5px;font-weight:700">Esegui Backtesting</button>
-    <button class="gbtn" onclick="runAllBacktests()" style="padding:10px 20px;font-size:13.5px;font-weight:600">Confronta tutti gli anni</button>
+    <button class="gbtn a-blue" onclick="runBacktest()" style="padding:10px 20px;font-size:13.5px;font-weight:700">📋 Esegui Backtesting</button>
+    <button class="gbtn" onclick="runAllBacktests()" style="padding:10px 20px;font-size:13.5px;font-weight:600">📋 Confronta tutti gli anni</button>
     <div class="tog-row" onclick="toggleBtCape()" style="margin-left:auto"><div class="tog on" id="btCapeTog"></div><span class="tog-label" style="font-size:12.5px">CAPE adjust (Shiller)</span></div>
     <div class="tog-row" onclick="toggleBtInflation()"><div class="tog" id="btInflTog"></div><span class="tog-label" style="font-size:12.5px">Mostra valori reali (deflazionati)</span></div>
   </div>
@@ -1371,7 +1372,7 @@
   <details class="sec" id="btSeqRiskSec" open style="cursor:default">
     <summary style="cursor:pointer;list-style:none;font-weight:700;font-size:14px;display:flex;align-items:center;gap:8px;padding:4px 0">
       <span style="font-size:11px;color:var(--text3)">▸</span>
-      ️ Rischio di Sequenza — cosa succede se becchi la crisi a INIZIO, METÀ o FINE del piano
+      ⏱️ Rischio di Sequenza — cosa succede se becchi la crisi a INIZIO, METÀ o FINE del piano
     </summary>
     <div style="margin-top:14px">
       <div style="margin-bottom:14px;font-size:12.5px;color:var(--text2);line-height:1.7">
@@ -1380,24 +1381,24 @@
       </div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:6px">Crisi da analizzare:</div>
       <div class="btn-group" id="btSeqCrisisBtns" style="flex-wrap:wrap;margin-bottom:14px">
-        <button class="gbtn" data-crisis="1973">Stagflazione '73</button>
-        <button class="gbtn" data-crisis="1980">Volcker '80</button>
-        <button class="gbtn" data-crisis="1987">Black Monday '87</button>
-        <button class="gbtn" data-crisis="1990">Golfo '90</button>
+        <button class="gbtn" data-crisis="1973">⛽ Stagflazione '73</button>
+        <button class="gbtn" data-crisis="1980">📈 Volcker '80</button>
+        <button class="gbtn" data-crisis="1987">🔻 Black Monday '87</button>
+        <button class="gbtn" data-crisis="1990">⛽ Golfo '90</button>
         <button class="gbtn" data-crisis="1998">🇷🇺 LTCM '98</button>
-        <button class="gbtn" data-crisis="2000">Dot-com '00</button>
-        <button class="gbtn a-blue" data-crisis="2008">Crisi fin. '08</button>
+        <button class="gbtn" data-crisis="2000">💻 Dot-com '00</button>
+        <button class="gbtn a-blue" data-crisis="2008">🏦 Crisi fin. '08</button>
         <button class="gbtn" data-crisis="2011">🇪🇺 Euro '11</button>
-        <button class="gbtn" data-crisis="2020">COVID '20</button>
-        <button class="gbtn" data-crisis="2022">Inflazione '22</button>
+        <button class="gbtn" data-crisis="2020">🦠 COVID '20</button>
+        <button class="gbtn" data-crisis="2022">🔥 Inflazione '22</button>
       </div>
       <div style="font-size:12px;color:var(--text3);margin-bottom:6px">Modalità di versamento:</div>
       <div class="btn-group" id="btSeqModeBtns" style="flex-wrap:wrap;margin-bottom:14px">
-        <button class="gbtn a-blue" data-mode="cap_pac">Capitale + PAC</button>
-        <button class="gbtn" data-mode="solo_cap">Solo capitale (lump sum)</button>
-        <button class="gbtn" data-mode="solo_pac">Solo PAC (capitale 0)</button>
+        <button class="gbtn a-blue" data-mode="cap_pac">💵 Capitale + PAC</button>
+        <button class="gbtn" data-mode="solo_cap">🏔️ Solo capitale (lump sum)</button>
+        <button class="gbtn" data-mode="solo_pac">📅 Solo PAC (capitale 0)</button>
       </div>
-      <button class="gbtn a-blue" onclick="runSequenceRiskStress()" style="padding:10px 20px;font-size:13.5px;font-weight:700;margin-bottom:14px">️ Esegui stress test di sequenza</button>
+      <button class="gbtn a-blue" onclick="runSequenceRiskStress()" style="padding:10px 20px;font-size:13.5px;font-weight:700;margin-bottom:14px">⏱️ Esegui stress test di sequenza</button>
       <div id="btSeqRiskResults" style="display:none">
         <div id="btSeqRiskContext" style="margin-bottom:14px;padding:12px 14px;border-radius:var(--radius-sm);font-size:12.5px;line-height:1.7;background:var(--bg2);border:1px solid var(--border)"></div>
         <div id="btSeqRiskCards" style="margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px"></div>
@@ -1416,7 +1417,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB 8: FISCALITÀ IT -->
 <div class="tab-content" id="tab-fiscale">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-fiscale-regimi">Fiscalità Italiana Completa — Regime, Metodo, Zainetto</div>
+  <div class="sec-label" data-info-id="info-fiscale-regimi">🏛️ Fiscalità Italiana Completa — Regime, Metodo, Zainetto</div>
   <div class="info-box" style="margin-bottom:14px">
     Calcolo fiscale avanzato specifico per la normativa italiana. Scegli <strong>regime fiscale</strong> (amministrato vs dichiarativo), <strong>metodo di valorizzazione</strong> (costo medio ponderato vs LIFO), gestione delle <strong>minusvalenze pregresse</strong> (zainetto fiscale, valide 4 anni), <strong>imposta di bollo</strong> sul dossier titoli (0,2% annuo) e affiancamento tra strumenti con diversa natura del reddito (capitale vs diverso).
   </div>
@@ -1424,17 +1425,17 @@
     <div>
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Regime Fiscale</div>
       <div class="btn-group" id="fiscRegimeBtns" style="flex-direction:column;align-items:flex-start">
-        <button class="gbtn a-blue" data-r="amministrato" style="width:100%;text-align:left">Amministrato (banca/broker IT) — sostituto d'imposta</button>
-        <button class="gbtn" data-r="dichiarativo" style="width:100%;text-align:left">Dichiarativo — autonoma dichiarazione, compensazione totale</button>
+        <button class="gbtn a-blue" data-r="amministrato" style="width:100%;text-align:left">🏦 Amministrato (banca/broker IT) — sostituto d'imposta</button>
+        <button class="gbtn" data-r="dichiarativo" style="width:100%;text-align:left">📋 Dichiarativo — autonoma dichiarazione, compensazione totale</button>
       </div>
       <div id="fiscRegimeDesc" class="adv-desc" style="margin-top:8px"></div>
     </div>
     <div>
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Metodo valorizzazione lotti</div>
       <div class="btn-group" id="fiscMethodBtns" style="flex-direction:column;align-items:flex-start">
-        <button class="gbtn a-blue" data-mth="avg" style="width:100%;text-align:left">Costo Medio Ponderato (ETF UCITS — regime amm.)</button>
-        <button class="gbtn" data-mth="lifo" style="width:100%;text-align:left">LIFO — Ultimo entrato, primo uscito (regime dichiarativo)</button>
-        <button class="gbtn" data-mth="fifo" style="width:100%;text-align:left">FIFO — Primo entrato, primo uscito (confronto)</button>
+        <button class="gbtn a-blue" data-mth="avg" style="width:100%;text-align:left">⚖️ Costo Medio Ponderato (ETF UCITS — regime amm.)</button>
+        <button class="gbtn" data-mth="lifo" style="width:100%;text-align:left">📚 LIFO — Ultimo entrato, primo uscito (regime dichiarativo)</button>
+        <button class="gbtn" data-mth="fifo" style="width:100%;text-align:left">📖 FIFO — Primo entrato, primo uscito (confronto)</button>
       </div>
     </div>
   </div>
@@ -1472,7 +1473,7 @@
         <button class="gbtn" data-st="azioni">Azioni dirette</button>
         <button class="gbtn" data-st="btp">BTP / Titoli Stato</button>
         <button class="gbtn" data-st="obblig">Obbligaz. corporate</button>
-        <button class="gbtn" data-st="portafoglio">Portafoglio bilanciato (aliquota composita)</button>
+        <button class="gbtn" data-st="portafoglio">⚖️ Portafoglio bilanciato (aliquota composita)</button>
       </div>
       <div id="fiscIrpefBox" style="display:none;margin-top:10px;padding:10px 12px;background:var(--bg2);border-radius:8px;border:1px solid var(--border)">
         <div class="plabel" style="margin-bottom:6px"><span>Aliquota marginale IRPEF (ETF non armonizzati)</span></div>
@@ -1485,7 +1486,7 @@
     </div>
     <div class="pblock">
       <div class="plabel" style="margin-bottom:8px"><span>PAC mensile (importato dal Simulatore)</span></div>
-      <button class="gbtn a-blue" onclick="importFiscFromSim()" style="padding:9px 16px;font-weight:600">️ Importa dati dal Simulatore</button>
+      <button class="gbtn a-blue" onclick="importFiscFromSim()" style="padding:9px 16px;font-weight:600">⬇️ Importa dati dal Simulatore</button>
       <div id="fiscImportStatus" style="font-size:12px;color:var(--text3);margin-top:6px">Non ancora importato</div>
     </div>
   </div>
@@ -1530,7 +1531,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB: PIANO PENSIONE -->
 <div class="tab-content" id="tab-pensione">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-pensione-acc">Piano Pensionistico Integrato — INPS + Fondo Pensione + ETF</div>
+  <div class="sec-label" data-info-id="info-pensione-acc">👴 Piano Pensionistico Integrato — INPS + Fondo Pensione + ETF</div>
   <div class="info-box" style="margin-bottom:14px">
     Stima la tua <strong>pensione pubblica INPS</strong> (regime contributivo/misto/retributivo), affiancala a un <strong>fondo pensione</strong> (con deducibilità fiscale e TFR) e al <strong>capitale ETF</strong> accumulato nel Simulatore. Verifica se i tre pilastri coprono la spesa desiderata in pensione e ottimizza il versamento al fondo.
   </div>
@@ -1539,9 +1540,9 @@
     <div>
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Regime previdenziale</div>
       <div class="btn-group" id="penRegimeBtns" style="flex-direction:column;align-items:flex-start">
-        <button class="gbtn a-blue" data-reg="contributivo" style="width:100%;text-align:left">Contributivo puro (post-1996)</button>
-        <button class="gbtn" data-reg="misto" style="width:100%;text-align:left">Misto (≥18 anni contrib. al 1995)</button>
-        <button class="gbtn" data-reg="retributivo" style="width:100%;text-align:left">Retributivo (residuale ante-1996)</button>
+        <button class="gbtn a-blue" data-reg="contributivo" style="width:100%;text-align:left">📈 Contributivo puro (post-1996)</button>
+        <button class="gbtn" data-reg="misto" style="width:100%;text-align:left">♻️ Misto (≥18 anni contrib. al 1995)</button>
+        <button class="gbtn" data-reg="retributivo" style="width:100%;text-align:left">📜 Retributivo (residuale ante-1996)</button>
       </div>
       <div id="penRegimeDesc" class="adv-desc" style="margin-top:8px"></div>
     </div>
@@ -1549,12 +1550,12 @@
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">TFR al Fondo Pensione</div>
       <div class="btn-group" id="penTFRBtns" style="flex-wrap:wrap">
         <button class="gbtn a-blue" data-tfr="si">✅ Conferito al FP <span id="lPenTFRAuto" style="opacity:.7"></span></button>
-        <button class="gbtn" data-tfr="no">Lasciato in azienda</button>
+        <button class="gbtn" data-tfr="no">🏙️ Lasciato in azienda</button>
       </div>
       <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin:14px 0 8px">Fondo negoziale (contributo datoriale)</div>
       <div class="btn-group" id="penNegozialeBtns" style="flex-wrap:wrap">
-        <button class="gbtn" data-neg="si">Sì, ho un fondo negoziale</button>
-        <button class="gbtn a-blue" data-neg="no">No, fondo aperto/PIP</button>
+        <button class="gbtn" data-neg="si">🤝 Sì, ho un fondo negoziale</button>
+        <button class="gbtn a-blue" data-neg="no">👤 No, fondo aperto/PIP</button>
       </div>
       <div style="font-size:10.5px;color:var(--text3);margin-top:6px;line-height:1.5">Il fondo negoziale richiede il conferimento del TFR al fondo (necessario per il contributo datoriale). Con TFR in azienda è disponibile solo il fondo aperto/PIP con versamento volontario.</div>
       <div id="penNegozialBlock" style="display:none;margin-top:10px;padding:12px 14px;background:#e8f5e9;border:1px solid #c8e6c9;border-radius:var(--radius-sm);font-size:12px;color:#2e7d32;line-height:1.6">
@@ -1629,11 +1630,11 @@
         <input type="range" id="sPenInfl" min="0" max="6" step="0.25" value="2" oninput="penState.infl=+this.value/100;document.getElementById('lPenInfl').textContent=this.value+'%';renderPensione()">
       </div>
       <div style="margin-top:14px">
-        <button class="gbtn a-blue" onclick="importPenFromSim()" style="padding:9px 16px;font-weight:600;width:100%">️ Importa età e capitale ETF dal Simulatore</button>
+        <button class="gbtn a-blue" onclick="importPenFromSim()" style="padding:9px 16px;font-weight:600;width:100%">⬇️ Importa età e capitale ETF dal Simulatore</button>
         <div id="penImportStatus" style="font-size:12px;color:var(--text3);margin-top:6px">Non ancora importato — il capitale ETF è considerato 0 finché non importi dal Simulatore.</div>
       </div>
       <div style="margin-top:10px">
-        <button class="gbtn" onclick="calcPenSuggerito()" style="padding:9px 16px;font-weight:600;width:100%">Calcola versamento FP ottimale per coprire il gap</button>
+        <button class="gbtn" onclick="calcPenSuggerito()" style="padding:9px 16px;font-weight:600;width:100%">🏹 Calcola versamento FP ottimale per coprire il gap</button>
       </div>
       <div style="margin-top:10px">
         <div style="font-size:11px;color:var(--text3);font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;font-weight:600;margin-bottom:8px">Destinazione risparmio fiscale annuo</div>
@@ -1663,7 +1664,7 @@
     <div id="penFPDetail"></div>
   </div>
   <details class="sec" style="cursor:pointer">
-    <summary class="sec-label" data-info-id="info-pensione-confronto" style="cursor:pointer">Confronto Fiscale — Fondo Pensione vs ETF equivalente</summary>
+    <summary class="sec-label" data-info-id="info-pensione-confronto" style="cursor:pointer">⚖️ Confronto Fiscale — Fondo Pensione vs ETF equivalente</summary>
     <div id="penFiscComp" style="margin-top:12px"></div>
     <div class="chart-wrap" style="height:300px"><canvas id="chPenFisc"></canvas></div>
   </details>
@@ -1681,7 +1682,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB 9: STRESS VALUTAZIONI -->
 <div class="tab-content" id="tab-valuation">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-valuation-cape">Stress Test Valutazioni — Mean-Reversion CAPE</div>
+  <div class="sec-label" data-info-id="info-valuation-cape">🏹 Stress Test Valutazioni — Mean-Reversion CAPE</div>
   <div class="info-box" style="margin-bottom:14px">
     <strong>Cosa succede al tuo portafoglio se il CAPE torna alla media storica?</strong>
     Bogle chiamava questo "the speculative return": la parte del rendimento azionario derivante dalla variazione dei multipli di valutazione (CAPE), distinta dal rendimento fondamentale (utili + dividendi).
@@ -1739,7 +1740,7 @@
 <!-- ══════════════════════════════════════════════════════ TAB: OBIETTIVO INVERSO -->
 <div class="tab-content" id="tab-goal">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-goal">Calcolatore Obiettivo Inverso</div>
+  <div class="sec-label" data-info-id="info-goal">🏆 Calcolatore Obiettivo Inverso</div>
   <div class="info-box" style="margin-bottom:16px">
     Parti dall'obiettivo e scopri cosa serve per raggiungerlo.
     Scegli la modalità e imposta i parametri: il calcolatore risponde alla domanda inversa rispetto al simulatore principale.
@@ -1749,13 +1750,13 @@
   <div class="sec-label" data-info-id="info-goal-modalita" style="margin-bottom:10px">Cosa vuoi calcolare?</div>
   <div class="btn-group" id="goalModeBtns" style="margin-bottom:18px">
     <button class="gbtn a-blue" data-gm="pac" onclick="switchGoalMode('pac')" title="Quanto devo versare ogni mese?">
-      PAC necessario
+      💵 PAC necessario
     </button>
     <button class="gbtn" data-gm="years" onclick="switchGoalMode('years')" title="In quanti anni raggiungo l'obiettivo?">
-      Anni necessari
+      📅 Anni necessari
     </button>
     <button class="gbtn" data-gm="target" onclick="switchGoalMode('target')" title="Quanto patrimonio accumulo?">
-      Capitale raggiungibile
+      📈 Capitale raggiungibile
     </button>
   </div>
 
@@ -1763,31 +1764,31 @@
   <div class="grid-2" style="margin-bottom:16px">
     <!-- Target capitale -->
     <div class="pblock" id="goalTargetBlock">
-      <div class="plabel"><span>Obiettivo patrimoniale</span><span class="pval" id="lGoalTarget">€500k</span></div>
+      <div class="plabel"><span>🏹 Obiettivo patrimoniale</span><span class="pval" id="lGoalTarget">€500k</span></div>
       <input type="range" id="sGoalTarget" min="10000" max="5000000" step="10000" value="500000">
       <div class="range-hints"><span>€10k</span><span>€5M</span></div>
     </div>
     <!-- PAC mensile -->
     <div class="pblock" id="goalPACBlock" style="display:none">
-      <div class="plabel"><span>PAC mensile</span><span class="pval" id="lGoalPAC">€500/m</span></div>
+      <div class="plabel"><span>💳 PAC mensile</span><span class="pval" id="lGoalPAC">€500/m</span></div>
       <input type="range" id="sGoalPAC" min="0" max="15000" step="50" value="500">
       <div class="range-hints"><span>€0</span><span>€15.000</span></div>
     </div>
     <!-- Anni -->
     <div class="pblock" id="goalYearsBlock">
-      <div class="plabel"><span>Orizzonte temporale</span><span class="pval" id="lGoalYears">20 anni</span></div>
+      <div class="plabel"><span>⏳ Orizzonte temporale</span><span class="pval" id="lGoalYears">20 anni</span></div>
       <input type="range" id="sGoalYears" min="1" max="50" step="1" value="20">
       <div class="range-hints"><span>1 anno</span><span>50 anni</span></div>
     </div>
     <!-- Capitale iniziale -->
     <div class="pblock">
-      <div class="plabel"><span>Patrimonio iniziale</span><span class="pval" id="lGoalW0">€0</span></div>
+      <div class="plabel"><span>🏦 Patrimonio iniziale</span><span class="pval" id="lGoalW0">€0</span></div>
       <input type="range" id="sGoalW0" min="0" max="5000000" step="1000" value="0">
       <div class="range-hints"><span>€0</span><span>€5M</span></div>
     </div>
     <!-- TER -->
     <div class="pblock">
-      <div class="plabel"><span>TER ETF</span><span class="pval" id="lGoalTER">0.20%</span></div>
+      <div class="plabel"><span>💸 TER ETF</span><span class="pval" id="lGoalTER">0.20%</span></div>
       <input type="range" id="sGoalTER" min="0" max="2.0" step="0.05" value="0.20">
       <div class="range-hints"><span>0%</span><span>2.0%</span></div>
     </div>
@@ -1803,8 +1804,8 @@
     <button class="gbtn" data-gp="eq40">40/60</button>
     <button class="gbtn" data-gp="eq20">20/80</button>
     <button class="gbtn" data-gp="ob100">100% Ob.</button>
-    <button class="gbtn" data-gp="golden_butterfly">GB</button>
-    <button class="gbtn" data-gp="permanent">PP</button>
+    <button class="gbtn" data-gp="golden_butterfly">🎴 GB</button>
+    <button class="gbtn" data-gp="permanent">🛡 PP</button>
   </div>
   <button class="gbtn a-teal" onclick="syncGoalPortfolio()" style="font-size:12px;margin-bottom:16px" title="Copia portafoglio, TER, capitale iniziale e PAC dal tab Simulatore">
     ↩ Importa dal Simulatore
@@ -1818,7 +1819,7 @@
 <!-- ══════════════════════════════════════════════════ TAB: QUANT ANALYTICS -->
 <div class="tab-content" id="tab-quant">
 <div class="sec">
-  <div class="sec-label" data-info-id="info-quant-markowitz">Quant Analytics — Frontiera Efficiente & VaR/CVaR</div>
+  <div class="sec-label" data-info-id="info-quant-markowitz">📏 Quant Analytics — Frontiera Efficiente & VaR/CVaR</div>
   <div class="info-box" style="margin-bottom:14px">
     Analisi quantitativa avanzata del portafoglio. Frontiera Efficiente di Markowitz con posizionamento del portafoglio corrente, e misure di rischio professionali (VaR/CVaR) con tre metodi: Gaussiano, t-Student (fat tails), Monte Carlo.
   </div>
@@ -1826,10 +1827,10 @@
   <!-- Selezione modalità -->
   <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
     <div class="btn-group" id="quantModeBtns">
-  <button class="gbtn a-blue" data-qm="frontier" onclick="switchQuantMode('frontier')">Frontiera Efficiente</button>
-  <button class="gbtn" data-qm="var" onclick="switchQuantMode('var')">VaR / CVaR</button>
-  <button class="gbtn" data-qm="factor" onclick="switchQuantMode('factor')">Factor Decomposition</button>
-  <button class="gbtn" data-qm="optimizer" onclick="switchQuantMode('optimizer')">️ Optimizer</button>
+  <button class="gbtn a-blue" data-qm="frontier" onclick="switchQuantMode('frontier')">📈 Frontiera Efficiente</button>
+  <button class="gbtn" data-qm="var" onclick="switchQuantMode('var')">🏹 VaR / CVaR</button>
+  <button class="gbtn" data-qm="factor" onclick="switchQuantMode('factor')">📏 Factor Decomposition</button>
+  <button class="gbtn" data-qm="optimizer" onclick="switchQuantMode('optimizer')">⚙️ Optimizer</button>
 </div>
 
   <!-- Selettore asset class per la frontiera -->
@@ -1855,7 +1856,7 @@
       <span>🔵 Frontiera efficiente (colore = Sharpe ratio, blu scuro = alto)</span>
       <span>🟠 ★ Portafoglio Max Sharpe</span>
       <span>🟢 ▼ Portafoglio Min Varianza</span>
-      <span>Il tuo portafoglio</span>
+      <span>🔺 Il tuo portafoglio</span>
     </div>
 
     <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin-top:14px;font-size:12px;color:var(--text3);line-height:1.7">

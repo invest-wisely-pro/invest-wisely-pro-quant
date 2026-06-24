@@ -70,7 +70,7 @@ const PORT = {
     eq: null, ob: null, gold: 0, cash: 0, realRet: .035, inflBeta: 0.1, fxExp: null, // variabile con età
   },
   golden_butterfly: {
-    label: '🦋 Golden Butterfly',
+    label: '🎴 Golden Butterfly',
     desc: 'Ideato da Tyler from Portfolio Charts (2012). Composizione: 20% Az. Large Cap, 20% Az. Small Cap Value, 20% Oro, 20% Ob. Lungo Termine, 20% Ob. Breve Termine. Ottimizzato per massimizzare la peggior performance storica su 30 anni (\'worst case\'). Volatilità molto bassa, ottimo Sharpe ratio storico (1970-2023: ~9.7%/a lordo — gonfiato dal bull market oro anni \'70 e dal bull bond 1980-2020, non ripetibili). Rendimento atteso forward-looking: ~5.2%/a.',
     best: .067, normal: .052, worst: .023, vol: .075,
     eq: .4, ob: .4, gold: .2, cash: 0, realRet: .032, inflBeta: 0.14, fxExp: 0.55,  // 40%eq*0.85 + 20%oro*1.0 + 40%ob*0.05 ≈ 0.56
@@ -109,7 +109,7 @@ const PORT = {
     }
   },
   larry: {
-    label: '📐 Larry Portfolio',
+    label: '📏 Larry Portfolio',
     desc: 'Ideato da Larry Swedroe. Alta concentrazione su fattori di rischio accademici (small cap value, emerging). Composizione: 15% US Small Cap Value, 7.5% Intl Small Cap Value, 7.5% Emerging Markets, 70% Ob. Breve/Medio Termine. L\'idea: concentrare il rischio solo sull\'azionario ad alto rendimento atteso (small cap value, emerging) ammortizzato da bond a bassa duration. Volatilità portafoglio calcolata ~7.5%/a. Rendimento atteso ~5.8%/a. Beta inflazione calcolato ≈ −0.02: il contributo del bond breve (tassi flottanti) è quasi neutralizzato dalla quota azionaria value.',
     best: .073, normal: .058, worst: .030, vol: .075,
     // NB: 'normal' (5.8%) è una stima FORWARD-LOOKING conservativa, NON il CAGR storico.
@@ -140,7 +140,7 @@ const PORT = {
     }
   },
   ec_us_9060: {
-    label: '⚡ Efficient Core 90/60 USA',
+    label: '🔋 Efficient Core 90/60 USA',
     desc: 'Strategia capital-efficient (efficient core 90/60 USA): 90% azioni large cap USA + 60% futures su Treasury USA, per un\'esposizione notional del 150% (leva 1,5x su un 60/40). L\'idea, fondata sulla teoria di Markowitz, è che il portafoglio a miglior Sharpe vada usato con leva invece di puntare al 100% azioni. La leva ha un costo di finanziamento (~tasso a breve) già dedotto dal rendimento atteso. Volatilità ~14%/a, tra un 60/40 e un 100% azioni. Disponibile come ETF UCITS. Il 10% di cassa funge da collaterale per i futures.',
     best: .098, normal: .071, worst: .021, vol: .139,
     eq: .90, ob: .60, gold: 0, cash: 0, leverage: 1.5,
@@ -152,7 +152,7 @@ const PORT = {
     }
   },
   ec_glob_9060: {
-    label: '⚡ Efficient Core 90/60 Globale',
+    label: '🔋 Efficient Core 90/60 Globale',
     desc: 'Versione globale della strategia capital-efficient (efficient core 90/60 globale): 90% azioni globali sviluppati + 60% futures su titoli di stato globali (USA, UK, Germania, Giappone), esposizione notional 150%. Più diversificata della versione USA sia sul lato azionario sia obbligazionario. Costo di finanziamento della leva già dedotto. Volatilità ~14%/a. Disponibile come ETF UCITS. Adatta come "core" di un portafoglio per liberare spazio ad asset diversificanti senza ridurre l\'esposizione azionaria.',
     best: .099, normal: .073, worst: .021, vol: .142,
     eq: .90, ob: .60, gold: 0, cash: 0, leverage: 1.5,
@@ -164,7 +164,7 @@ const PORT = {
     }
   },
   return_stack: {
-    label: '🔀 Return Stacking (UCITS)',
+    label: '♻️ Return Stacking (UCITS)',
     desc: 'Strategia "return stacking" replicabile con ETF UCITS: combina un efficient core globale (90/60 azioni-bond) con un ETF managed futures / trend following. Esposizione effettiva ~45% azioni + 30% obbligazioni + 50% trend = 125% notional. Il trend following è un "vero diversificatore" (correlazione ~−0,05 con azioni) che storicamente genera "crisis alpha" nelle crisi prolungate (2002, 2008, 2022). Sharpe atteso superiore grazie alla decorrelazione. Costi più alti (TER più elevato) e complessità maggiore — adatto a investitori esperti. Versione semplificata e didattica del concetto di portable alpha.',
     best: .085, normal: .065, worst: .027, vol: .101,
     eq: .45, ob: .30, gold: 0, cash: 0, trend: .50, leverage: 1.25,
@@ -198,7 +198,7 @@ const ASSET_CLASSES = {
   //        Banche Centrali, letteratura accademica)
   // ══════════════════════════════════════════════════════════════
   eq_sviluppati: {
-    label: 'Azioni Mercati Sviluppati', emoji: '🌍', cat: 'eq', isEq: true,
+    label: 'Azioni Mercati Sviluppati', emoji: '🌎', cat: 'eq', isEq: true,
     mu: 0.067, vol: 0.158, inflBeta: 0.30, ter: 0.2, fxExp: 0.85,
     histCAGR: 0.102, histPeriod: '1970-2024', src: 'DMS Yearbook 2024',
     desc: 'Paniere di azioni di paesi sviluppati con composizione geografica ampia (America del Nord, Europa, Pacifico). CAGR storico 10.2%/a. Rendimento atteso forward-looking ~6.7%/a, più conservativo per effetto della mean-reversion delle valutazioni (CAPE elevati nel 2024) e coerente con la media pesata dei componenti (~65-70% USA + Europa + Pacifico).',
@@ -216,19 +216,19 @@ const ASSET_CLASSES = {
     desc: 'Mercati azionari europei (Germania, Francia, UK, Svizzera, Olanda, Italia ecc.). CAGR storico ~9.5%/a. Valutazioni storicamente più convenienti rispetto agli USA (CAPE ~14-16 in media), ma crescita degli utili inferiore nel lungo periodo.',
   },
   eq_em: {
-    label: 'Azioni Mercati Emergenti', emoji: '🌏', cat: 'eq', isEq: true,
+    label: 'Azioni Mercati Emergenti', emoji: '🗺️', cat: 'eq', isEq: true,
     mu: 0.078, vol: 0.225, inflBeta: 0.35, ter: 0.2, fxExp: 1.0,
     histCAGR: 0.098, histPeriod: '1988-2024', src: 'Fama-French Emerging Markets (1989-2024), EUR',
     desc: 'Cina, India, Brasile, Taiwan, Corea del Sud e altri mercati in sviluppo. CAGR dal 1988: ~9.8%/a. Alta volatilità (σ≈22%) e rischio politico/valutario. Premio di crescita economica parzialmente eroso da perdite da valuta e governance societaria più debole.',
   },
   eq_small_value: {
-    label: 'Azioni Small Cap Value (fattore)', emoji: '📐', cat: 'eq', isEq: true,
+    label: 'Azioni Small Cap Value (fattore)', emoji: '📏', cat: 'eq', isEq: true,
     mu: 0.085, vol: 0.205, inflBeta: 0.25, ter: 0.3, fxExp: 1.0,
     histCAGR: 0.135, histPeriod: '1970-2024', src: 'Fama-French Data Library',
     desc: 'Piccole capitalizzazioni a bassa valutazione (P/B basso). Premio documentato da Fama & French (1992, 1993). CAGR US Small Cap Value ~13.5%/a (1970-2024) — fortemente influenzato dagli anni \'70-\'80. Forward-looking più moderato (~8.5%/a) per mean-reversion dei premi di rischio.',
   },
   reits: {
-    label: 'Immobiliare Quotato (REITs)', emoji: '🏢', cat: 'eq', isEq: true,
+    label: 'Immobiliare Quotato (REITs)', emoji: '🏙️', cat: 'eq', isEq: true,
     mu: 0.065, vol: 0.175, inflBeta: 0.20, ter: 0.4, fxExp: 0.8,
     histCAGR: 0.112, histPeriod: '1972-2024', src: 'FTSE Nareit All Equity REITs (1972-2024), EUR',
     desc: 'Fondi immobiliari quotati su borsa. CAGR 1972-2024: ~11.2%/a. Obbligo di distribuzione ≥90% degli utili → elevata cedola. Copertura parziale dell\'inflazione tramite canoni di affitto indicizzati. Correlazione con azioni ~0.60, parzialmente decorrelante.',
@@ -252,49 +252,49 @@ const ASSET_CLASSES = {
   // mu = forward-looking conservativo (premi storici tendono a
   //      comprimersi post-pubblicazione e per affollamento).
   fat_valore: {
-    label: 'Fattore Valore (Value)', emoji: '💎', cat: 'fat', isEq: true,
+    label: 'Fattore Valore (Value)', emoji: '✨', cat: 'fat', isEq: true,
     mu: 0.072, vol: 0.175, inflBeta: 0.35, ter: 0.3, fxExp: 0.85,
     histCAGR: 0.105, histPeriod: '1970-2024', src: 'Fama & French (1992, 1993)',
     desc: 'Azioni con basse valutazioni (P/B, P/E, EV/EBITDA bassi). CAGR storico long-only ~10.5%/a. Ha sottoperformato il mercato tra 2007 e 2020, recuperando dal 2021. Forward-looking ~7.2%/a. Alta correlazione con azioni cicliche e finanziarie — soffre in recessioni profonde. Correlazione con Momentum ρ≈−0.15: ottima complementarità.',
   },
   fat_momentum: {
-    label: 'Fattore Momentum (Prezzo)', emoji: '🚀', cat: 'fat', isEq: true,
+    label: 'Fattore Momentum (Prezzo)', emoji: '📈', cat: 'fat', isEq: true,
     mu: 0.075, vol: 0.195, inflBeta: 0.05, ter: 0.3, fxExp: 0.85,
     histCAGR: 0.120, histPeriod: '1970-2024', src: 'Jegadeesh & Titman (1993), Carhart (1997)',
     desc: 'Strategia long sistematica sui vincitori degli ultimi 12-1 mesi. CAGR storico long-only ~12%/a (1970-2024). Rendimento elevato ma con crash risk: drawdown violenti nei mercati a U-turn (es. 2009: −60%). Forward-looking ~7.5%/a. Correlazione con Valore ρ≈−0.15 — principale beneficio del multi-fattore.',
   },
   fat_qualita: {
-    label: 'Fattore Qualità / Redditività', emoji: '⭐', cat: 'fat', isEq: true,
+    label: 'Fattore Qualità / Redditività', emoji: '🌟', cat: 'fat', isEq: true,
     mu: 0.075, vol: 0.150, inflBeta: 0.18, ter: 0.3, fxExp: 0.85,
     histCAGR: 0.095, histPeriod: '1990-2024', src: 'Novy-Marx (2013), Fama & French (2015)',
     desc: 'Aziende con alta redditività operativa, bassa leva finanziaria e stabilità degli utili (RMW: Robust Minus Weak). CAGR storico long-only ~9.5%/a (1990-2024). Carattere difensivo: sovra-performa in crisi, sotto-performa nei rally euforici. Parte del modello accademico a 5 fattori. Forward-looking ~7.5%/a.',
   },
   fat_low_vol: {
-    label: 'Fattore Bassa Volatilità (Difensivo)', emoji: '📉', cat: 'fat', isEq: true,
+    label: 'Fattore Bassa Volatilità (Difensivo)', emoji: '🔻', cat: 'fat', isEq: true,
     mu: 0.070, vol: 0.120, inflBeta: 0.12, ter: 0.3, fxExp: 0.85,
     histCAGR: 0.085, histPeriod: '1970-2024', src: 'Frazzini & Pedersen (2014)',
     desc: 'Azioni con volatilità storica e beta di mercato bassi (BAB: Betting Against Beta). Anomalia CAPM: il rendimento aggiustato per il rischio supera quello del mercato. CAGR storico ~8.5%/a con σ ~12% (1970-2024). Concentrato in settori difensivi: utilities, consumer staples, healthcare. Forward-looking ~7.0%/a. Ottimo abbinamento con Momentum.',
   },
   fat_size: {
-    label: 'Fattore Dimensione (Small Cap)', emoji: '🔬', cat: 'fat', isEq: true,
+    label: 'Fattore Dimensione (Small Cap)', emoji: '🧪', cat: 'fat', isEq: true,
     mu: 0.075, vol: 0.190, inflBeta: 0.20, ter: 0.25, fxExp: 0.85,
     histCAGR: 0.095, histPeriod: '1970-2024', src: 'Banz (1981), Fama-French Data Library',
     desc: 'Premio di dimensione (SMB: Small Minus Big) — le piccole capitalizzazioni tendono a sovra-performare le grandi nel lungo periodo. CAGR storico ~9.5%/a (1970-2024). Il premio è più robusto nel segmento value. Parzialmente compresso post-pubblicazione accademica. Forward-looking ~7.5%/a. Correlazione con mercato ~0.80.',
   },
   fat_investment: {
-    label: 'Fattore Investimento (CMA)', emoji: '🏗️', cat: 'fat', isEq: true,
+    label: 'Fattore Investimento (CMA)', emoji: '🧱', cat: 'fat', isEq: true,
     mu: 0.072, vol: 0.130, inflBeta: 0.10, ter: 0.35, fxExp: 0.85,
     histCAGR: 0.080, histPeriod: '1990-2024', src: 'Fama & French (2015)',
     desc: 'Aziende con crescita degli attivi bassa (Conservative Minus Aggressive — CMA). Le imprese che investono meno producono rendimenti più alti nel lungo periodo. Parte del modello a 5 fattori (Fama-French 2015). CAGR storico ~8%/a (1990-2024). Carattere difensivo, alta correlazione con Qualità (ρ≈0.40). Forward-looking ~7.2%/a.',
   },
   fat_dividendi: {
-    label: 'Fattore Dividendi / Dividend Growth', emoji: '💰', cat: 'fat', isEq: true,
+    label: 'Fattore Dividendi / Dividend Growth', emoji: '💵', cat: 'fat', isEq: true,
     mu: 0.072, vol: 0.145, inflBeta: 0.22, ter: 0.3, fxExp: 0.85,
     histCAGR: 0.092, histPeriod: '1970-2024', src: 'Literatura accademica sui dividendi',
     desc: 'Aziende con dividend yield elevato e/o storia di crescita dei dividendi (Dividend Aristocrats). CAGR storico ~9.2%/a (1970-2024). Sovrapposizione parziale con Qualità e Valore. Flusso cedolare elevato riduce la volatilità percepita. Settori tipici: utility, finanziari, consumer staples. Forward-looking ~7.2%/a.',
   },
   fat_multifat: {
-    label: 'Multi-Fattore (Val+Mom+Qual+LowVol+CMA)', emoji: '🎯', cat: 'fat', isEq: true,
+    label: 'Multi-Fattore (Val+Mom+Qual+LowVol+CMA)', emoji: '🏹', cat: 'fat', isEq: true,
     mu: 0.074, vol: 0.138, inflBeta: 0.20, ter: 0.4, fxExp: 0.85,
     histCAGR: 0.100, histPeriod: '1990-2024', src: 'Letteratura accademica multi-fattore',
     desc: 'Combinazione sistematica di Valore, Momentum, Qualità, Bassa Volatilità e Investimento con pesi uguali. CAGR storico ~10%/a (1990-2024). La diversificazione tra fattori decorrelati (Value-Momentum ρ≈−0.15) riduce la volatilità complessiva (σ≈13.8%). Migliore profilo rischio/rendimento dei singoli fattori nel lungo periodo.',
@@ -308,25 +308,25 @@ const ASSET_CLASSES = {
   // I fattori carry e trend hanno correlazioni molto diverse
   // dai fattori azionari — trattati separatamente nella matrice.
   fat_carry_bond: {
-    label: 'Carry Obbligazionario', emoji: '📊', cat: 'carry',
+    label: 'Carry Obbligazionario', emoji: '📋', cat: 'carry',
     mu: 0.045, vol: 0.085, inflBeta: 0.05, ter: 0.5, fxExp: 0.0,
     histCAGR: 0.062, histPeriod: '1990-2024', src: 'Koijen et al. (2018), letteratura carry',
     desc: 'Premio carry sul reddito fisso: posizione long su curve dei tassi ad alto carry e short su curve a basso carry tra paesi sviluppati. CAGR storico ~6.2%/a (1990-2024), σ ~8.5%. Bassa correlazione con azioni (ρ≈0.10) e con il trend following (ρ≈0.20). Soffre in crisi di risk-off globali. Forward-looking ~4.5%/a normalizzato.',
   },
   fat_carry_fx: {
-    label: 'Carry Valutario (FX Carry)', emoji: '💱', cat: 'carry',
+    label: 'Carry Valutario (FX Carry)', emoji: '💶', cat: 'carry',
     mu: 0.040, vol: 0.095, inflBeta: 0.08, ter: 0.5, fxExp: 0.0,
     histCAGR: 0.055, histPeriod: '1990-2024', src: 'Lustig, Roussanov & Verdelhan (2011)',
     desc: 'Premio carry valutario: long valute ad alto tasso di interesse, short valute a basso tasso. CAGR storico ~5.5%/a (1990-2024), σ ~9.5%. Storicamente uno dei premi più stabili nei mercati valutari. Soffre violentemente nei crash globali (es. 2008: −30%). Correlazione con azioni ρ≈0.15, con carry obbligazionario ρ≈0.35. Forward-looking ~4.0%/a.',
   },
   fat_carry_comm: {
-    label: 'Carry Commodities (Curve/Roll)', emoji: '🛢️', cat: 'carry',
+    label: 'Carry Commodities (Curve/Roll)', emoji: '⛽', cat: 'carry',
     mu: 0.042, vol: 0.105, inflBeta: 0.45, ter: 0.55, fxExp: 0.0,
     histCAGR: 0.058, histPeriod: '1990-2024', src: 'Koijen et al. (2018); Quantpedia term-structure',
     desc: 'Premio carry sulle materie prime: cattura il roll yield della curva dei futures (long contratti deferred a forte backwardation, short front-month in contango). A differenza delle commodity long-only, tende a reggere o guadagnare nei risk-off azionari (decorrelazione strutturale). CAGR storico ~5.8%/a (1990-2024), σ ~10.5%, alta sensibilità all\'inflazione (inflBeta 0.45). Correlazione molto bassa con azioni (ρ≈0.10) e con le altre carry — è un diversificatore reale. ETF di riferimento: CRRY (leva), UEQC, CCRV. Forward-looking ~4.2%/a. Nota: il rendimento speculativo varia con la volatilità azionaria globale (alto quando la vol scende). Forward-looking normalizzato ~4.2%/a.',
   },
   fat_trend: {
-    label: 'Trend Following / Managed Futures', emoji: '🌊', cat: 'trend',
+    label: 'Trend Following / Managed Futures', emoji: '〰️', cat: 'trend',
     mu: 0.055, vol: 0.150, inflBeta: 0.30, ter: 0.8, fxExp: 0.0,
     histCAGR: 0.082, histPeriod: '1990-2024', src: 'Moskowitz, Ooi & Pedersen (2012)',
     desc: 'Momentum time-series sistematico su più asset class (azioni, bond, valute, commodity). CAGR storico ~8.2%/a (1990-2024), σ ~15%. Caratteristica chiave: correlazione con azioni ρ≈−0.05 — vero diversificatore. "Crisis alpha": tende a performare bene in crisi sostenute (2002, 2008, 2022). In periodi inflattivi va tipicamente long commodity e gold. Forward-looking ~5.5%/a al netto dei costi.',
@@ -406,7 +406,7 @@ const ASSET_CLASSES = {
     desc: 'Universo obbligazionario globale aggregato: titoli di stato (~50%), corporate investment grade (~35%), cartolarizzati ABS/MBS (~15%), con copertura valutaria in EUR. Duration ~6.5 anni. Il riferimento per portafogli multi-asset a livello globale.',
   },
   ob_infl: {
-    label: 'Obblig. Indicizzate Inflazione', emoji: '🛡️', cat: 'ob_glob',
+    label: 'Obblig. Indicizzate Inflazione', emoji: '🔰', cat: 'ob_glob',
     mu: 0.042, vol: 0.060, inflBeta: 0.80, ter: 0.15, fxExp: 0.5,
     histCAGR: 0.050, histPeriod: '1997-2024', src: 'Mercati obbligazioni indicizzate',
     desc: 'Titoli di stato indicizzati all\'inflazione (BTPi italiani, Bund indicizzati, OATi francesi, TIPS USA). Il capitale cresce con l\'indice dei prezzi: protezione diretta dall\'inflazione. Rendimento reale garantito se tenuti a scadenza (~1.5-2% reale nel 2024). Volatilità simile alla duration nominale equivalente (~7 anni).',
@@ -416,13 +416,13 @@ const ASSET_CLASSES = {
   // REAL ASSETS — ORO, COMMODITIES, LIQUIDITA
   // ══════════════════════════════════════════════════════════════
   gold: {
-    label: 'Oro (metallo fisico / ETC)', emoji: '🥇', cat: 'real', isGold: true,
+    label: 'Oro (metallo fisico / ETC)', emoji: '🟡', cat: 'real', isGold: true,
     mu: 0.038, vol: 0.150, inflBeta: 0.50, ter: 0.2, fxExp: 1.0,
     histCAGR: 0.078, histPeriod: '1970-2024', src: 'Prezzo spot oro (mercato internazionale)',
     desc: 'Prezzo spot oro in USD, convertito in EUR. CAGR 1970-2024: 7.8%/a — fortemente gonfiato dalla fine del gold standard 1971 e dal rialzo degli anni \'70-\'80. Forward-looking ~3.8%/a (inflazione + premio di scarsità). Nessun dividendo o cedola — rendimento da solo apprezzamento. Forte decorrelazione con azioni in crisi.',
   },
   commodities: {
-    label: 'Commodities Diversificate', emoji: '⚡', cat: 'real',
+    label: 'Commodities Diversificate', emoji: '🔋', cat: 'real',
     mu: 0.032, vol: 0.185, inflBeta: 0.65, ter: 0.3, fxExp: 1.0,
     histCAGR: 0.052, histPeriod: '1970-2024', src: 'Indici commodity diversificati (dati aggregati)',
     desc: 'Paniere diversificato di materie prime: energia ~55%, metalli industriali ~20%, agricoltura ~25%. CAGR storico ~5.2%/a influenzato dagli shock petroliferi degli anni \'70. Rendimento reale di lungo periodo vicino a zero per i costi di roll sui futures. Ottima copertura inflazione a breve termine (β≈0.65).',
@@ -441,14 +441,14 @@ const ASSET_CLASSES = {
   // (sommano >1 per la leva); 'finCost'=costo finanziamento annuo (notional−1)×~RF.
   // ══════════════════════════════════════════════════════════════
   ec_us_core: {
-    label: 'Efficient Core 90/60 USA', emoji: '\u26a1', cat: 'eq', isComposite: true,
+    label: 'Efficient Core 90/60 USA', emoji: '\ud83d\udd0b', cat: 'eq', isComposite: true,
     composite: [ { ac: 'eq_usa', w: 0.90 }, { ac: 'ob_usa_it', w: 0.60 } ],
     finCost: 0.0125, ter: 0.20, fxExp: 0.70,
     histPeriod: '1970-2024', src: 'WisdomTree NTSX / efficient core',
     desc: 'Mattoncino capital-efficient: 90% azioni USA + 60% Treasury USA (notional 150%, leva 1,5x). Nel builder si scompone nei due sottostanti, cos\u00ec puoi combinarlo con oro, trend, ex-USA ecc. mantenendo corretti correlazioni e tassazione. Costo di finanziamento ~1,25%/a gi\u00e0 dedotto.',
   },
   ec_glob_core: {
-    label: 'Efficient Core 90/60 Globale', emoji: '\u26a1', cat: 'eq', isComposite: true,
+    label: 'Efficient Core 90/60 Globale', emoji: '\ud83d\udd0b', cat: 'eq', isComposite: true,
     composite: [ { ac: 'eq_sviluppati', w: 0.90 }, { ac: 'ob_glob_gov', w: 0.60 } ],
     finCost: 0.0125, ter: 0.25, fxExp: 0.55,
     histPeriod: '1970-2024', src: 'efficient core globale',
@@ -671,7 +671,7 @@ const ECO_SCENARIOS = {
   },
   recession: {
     label: 'Recessione / Crisi',
-    emoji: '📉',
+    emoji: '🔻',
     desc: 'Contrazione economica severa (tipo 2008-2009 o 2001). Azioni -30/-50%, obbligazioni governative salgono (flight to quality), oro positivo. Inflazione bassa o negativa. Test per la tenuta dei portafogli.',
     color: '#d93025',
     bg: 'rgba(217,48,37,.08)',
@@ -695,7 +695,7 @@ const ECO_SCENARIOS = {
   },
   bull_market: {
     label: 'Bull Market Prolungato',
-    emoji: '🚀',
+    emoji: '📈',
     desc: 'Forte crescita azionaria sostenuta (tipo 1982-1999 o 2009-2021). Azioni +12-15%/a, obbligazioni stabili, oro piatto. Il sogno di ogni investitore azionario.',
     color: '#9334e6',
     bg: 'rgba(147,52,230,.08)',
@@ -707,7 +707,7 @@ const ECO_SCENARIOS = {
   },
   high_rates: {
     label: 'Rialzo Tassi',
-    emoji: '📊',
+    emoji: '📋',
     desc: 'Banche centrali alzano i tassi rapidamente (tipo 2022-2023). Le obbligazioni a lungo termine crollano, le azioni growth soffrono, le obbligazioni brevi e la liquidità rendono di più. Il contesto peggiore per il 60/40 tradizionale.',
     color: '#00897b',
     bg: 'rgba(0,137,123,.08)',
@@ -970,18 +970,32 @@ function planIRR(data, targetIdx) {
 function getCrashWeights(port, age) {
   let eq, trendW = 0, carryW = 0, commodW = 0, goldW = 0, cashW = 0, commCarryW = 0;
   let obExplicitCustom;
+  // Quote fattoriali (sottoinsiemi di eq) con beta di crash proprio: servono a
+  // calcFactorCrashRate per differenziare il drawdown (REITs/EM più profondi,
+  // LowVol/Qualità difensivi). Senza esporle qui, la differenziazione resta inerte.
+  let scvW = 0, momW = 0, reitsW = 0, emW = 0;
+  let ff5W = { fat_valore: 0, fat_qualita: 0, fat_investment: 0, fat_size: 0, fat_low_vol: 0 };
   if (port === 'custom') {
     const cp = calcCustomParams();
     eq = cp.eq; trendW = cp.trendW || 0; carryW = cp.carryW || 0;
     commodW = cp.commodW || 0; goldW = cp.goldW || 0; cashW = cp.cashW || 0;
     commCarryW = cp.commCarryW || 0;
     obExplicitCustom = cp.ob; // bond notional espanso (include la gamba a leva dei composite)
+    scvW = cp.scvW || 0; momW = cp.momW || 0; reitsW = cp.reitsW || 0; emW = cp.emW || 0;
+    if (cp.ff5W) ff5W = cp.ff5W;
   } else {
     eq = getEquityWeight(port, age);
     goldW = getGoldWeight(port);
     cashW = getCashWeight(port);
     // return_stack ha una quota trend (managed futures) esplicita
     trendW = PORT[port]?.trend || 0;
+    // Preset con asset fattoriali reali (es. Larry: 15% SV + 7.5% EM): deriva le
+    // quote dai getter, così il crash differenziato vale anche per i preset.
+    scvW = (typeof getSmallValueWeight === 'function') ? getSmallValueWeight(port) : 0;
+    momW = (typeof getMomentumWeight === 'function') ? getMomentumWeight(port) : 0;
+    reitsW = (typeof getReitsWeight === 'function') ? getReitsWeight(port) : 0;
+    emW = (typeof getEmWeight === 'function') ? getEmWeight(port) : 0;
+    if (typeof getFactorWeights === 'function') { const fw = getFactorWeights(port); if (fw) ff5W = fw; }
   }
   // Esposizione difensiva: per i portafogli a leva (efficient core, return
   // stacking) usa il peso obbligazionario ESPLICITO (es. 0.60 notional), non il
@@ -989,7 +1003,7 @@ function getCrashWeights(port, age) {
   // il crash agisce sulle esposizioni notional.
   const obExplicit = (port !== 'custom') ? PORT[port]?.ob : obExplicitCustom;
   const defensive = (obExplicit ?? Math.max(0, 1 - eq - trendW - carryW - commodW - commCarryW - goldW - cashW)) + goldW + cashW;
-  return { eq, trendW, carryW, commodW, commCarryW, defensive };
+  return { eq, trendW, carryW, commodW, commCarryW, defensive, scvW, momW, reitsW, emW, ff5W };
 }
 
 // ── Calcola parametri blended del portafoglio custom ──────────
@@ -1528,7 +1542,7 @@ function project(scenario, withSeq, terOverride = null, portOverride = null) {
     const evts = [];
     const pAP = y === 1 ? state.pac * 12 : getPacForYear(y - 1) * 12;
     if (annPac !== pAP) { if (annPac === 0) evts.push('⏸ PAC sospeso'); else if (annPac < pAP) evts.push(`↓ PAC: €${fmtN(annPac / 12)}/m`); else evts.push(`↑ PAC: €${fmtN(annPac / 12)}/m`); }
-    if (crashInfo && withSeq && seq.on) evts.push(crashInfo.rate < 0 ? `⚡ Crash#${crashYears.indexOf(y)+1} (${(crashInfo.rate * 100).toFixed(1)}%)` : `🛡️ FtQ (+${(crashInfo.rate * 100).toFixed(1)}%)`);
+    if (crashInfo && withSeq && seq.on) evts.push(crashInfo.rate < 0 ? `🔋 Crash#${crashYears.indexOf(y)+1} (${(crashInfo.rate * 100).toFixed(1)}%)` : `🔰 FtQ (+${(crashInfo.rate * 100).toFixed(1)}%)`);
     else if (isRebound) evts.push('📈 Rally');
     if (pic > 0) evts.push('▲ PIC ' + fmt(pic));
     if (exp > 0) evts.push('▼ ' + fmt(exp));
@@ -1742,11 +1756,11 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
     // ds indices after base lines:
     // b+0 = P10, b+1 = P25, b+2 = P50mc, b+3 = P75, b+4 = P90
     const b = baseDsCount;
-    fanBands.push({ label:'P10',  data:mcFan.p10, borderColor:'rgba(26,115,232,.15)', borderWidth:1, pointRadius:0, fill:false, tension:.35 });
-    fanBands.push({ label:'P25',  data:mcFan.p25, borderColor:'rgba(26,115,232,.25)', borderWidth:1, pointRadius:0, fill:{target:b,   above:'rgba(26,115,232,.07)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P50mc',data:mcFan.p50, borderColor:'rgba(26,115,232,.45)', borderWidth:2, borderDash:[4,3], pointRadius:0, fill:{target:b+1, above:'rgba(26,115,232,.10)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P75',  data:mcFan.p75, borderColor:'rgba(26,115,232,.25)', borderWidth:1, pointRadius:0, fill:{target:b+2, above:'rgba(26,115,232,.10)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P90',  data:mcFan.p90, borderColor:'rgba(26,115,232,.15)', borderWidth:1, pointRadius:0, fill:{target:b+3, above:'rgba(26,115,232,.06)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P10',  data:mcFan.p10, borderColor:'rgba(158,27,50,.15)', borderWidth:1, pointRadius:0, fill:false, tension:.35 });
+    fanBands.push({ label:'P25',  data:mcFan.p25, borderColor:'rgba(158,27,50,.25)', borderWidth:1, pointRadius:0, fill:{target:b,   above:'rgba(158,27,50,.07)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P50mc',data:mcFan.p50, borderColor:'rgba(158,27,50,.45)', borderWidth:2, borderDash:[4,3], pointRadius:0, fill:{target:b+1, above:'rgba(158,27,50,.10)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P75',  data:mcFan.p75, borderColor:'rgba(158,27,50,.25)', borderWidth:1, pointRadius:0, fill:{target:b+2, above:'rgba(158,27,50,.10)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P90',  data:mcFan.p90, borderColor:'rgba(158,27,50,.15)', borderWidth:1, pointRadius:0, fill:{target:b+3, above:'rgba(158,27,50,.06)', below:'transparent'}, tension:.35 });
   }
 
   // Curva "Reale" = Base deflazionata per HICP live (o inflBottom se non disponibile)
@@ -1760,14 +1774,14 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
 
   const ds = [
     { label:'Ott.', data:best, borderColor:'#36d490', borderWidth:2, pointRadius:0, fill:false, tension:.35 },
-    { label:'Base', data:normal, borderColor:'#1a73e8', borderWidth:3, pointRadius:0, fill:false, tension:.35 },
+    { label:'Base', data:normal, borderColor:'#9e1b32', borderWidth:3, pointRadius:0, fill:false, tension:.35 },
     { label:'Pess.', data:worst, borderColor:'#e37400', borderWidth:2, pointRadius:0, fill:false, tension:.35 },
     ...(seqNorm ? [{ label:'Seq.', data:seqNorm, borderColor:'#9334e6', borderWidth:2.2, borderDash:[7,4], pointRadius:0, fill:false, tension:.35 }] : []),
     ...fanBands,
     { label:`Reale (${inflSource})`, data:realBase, borderColor:'rgba(0,0,0,.28)', borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:false, tension:.35 },
     { label:'PIC', data:ptPic, borderColor:'transparent', backgroundColor:'#36d490', pointRadius:6, showLine:false },
     { label:'Exp', data:ptExp, borderColor:'transparent', backgroundColor:'#d93025', pointRadius:6, showLine:false },
-    { label:'PacChg', data:ptPac, borderColor:'transparent', backgroundColor:'rgba(26,115,232,.9)', pointRadius:7, pointStyle:'rectRot', showLine:false },
+    { label:'PacChg', data:ptPac, borderColor:'transparent', backgroundColor:'rgba(158,27,50,.9)', pointRadius:7, pointStyle:'rectRot', showLine:false },
   ];
 
   const gC = 'rgba(0,0,0,.05)', tC = 'rgba(0,0,0,.45)';
@@ -1803,7 +1817,7 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
           ctx.save(); ctx.setLineDash([6, 4]); ctx.strokeStyle = 'rgba(0,0,0,.15)'; ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.moveTo(x.left, yp); ctx.lineTo(x.right, yp); ctx.stroke();
           ctx.setLineDash([]); ctx.font = '10.5px DM Mono,monospace'; ctx.fillStyle = 'rgba(0,0,0,.35)';
-          ctx.fillText('💎 optionality ' + fmt(opt), x.left + 6, yp - 4); ctx.restore();
+          ctx.fillText('✨ optionality ' + fmt(opt), x.left + 6, yp - 4); ctx.restore();
         }
         if (crossAge !== null) {
           const xi = ages.indexOf(crossAge);
@@ -1846,7 +1860,7 @@ function renderInflation(vN, vW, vBt, inv, years, dN) {
   // Scenari inflazione: bassa/centrale/alta + stocastici
   const inflScenarios = [
     { l: 'Bassa inflazione', rate: Math.max(0, inflBase - inflSig * 2), c: '#1e8e3e', bg: '#e8f5e9' },
-    { l: 'Centrale (' + state.inflBottom.toFixed(1) + '%)', rate: inflBase, c: '#1a73e8', bg: '#e8f0fe' },
+    { l: 'Centrale (' + state.inflBottom.toFixed(1) + '%)', rate: inflBase, c: '#9e1b32', bg: '#e8f0fe' },
     { l: 'Alta inflazione', rate: inflBase + inflSig * 2, c: '#e37400', bg: '#fff3e0' },
     { l: 'Stocastica (σ=' + state.inflVol.toFixed(1) + '%)', rate: inflBase + inflSig, c: '#9334e6', bg: '#f3e8ff' },
   ];
@@ -1910,7 +1924,7 @@ function renderInflation(vN, vW, vBt, inv, years, dN) {
   document.getElementById('inflDetails').innerHTML = `
     <div style="background:#fff;border:1px solid #ffe0b2;border-radius:var(--radius-sm);padding:14px;margin-bottom:14px">
       <div style="font-size:11px;color:#e65100;font-weight:700;text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:10px">Rendita Sostenibile in Potere d'Acquisto Reale</div>
-      ${[{ r: .03, l: '3%', c: '#1a73e8' }, { r: .035, l: '3.5%', c: '#1e8e3e' }, { r: .04, l: '4%', c: '#1e8e3e' }].map(s => {
+      ${[{ r: .03, l: '3%', c: '#9e1b32' }, { r: .035, l: '3.5%', c: '#1e8e3e' }, { r: .04, l: '4%', c: '#1e8e3e' }].map(s => {
     const gA = vN * s.r, nA = gA * (1 - eT), nR = nA / df;
     return `<div class="infl-swr-row"><span style="font-weight:600;color:#e65100;width:40px">SWR ${s.l}</span><span style="color:#795548">Net nom. <strong>${fmt(nA)}</strong>/a</span><span>→</span><span><strong style="color:${s.c};font-size:14px">${fmt(nR)}</strong>/a reali (${fmt(nR / 12)}/m)</span></div>`;
   }).join('')}
@@ -1972,7 +1986,7 @@ function render() {
     lb.innerText = 'Nascondi'; lb.style.background = 'var(--bg)'; lb.style.color = 'var(--blue)'; ld.style.display = 'block';
     const lC = (t, g, n, col) => { const gain = Math.max(0, g - tI), tax = gain * txF; return `<div class="liq-card"><div class="liq-card-title">${t}</div><div class="liq-row"><span style="color:var(--text2)">Lordo Nominale</span><strong>${fmt(g)}</strong></div><div class="liq-row"><span style="color:var(--text2)">Capitale versato</span><span>${fmt(tI)}</span></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txF * 100).toFixed(1)}%)</span><span>−${fmt(tax)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:${col}">Netto Nominale</strong><strong style="color:${col};font-size:15px">${fmt(n)}</strong></div></div>`; };
     ld.innerHTML = `<div class="grid-3" style="gap:14px">${lC('Pessimistico', vW[years], nP, 'var(--orange)')}${lC('Scenario Base', vN[years], nB, 'var(--blue)')}${lC('Ottimistico', vB[years], nO, 'var(--green)')}</div><div style="font-size:11.5px;color:var(--text3);margin-top:12px">Aliquota ponderata finale: <strong>${(txF * 100).toFixed(1)}%</strong> (solo sulla plusvalenza).</div>`;
-  } else { lb.innerText = '💰 Simula Vendita Totale (Netto)'; lb.style.background = 'var(--blue-dim)'; lb.style.color = 'var(--blue)'; ld.style.display = 'none'; }
+  } else { lb.innerText = '💵 Simula Vendita Totale (Netto)'; lb.style.background = 'var(--blue-dim)'; lb.style.color = 'var(--blue)'; ld.style.display = 'none'; }
 
   // Frazione media di plusvalenza sul valore finale (approx. per prelievi parziali proporzionali)
   const gainFrac = tI > 0 && vN[years] > tI ? Math.min(1, (vN[years] - tI) / vN[years]) : 0;
@@ -2099,7 +2113,7 @@ function renderEcoScenarios() {
     data: {
       labels: ages,
       datasets: [
-        { label: 'Base', data: vBase, borderColor: '#1a73e8', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .35 },
+        { label: 'Base', data: vBase, borderColor: '#9e1b32', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .35 },
         { label: eco.label, data: vEco, borderColor: eco.color, borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
         { label: 'Reale (deflatato)', data: vReal, borderColor: eco.color, borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, fill: false, tension: .35 },
       ]
@@ -2123,7 +2137,7 @@ function renderEcoScenarios() {
           ctx.save(); ctx.setLineDash([6, 4]); ctx.strokeStyle = 'rgba(0,0,0,.15)'; ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.moveTo(x.left, yp); ctx.lineTo(x.right, yp); ctx.stroke();
           ctx.setLineDash([]); ctx.font = '10px DM Mono,monospace'; ctx.fillStyle = 'rgba(0,0,0,.3)';
-          ctx.fillText('💎 optionality', x.left + 6, yp - 4); ctx.restore();
+          ctx.fillText('✨ optionality', x.left + 6, yp - 4); ctx.restore();
         }
         // Linee verticali inizio/fine regime (usa win.e per rispettare il timing scelto)
         const ecoC = ECO_SCENARIOS[state.activeEcoScenario];
@@ -2477,7 +2491,7 @@ function renderMultiRegime() {
         // Media
         { label: 'Media', data: res.mean, borderColor: '#9c27b0', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, fill: false, tension: .35 },
         // Baseline deterministica
-        { label: 'Base (crescita normale)', data: vBase, borderColor: '#1a73e8', borderWidth: 2, pointRadius: 0, fill: false, tension: .35, borderDash: [6, 3] },
+        { label: 'Base (crescita normale)', data: vBase, borderColor: '#9e1b32', borderWidth: 2, pointRadius: 0, fill: false, tension: .35, borderDash: [6, 3] },
       ]
     },
     options: {
@@ -2527,7 +2541,7 @@ function renderMultiRegime() {
           ctx.save(); ctx.setLineDash([6, 4]); ctx.strokeStyle = 'rgba(0,0,0,.15)'; ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.moveTo(x.left, yp); ctx.lineTo(x.right, yp); ctx.stroke();
           ctx.setLineDash([]); ctx.font = '10px DM Mono,monospace'; ctx.fillStyle = 'rgba(0,0,0,.3)';
-          ctx.fillText('💎 optionality', x.left + 6, yp - 4); ctx.restore();
+          ctx.fillText('✨ optionality', x.left + 6, yp - 4); ctx.restore();
         }
       }
     }]
@@ -2726,9 +2740,9 @@ function renderAB() {
   document.getElementById('ab-a-info').innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px"><div><strong>${pA?.label ?? state.portfolio}</strong></div><div>TER: <strong>${state.ter.toFixed(2)}%</strong></div><div>PAC: <strong>${fmt(state.pac)}/m</strong></div>${pA && pA.normal ? `<div>Rend. base: <strong>${((pA.normal - state.ter / 100) * 100).toFixed(2)}%</strong>/a</div>` : ''}</div><div style="margin-top:8px;font-size:12px;color:var(--text2)">Valore finale base: <strong style="color:var(--blue)">${fmt(dAn[years].value)}</strong></div>`;
   if (chartAB) { chartAB.destroy(); chartAB = null; }
   const ds = [
-    { label: 'A Ott.', data: dA.map(d => d.value), borderColor: 'rgba(26,115,232,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
-    { label: 'A Base', data: dAn.map(d => d.value), borderColor: '#1a73e8', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
-    { label: 'A Pess.', data: dAw.map(d => d.value), borderColor: 'rgba(26,115,232,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'A Ott.', data: dA.map(d => d.value), borderColor: 'rgba(158,27,50,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'A Base', data: dAn.map(d => d.value), borderColor: '#9e1b32', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
+    { label: 'A Pess.', data: dAw.map(d => d.value), borderColor: 'rgba(158,27,50,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
     { label: 'B Ott.', data: dBb.map(d => d.value), borderColor: 'rgba(147,52,230,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
     { label: 'B Base', data: dBn.map(d => d.value), borderColor: '#9334e6', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
     { label: 'B Pess.', data: dBw.map(d => d.value), borderColor: 'rgba(147,52,230,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
@@ -2755,7 +2769,7 @@ function renderAB() {
   ];
   document.getElementById('ab-metrics').innerHTML = `<div class="tbl-outer"><table><thead><tr><th style="text-align:left">Metrica</th><th style="color:var(--blue)">A — ${pA?.label ?? state.portfolio}</th><th style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</th><th>Δ (B−A)</th></tr></thead><tbody>${mRows.map(r => `<tr><td style="text-align:left">${r[0]}</td><td style="color:var(--blue);font-weight:600">${r[1]}</td><td style="color:var(--purple);font-weight:600">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
   const gainA = Math.max(0, dAn[years].value - invA), gainB = Math.max(0, dBn[years].value - invB);
-  document.getElementById('ab-fiscal').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="liq-card" style="border:1px solid rgba(26,115,232,.3)"><div class="liq-card-title" style="color:var(--blue)">A — ${pA?.label ?? state.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dAn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFA * 100).toFixed(1)}%)</span><span>−${fmt(gainA * txFA)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--blue)">Netto</strong><strong style="color:var(--blue);font-size:15px">${fmt(nA)}</strong></div></div><div class="liq-card" style="border:1px solid rgba(147,52,230,.3)"><div class="liq-card-title" style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dBn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFB * 100).toFixed(1)}%)</span><span>−${fmt(gainB * txFB)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--purple)">Netto</strong><strong style="color:var(--purple);font-size:15px">${fmt(nB)}</strong></div></div></div><div style="margin-top:10px;padding:10px 14px;background:${deltaN >= 0 ? 'var(--green-dim)' : 'var(--red-dim)'};border-radius:var(--radius-sm);font-size:13px;color:${deltaN >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">Portafoglio B porta ${deltaN >= 0 ? '+' + fmt(deltaN) + ' netti IN PIÙ rispetto ad A' : fmt(Math.abs(deltaN)) + ' netti IN MENO rispetto ad A'} in scenario base.</div>`;
+  document.getElementById('ab-fiscal').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="liq-card" style="border:1px solid rgba(158,27,50,.3)"><div class="liq-card-title" style="color:var(--blue)">A — ${pA?.label ?? state.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dAn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFA * 100).toFixed(1)}%)</span><span>−${fmt(gainA * txFA)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--blue)">Netto</strong><strong style="color:var(--blue);font-size:15px">${fmt(nA)}</strong></div></div><div class="liq-card" style="border:1px solid rgba(147,52,230,.3)"><div class="liq-card-title" style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dBn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFB * 100).toFixed(1)}%)</span><span>−${fmt(gainB * txFB)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--purple)">Netto</strong><strong style="color:var(--purple);font-size:15px">${fmt(nB)}</strong></div></div></div><div style="margin-top:10px;padding:10px 14px;background:${deltaN >= 0 ? 'var(--green-dim)' : 'var(--red-dim)'};border-radius:var(--radius-sm);font-size:13px;color:${deltaN >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">Portafoglio B porta ${deltaN >= 0 ? '+' + fmt(deltaN) + ' netti IN PIÙ rispetto ad A' : fmt(Math.abs(deltaN)) + ' netti IN MENO rispetto ad A'} in scenario base.</div>`;
   const step = Math.max(1, Math.floor(years / 12));
   const rowsAB = []; for (let i = 0; i <= years; i += step) rowsAB.push(i);
   document.getElementById('ab-table').innerHTML = rowsAB.map(i => {
@@ -2838,7 +2852,7 @@ function runSuccessMC() {
           <div class="mc-box"><div class="mc-lbl">90° percentile</div><div class="mc-val" style="color:var(--green)">${fmt(finalVals[Math.floor(N * .90)])}</div></div>
         </div>
       </div>`;
-    btn.disabled = false; btn.textContent = '🎯 Calcola Probabilità';
+    btn.disabled = false; btn.textContent = '🏹 Calcola Probabilità';
   }, 80);
 }
 
@@ -3140,7 +3154,7 @@ function runDecHistorical() {
             <tbody>
               ${famousResults.map(x => {
                 const events = {
-                  1970: '🛢️ Pre oil shock',
+                  1970: '⛽ Pre oil shock',
                   1973: '🔥 Stagflazione & oil shock',
                   1980: '📈 Volcker disinflazione',
                   1987: '💥 Black Monday',
@@ -3211,7 +3225,7 @@ function renderDecumulo() {
   chartDec = new Chart(document.getElementById('chDec'), {
     type: 'line', data: { labels, datasets: [
       { label: 'Ottimistico', data: dBest.map(d => d.end), borderColor: '#36d490', borderWidth: 2, pointRadius: 0, fill: false, tension: .35 },
-      { label: 'Base', data: dBase.map(d => d.end), borderColor: '#1a73e8', borderWidth: 3, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(26,115,232,.06)', tension: .35 },
+      { label: 'Base', data: dBase.map(d => d.end), borderColor: '#9e1b32', borderWidth: 3, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(158,27,50,.06)', tension: .35 },
       { label: 'Pessimistico', data: dWorst.map(d => d.end), borderColor: '#e37400', borderWidth: 2, pointRadius: 0, fill: false, tension: .35 },
     ] },
     options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { title: c => c[0].label, label: c => ' ' + c.dataset.label + ': ' + fmt(c.raw) }, backgroundColor: '#fff', borderColor: '#dadce0', borderWidth: 1, titleColor: '#202124', bodyColor: '#5f6368', padding: 10 } }, scales: { x: { ticks: { color: 'rgba(0,0,0,.45)', font: { size: 11, family: 'DM Mono' }, maxTicksLimit: 12 }, grid: { color: 'rgba(0,0,0,.05)' } }, y: { ticks: { color: 'rgba(0,0,0,.45)', font: { size: 11, family: 'DM Mono' }, callback: v => fmt(v) }, grid: { color: 'rgba(0,0,0,.05)' } } } },
@@ -3316,8 +3330,8 @@ function buildValuationDashboard(portKey) {
       Fwd reale <strong style="color:${realFwdColor}">${(realFwd*100).toFixed(1)}%</strong>/a
     </span>`);
 
-  return `<div style="margin-top:10px;padding:10px;background:rgba(26,115,232,.04);border:1px solid rgba(26,115,232,.15);border-radius:8px">
-    <div style="font-size:10.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">⚡ Valutazioni Live · ${new Date(d.fetchedAt).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</div>
+  return `<div style="margin-top:10px;padding:10px;background:rgba(158,27,50,.04);border:1px solid rgba(158,27,50,.15);border-radius:8px">
+    <div style="font-size:10.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">🔋 Valutazioni Live · ${new Date(d.fetchedAt).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</div>
     <div style="display:flex;flex-wrap:wrap;gap:6px">${chips.join('')}</div>
   </div>`;
 }
@@ -3338,11 +3352,11 @@ function updatePortDetailBox() {
   const fxExp = getFxExposure(state.portfolio, state.age);
   const fxHedged = !!state.fxHedge;
   const fxBadge = fxExp > 0.01
-    ? `<span style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(147,52,230,.3);padding:2px 8px;border-radius:4px" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD. Click per attivare/disattivare copertura valutaria (hedging)">💱 FX ${(fxExp*100).toFixed(0)}% ${fxHedged?'<span style=\'color:var(--green)\'>hedged ✓</span>':'unhedged'}</span>`
+    ? `<span style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(147,52,230,.3);padding:2px 8px;border-radius:4px" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD. Click per attivare/disattivare copertura valutaria (hedging)">💶 FX ${(fxExp*100).toFixed(0)}% ${fxHedged?'<span style=\'color:var(--green)\'>hedged ✓</span>':'unhedged'}</span>`
     : '';
   const fxCostNote = fxHedged && fxExp > 0.01
     ? `<div style="margin-top:6px;font-size:11px;color:var(--text3)">⚠️ Copertura valutaria attiva: costo stimato −${(fxExp * state.fxHedgeCost * 100).toFixed(2)}%/a sul rendimento netto.</div>`
-    : (fxExp > 0.01 ? `<div style="margin-top:6px;font-size:11px;color:var(--text3)">⚠️ Esposizione cambio EUR/USD non coperta: vol. aggiuntiva ~${(fxExp * state.fxVol * 100).toFixed(1)}%/a. Clicca 💱 per attivare hedging.</div>` : '');
+    : (fxExp > 0.01 ? `<div style="margin-top:6px;font-size:11px;color:var(--text3)">⚠️ Esposizione cambio EUR/USD non coperta: vol. aggiuntiva ~${(fxExp * state.fxVol * 100).toFixed(1)}%/a. Clicca 💶 per attivare hedging.</div>` : '');
   document.getElementById('portDetailBox').innerHTML = `
     <div style="font-size:12.5px;color:var(--text2);line-height:1.6;margin-bottom:${bd?'8px':'4px'}">${p.desc||''}</div>
     ${bd?`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px">${bd}</div>`:''}
@@ -3392,7 +3406,7 @@ function renderCustomBuilder() {
       <span class="custom-param-chip" style="color:var(--red)" title="Volatilità in regime di crisi (correlazioni → 1)">σ-crisi: <strong>${(cp.volStress*100).toFixed(1)}%</strong></span>
       <span class="custom-param-chip" style="color:${cp.inflBeta>0.2?'var(--green)':cp.inflBeta>0?'var(--orange)':'var(--red)'}">β-infl: <strong>${cp.inflBeta>0?'+':''}${cp.inflBeta.toFixed(2)}</strong></span>
       <span class="custom-param-chip" style="color:var(--orange)" title="TER medio ponderato sugli ETF selezionati — applicato automaticamente alla simulazione">TER applicato: <strong>${cp.ter.toFixed(2)}%</strong></span>
-      <span class="custom-param-chip" style="color:var(--purple);cursor:pointer" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD e altre valute. Click per attivare/disattivare la copertura">💱 FX: <strong>${(cp.fxExposure*100).toFixed(0)}% ${cp.fxHedged?'(hedged)':'(unhedged)'}</strong></span>
+      <span class="custom-param-chip" style="color:var(--purple);cursor:pointer" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD e altre valute. Click per attivare/disattivare la copertura">💶 FX: <strong>${(cp.fxExposure*100).toFixed(0)}% ${cp.fxHedged?'(hedged)':'(unhedged)'}</strong></span>
       <span class="custom-param-chip">Az: <strong>${(cp.eq*100).toFixed(0)}%</strong></span>
       <span class="custom-param-chip">Ob: <strong>${(cp.ob*100).toFixed(0)}%</strong></span>
       ${cp.goldW>0?`<span class="custom-param-chip">Oro: <strong>${(cp.goldW*100).toFixed(0)}%</strong></span>`:''}
@@ -3417,10 +3431,10 @@ function renderCustomBuilder() {
       ${hasLeverage ? `&nbsp;|&nbsp; Esposizione notional: <strong>${notionalTotal.toFixed(1)}%</strong> ${notionalOk?'':'<span style="color:var(--red)">⚠️ leva '+(notionalTotal/100).toFixed(2)+'×</span>'}` : ''}
     </div>
     ${hasLeverage && !notionalOk ? `<div style="font-size:11.5px;color:var(--orange);background:var(--orange-dim);border:1px solid rgba(227,116,0,.3);border-radius:var(--radius-sm);padding:7px 12px;margin-bottom:8px;line-height:1.6">
-      ⚡ <strong>Portafoglio a leva:</strong> la quota nominale ${total.toFixed(0)}% include Efficient Core che opera con esposizione notional ${notionalTotal.toFixed(1)}% (leva ${(notionalTotal/100).toFixed(2)}×). Il simulatore modella correttamente questa leva. Il <strong>backtest storico</strong> e il <strong>Monte Carlo block bootstrap</strong> non sono disponibili — usa il <strong>Monte Carlo GARCH</strong> o il <strong>Simulatore</strong>.
+      🔋 <strong>Portafoglio a leva:</strong> la quota nominale ${total.toFixed(0)}% include Efficient Core che opera con esposizione notional ${notionalTotal.toFixed(1)}% (leva ${(notionalTotal/100).toFixed(2)}×). Il simulatore modella correttamente questa leva. Il <strong>backtest storico</strong> e il <strong>Monte Carlo block bootstrap</strong> non sono disponibili — usa il <strong>Monte Carlo GARCH</strong> o il <strong>Simulatore</strong>.
     </div>` : ''}
     ${hasAltStrategy && !hasLeverage ? `<div style="font-size:11.5px;color:var(--orange);background:var(--orange-dim);border:1px solid rgba(227,116,0,.3);border-radius:var(--radius-sm);padding:7px 12px;margin-bottom:8px;line-height:1.6">
-      🌊 <strong>Strategia su futures (trend/carry):</strong> il portafoglio include trend following / managed futures o carry (incluso il Carry Commodities), strumenti che operano tramite contratti futures. Il simulatore li modella con parametri calibrati (rendimento, volatilità, comportamento nelle crisi). Il <strong>backtest storico</strong> e il <strong>Monte Carlo block bootstrap</strong> non sono disponibili — non esiste una serie storica mensile reale per queste strategie. Usa il <strong>Monte Carlo GARCH</strong> o il <strong>Simulatore</strong>.
+      〰️ <strong>Strategia su futures (trend/carry):</strong> il portafoglio include trend following / managed futures o carry (incluso il Carry Commodities), strumenti che operano tramite contratti futures. Il simulatore li modella con parametri calibrati (rendimento, volatilità, comportamento nelle crisi). Il <strong>backtest storico</strong> e il <strong>Monte Carlo block bootstrap</strong> non sono disponibili — non esiste una serie storica mensile reale per queste strategie. Usa il <strong>Monte Carlo GARCH</strong> o il <strong>Simulatore</strong>.
     </div>` : ''}
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
       <button class="addbtn" style="flex:1;min-width:140px" onclick="addCustomSlot()">+ Aggiungi asset class</button>
@@ -3622,7 +3636,7 @@ function makeEditable(labelId, sliderId, stateKey, fmtFn, opts) {
     inp.type = 'text';
     inp.inputMode = 'numeric';
     inp.value = cur;                                   // numero grezzo, niente € o punti
-    inp.style.cssText = 'width:9ch;font:inherit;color:inherit;background:var(--bg2,#1a1a1a);border:1px solid var(--blue,#1a73e8);border-radius:5px;padding:1px 5px;text-align:right';
+    inp.style.cssText = 'width:9ch;font:inherit;color:inherit;background:var(--bg2,#1a1a1a);border:1px solid var(--blue,#9e1b32);border-radius:5px;padding:1px 5px;text-align:right';
     const oldHTML = lab.innerHTML;
     lab.innerHTML = '';
     lab.appendChild(inp);
@@ -3888,8 +3902,8 @@ function updateRetInfo() {
     }
 
     const btnLabel = isOn
-      ? `⚡ CAPE-adj <span style="font-size:10px;opacity:.7">(valutazioni live)</span>`
-      : `📊 Storico puro <span style="font-size:10px;opacity:.7">(baseline)</span>`;
+      ? `🔋 CAPE-adj <span style="font-size:10px;opacity:.7">(valutazioni live)</span>`
+      : `📋 Storico puro <span style="font-size:10px;opacity:.7">(baseline)</span>`;
     const btnTitle = isOn
       ? 'Rendimenti = baseline + scostamento dovuto alle valutazioni correnti (CAPE/yield), calcolato con metodo coerente col baseline. Clicca per disattivare.'
       : 'Rendimenti baseline forward-looking (non aggiustati per le valutazioni di mercato correnti). Clicca per applicare lo scostamento da CAPE/yield live.';
@@ -3911,7 +3925,7 @@ function updateRetInfo() {
     </div>`;
   })();
   if (!p || !p.normal) el.innerHTML = `<span>Lifecycle: equity 80%→20% con l'età.</span><span style="color:var(--text3);width:100%;margin-top:2px">Tassi nominali netti TER ${state.ter.toFixed(2)}%. Tasse solo alla vendita finale.</span>${liveNote}`;
-  else el.innerHTML = `<span>🔴 Pess. <strong>${nT(p.worst).toFixed(2)}%</strong>/a</span><span>🔵 Base <strong>${nT(p.normal).toFixed(2)}%</strong>/a</span><span>🟢 Ott. <strong>${nT(p.best).toFixed(2)}%</strong>/a</span><span>📊 Vol. <strong>${p.vol ? (p.vol * 100).toFixed(0) + '%' : 'var.'}</strong>/a</span><span style="color:var(--text3);width:100%;margin-top:2px">Tassi nominali lordi netti TER ${state.ter.toFixed(2)}%. Tasse solo alla liquidazione.</span>${liveNote}`;
+  else el.innerHTML = `<span>🔴 Pess. <strong>${nT(p.worst).toFixed(2)}%</strong>/a</span><span>🔵 Base <strong>${nT(p.normal).toFixed(2)}%</strong>/a</span><span>🟢 Ott. <strong>${nT(p.best).toFixed(2)}%</strong>/a</span><span>📋 Vol. <strong>${p.vol ? (p.vol * 100).toFixed(0) + '%' : 'var.'}</strong>/a</span><span style="color:var(--text3);width:100%;margin-top:2px">Tassi nominali lordi netti TER ${state.ter.toFixed(2)}%. Tasse solo alla liquidazione.</span>${liveNote}`;
 }
 
 function toggleSeq() { state.seq.on = !state.seq.on; document.getElementById('seqTog').classList.toggle('on', state.seq.on); document.getElementById('seqOpts').style.display = state.seq.on ? 'block' : 'none'; updateSeqDesc(); render(); }
@@ -4629,7 +4643,7 @@ async function exportExcel() {
     alert('Errore export Excel: ' + e.message);
     console.error(e);
   } finally {
-    if (btn) { btn.disabled = false; btn.textContent = '📊 Esporta Excel'; }
+    if (btn) { btn.disabled = false; btn.textContent = '📋 Esporta Excel'; }
   }
 }
 
@@ -4715,7 +4729,7 @@ async function generatePDF() {
     try { mc = runMontecarlo(); } catch (_) { mc = null; }
 
     // Palette
-    const BLU = [26, 115, 232], GRN = [30, 142, 62], ORG = [227, 116, 0], PUR = [147, 52, 230];
+    const BLU = [158,27,50], GRN = [30, 142, 62], ORG = [227, 116, 0], PUR = [147, 52, 230];
     const TEAL = [0, 137, 123], GRAY = [95, 99, 104], LBG = [248, 249, 250];
     const WHT = [255, 255, 255], RED = [217, 48, 37], DARK = [32, 33, 36];
     const W = 210, H = 297, ML = 14, MR = 14, CW = W - ML - MR;
