@@ -1174,7 +1174,7 @@ const FACTOR_LOADINGS = {
 const FACTOR_META = {
   MKT: { name: 'Market Beta',           short: 'MKT', color: '#96151d',
          desc: 'Esposizione al mercato azionario globale. β=1 = correlazione perfetta col mercato. Premio storico ~6%/a (Sharpe 1964, CAPM).' },
-  SMB: { name: 'Size (Small minus Big)', short: 'SMB', color: '#9334e6',
+  SMB: { name: 'Size (Small minus Big)', short: 'SMB', color: '#6a4a7c',
          desc: 'Premio delle small caps vs large (Banz 1981). β>0 = tilt small. Storico ~1.5–2%/a, compresso post-pubblicazione.' },
   HML: { name: 'Value (High minus Low)', short: 'HML', color: '#1e8e3e',
          desc: 'Premio del valore (book-to-market alto) vs growth (Fama-French 1992). β>0 = tilt value. Storico ~2–3%/a.' },
@@ -1324,7 +1324,7 @@ function _renderFactorWaterfall(decomp) {
     { label: 'RMW',       value: decomp.contributions.RMW, color: FACTOR_META.RMW.color },
     { label: 'CMA',       value: decomp.contributions.CMA, color: FACTOR_META.CMA.color },
     { label: 'MOM',       value: decomp.contributions.MOM, color: FACTOR_META.MOM.color },
-    { label: 'Alpha',     value: decomp.alpha,             color: '#9334e6' },
+    { label: 'Alpha',     value: decomp.alpha,             color: '#6a4a7c' },
   ];
   let cum = 0;
   const bars = items.map(it => { const start = cum; cum += it.value; return { ...it, start, end: cum }; });
@@ -1407,7 +1407,7 @@ function _renderFactorView() {
   }).sort((a, b) => b.weight - a.weight);
 
   el.innerHTML = `
-    <!-- KPI riepilogativi --> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:18px"> <div class="quant-stat-card" style="border-left:3px solid var(--blue)"> <div class="qsc-title">Portafoglio analizzato</div> <div class="qsc-row"><span>Composizione</span><strong>${label}</strong></div> <div class="qsc-row"><span>Rend. atteso netto</span><strong>${fmt(decomp.actualMu)}/a</strong></div> <div class="qsc-row"><span>TER</span><strong>${_efState.ter.toFixed(2)}%</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--green)"> <div class="qsc-title">Spiegato dai fattori</div> <div class="qsc-row"><span>Risk-free</span><strong>${fmt(decomp.baseline)}/a</strong></div> <div class="qsc-row"><span>Premio fattoriale</span><strong>${fmt(decomp.fromFactors)}/a</strong></div> <div class="qsc-row"><span>Totale spiegato</span><strong>${fmt(decomp.totalExplained)}/a</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--purple)"> <div class="qsc-title">Alpha residuo</div> <div class="qsc-row"><span>α (non spiegato)</span><strong style="color:${decomp.alpha >= 0 ? 'var(--green)' : 'var(--red)'}">${fmt(decomp.alpha)}/a</strong></div> <div class="qsc-row"><span>Significato</span><strong style="font-size:11px">${
+    <!-- KPI riepilogativi --> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:18px"> <div class="quant-stat-card" style="border-left:3px solid var(--data)"> <div class="qsc-title">Portafoglio analizzato</div> <div class="qsc-row"><span>Composizione</span><strong>${label}</strong></div> <div class="qsc-row"><span>Rend. atteso netto</span><strong>${fmt(decomp.actualMu)}/a</strong></div> <div class="qsc-row"><span>TER</span><strong>${_efState.ter.toFixed(2)}%</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--green)"> <div class="qsc-title">Spiegato dai fattori</div> <div class="qsc-row"><span>Risk-free</span><strong>${fmt(decomp.baseline)}/a</strong></div> <div class="qsc-row"><span>Premio fattoriale</span><strong>${fmt(decomp.fromFactors)}/a</strong></div> <div class="qsc-row"><span>Totale spiegato</span><strong>${fmt(decomp.totalExplained)}/a</strong></div> </div> <div class="quant-stat-card" style="border-left:3px solid var(--purple)"> <div class="qsc-title">Alpha residuo</div> <div class="qsc-row"><span>α (non spiegato)</span><strong style="color:${decomp.alpha >= 0 ? 'var(--green)' : 'var(--red)'}">${fmt(decomp.alpha)}/a</strong></div> <div class="qsc-row"><span>Significato</span><strong style="font-size:11px">${
           Math.abs(decomp.alpha) < 0.005 ? 'Trascurabile' :
           decomp.alpha > 0.02 ? 'Premio non-equity' :
           decomp.alpha > 0   ? 'Modesto positivo' :
@@ -1488,7 +1488,7 @@ const OBJ_META = {
                    desc: 'Minimizza σ — portafoglio difensivo a varianza ridotta.' },
   max_sortino:   { label: 'Massimo Sortino Ratio', icon: '', color: '#e37400',
                    desc: 'Massimizza (μ−RF)/σ_down — penalizza solo la volatilità negativa (downside).' },
-  risk_parity:   { label: 'Risk Parity',           icon: '', color: '#9334e6',
+  risk_parity:   { label: 'Risk Parity',           icon: '', color: '#6a4a7c',
                    desc: 'Ogni asset contribuisce in egual misura al rischio totale (equal risk contribution).' },
 };
 
@@ -2021,7 +2021,7 @@ function _renderOptResult() {
                                     onMax && b.max < 1 ? `<span style="color:var(--orange);font-size:10.5px"> vincolato a max ${(b.max*100).toFixed(0)}%</span>` :
                                     `<span style="color:var(--text3);font-size:10.5px">libero (range ${(b.min*100).toFixed(0)}–${(b.max*100).toFixed(0)}%)</span>`;
             return `
-              <tr> <td style="text-align:left">${row.label}</td> <td><strong style="color:var(--blue)">${(row.w * 100).toFixed(1)}%</strong></td> <td style="color:var(--purple)">${(row.rc * 100).toFixed(1)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td> <td>${constraintBadge}</td> </tr>`;
+              <tr> <td style="text-align:left">${row.label}</td> <td><strong style="color:var(--data)">${(row.w * 100).toFixed(1)}%</strong></td> <td style="color:var(--purple)">${(row.rc * 100).toFixed(1)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.mu || 0) * 100).toFixed(2)}%</td> <td style="font-family:'DM Mono',monospace;color:var(--text2)">${((ac?.vol || 0) * 100).toFixed(1)}%</td> <td>${constraintBadge}</td> </tr>`;
           }).join('')}
         </tbody> </table> </div> <!-- Confronto vs portafoglio corrente --> ${curr ? `
     <div class="sec" style="margin-bottom:0"> <div class="sec-label" style="margin-bottom:10px">Confronto vs Portafoglio Corrente</div> <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px"> ${[
@@ -2045,7 +2045,7 @@ function _renderOptCharts(allocRows, rc) {
   if (_optRcChart) { _optRcChart.destroy(); _optRcChart = null; }
 
   // Colori coerenti per asset
-  const colors = ['#96151d','#9334e6','#1e8e3e','#e37400','#00897b','#d93025','#fbbc04','#5f6368','#0097a7','#673ab7','#ff7043','#4caf50'];
+  const colors = ['#96151d','#6a4a7c','#1e8e3e','#e37400','#00897b','#d93025','#fbbc04','#5f6368','#0097a7','#673ab7','#ff7043','#4caf50'];
 
   // Pie chart allocazione
   const pieCanvas = document.getElementById('optPieChart');
@@ -2092,8 +2092,8 @@ function _renderOptCharts(allocRows, rc) {
           {
             label: 'Risk Contribution',
             data: allocRows.map(r => +(r.rc * 100).toFixed(2)),
-            backgroundColor: 'rgba(147,52,230,0.6)',
-            borderColor: 'rgba(147,52,230,1)',
+            backgroundColor: 'rgba(106,74,124,0.6)',
+            borderColor: 'rgba(106,74,124,1)',
             borderWidth: 1,
           },
         ],

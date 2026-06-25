@@ -771,7 +771,7 @@ function renderAdvMCResults() {
   if (model==='garch' && volHistory.length > 0) {
     document.getElementById('garchSection').style.display='block';
     if (chartGarch) { chartGarch.destroy(); chartGarch=null; }
-    chartGarch=new Chart(document.getElementById('chGarch'),{type:'line',data:{labels:volHistory.map((_,i)=>'Anno '+(i+1)),datasets:[{label:'Volatilità annualizzata (GARCH)',data:volHistory.map(v=>+(v*100).toFixed(2)),borderColor:'#9334e6',borderWidth:2,pointRadius:3,fill:true,backgroundColor:'rgba(147,52,230,.1)',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}},scales:{x:{ticks:{color:tC,font:{size:11}}},y:{ticks:{color:tC,font:{size:11},callback:v=>v+'%'}}}}} );
+    chartGarch=new Chart(document.getElementById('chGarch'),{type:'line',data:{labels:volHistory.map((_,i)=>'Anno '+(i+1)),datasets:[{label:'Volatilità annualizzata (GARCH)',data:volHistory.map(v=>+(v*100).toFixed(2)),borderColor:'#6a4a7c',borderWidth:2,pointRadius:3,fill:true,backgroundColor:'rgba(106,74,124,.1)',tension:.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}},scales:{x:{ticks:{color:tC,font:{size:11}}},y:{ticks:{color:tC,font:{size:11},callback:v=>v+'%'}}}}} );
   } else document.getElementById('garchSection').style.display='none';
 
   // Regime distribution chart
@@ -894,7 +894,7 @@ function renderAdvMCComparison() {
   // Esegui tutti i modelli (N ridotto per velocità)
   const Ncomp = 500, years = state.years, ages = Array.from({length:years+1},(_,i)=>state.age+i);
   const models = ['gaussian','student','garch','regime','bootstrap','bootstrap5y'];
-  const modelColors = {gaussian:'#5f6368',student:'#96151d',garch:'#9334e6',regime:'#1e8e3e',bootstrap:'#e37400',bootstrap5y:'#c5221f'};
+  const modelColors = {gaussian:'#5f6368',student:'#1c3d5a',garch:'#7b3fa0',regime:'#1e8e3e',bootstrap:'#e37400',bootstrap5y:'#00897b'};
   const modelLabels = {gaussian:'Gaussiano',student:'t-Student',garch:'GARCH',regime:'Regime-Switch',bootstrap:'Bootstrap 1a',bootstrap5y:'Bootstrap 5a'};
   const p50s = {};
   const compRows = [];
@@ -983,7 +983,7 @@ function renderAdvMCComparison() {
     p50s[model] = Array.from({length:years+1},(_,y)=>pct(ts[y],.50));
     const finalVals = ts[years].sort((a,b)=>a-b);
     compRows.push(
-      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap"> <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--blue);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div> </div>`
+      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap"> <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--data);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div> </div>`
     );
   }
   document.getElementById('advMcComparison').innerHTML = compRows.join('');

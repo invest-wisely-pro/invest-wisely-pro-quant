@@ -276,7 +276,7 @@ function renderFiscale() {
 
   // Chart confronto
   if (chartFiscComp) { chartFiscComp.destroy(); chartFiscComp=null; }
-  const colors=['#96151d','#9334e6','#1e8e3e','#00897b'];
+  const colors=['#96151d','#6a4a7c','#1e8e3e','#00897b'];
   chartFiscComp=new Chart(document.getElementById('chFiscComp'),{type:'bar',data:{labels:scResults.map(s=>s.l),datasets:[{label:'Netto finale',data:scResults.map(s=>s.net),backgroundColor:colors.map((c,i)=>scResults[i].net===bestNet?c+'dd':c+'66'),borderRadius:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Netto: '+fmt(c.raw)}}},scales:{x:{ticks:{color:tC,font:{size:11}}},y:{ticks:{color:tC,font:{size:11},callback:v=>fmt(v)},grid:{color:gC}}}}});
 
   // Bollo nel tempo

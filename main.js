@@ -717,7 +717,7 @@ const ECO_SCENARIOS = {
     desc: 'Forte crescita azionaria sostenuta (tipo 1982-1999 o 2009-2021). Azioni +12-15%/a, obbligazioni stabili, oro piatto. Il sogno di ogni investitore azionario.',
     color: '#5b5563',
     bg: 'rgba(55,65,81,.06)',
-    border: 'rgba(147,52,230,.4)',
+    border: 'rgba(106,74,124,.4)',
     eqMult: 1.5, obMult: 0.9, goldMult: 0.6,
     inflMean: 2.5, inflSigma: 0.7,
     volMult: 0.8, cashRet: 0.03,
@@ -1774,11 +1774,11 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
     // ds indices after base lines:
     // b+0 = P10, b+1 = P25, b+2 = P50mc, b+3 = P75, b+4 = P90
     const b = baseDsCount;
-    fanBands.push({ label:'P10',  data:mcFan.p10, borderColor:'rgba(150,21,29,.15)', borderWidth:1, pointRadius:0, fill:false, tension:.35 });
-    fanBands.push({ label:'P25',  data:mcFan.p25, borderColor:'rgba(150,21,29,.25)', borderWidth:1, pointRadius:0, fill:{target:b,   above:'rgba(150,21,29,.07)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P50mc',data:mcFan.p50, borderColor:'rgba(150,21,29,.45)', borderWidth:2, borderDash:[4,3], pointRadius:0, fill:{target:b+1, above:'rgba(150,21,29,.10)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P75',  data:mcFan.p75, borderColor:'rgba(150,21,29,.25)', borderWidth:1, pointRadius:0, fill:{target:b+2, above:'rgba(150,21,29,.10)', below:'transparent'}, tension:.35 });
-    fanBands.push({ label:'P90',  data:mcFan.p90, borderColor:'rgba(150,21,29,.15)', borderWidth:1, pointRadius:0, fill:{target:b+3, above:'rgba(150,21,29,.06)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P10',  data:mcFan.p10, borderColor:'rgba(28,61,90,.15)', borderWidth:1, pointRadius:0, fill:false, tension:.35 });
+    fanBands.push({ label:'P25',  data:mcFan.p25, borderColor:'rgba(28,61,90,.25)', borderWidth:1, pointRadius:0, fill:{target:b,   above:'rgba(28,61,90,.07)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P50mc',data:mcFan.p50, borderColor:'rgba(28,61,90,.45)', borderWidth:2, borderDash:[4,3], pointRadius:0, fill:{target:b+1, above:'rgba(28,61,90,.10)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P75',  data:mcFan.p75, borderColor:'rgba(28,61,90,.25)', borderWidth:1, pointRadius:0, fill:{target:b+2, above:'rgba(28,61,90,.10)', below:'transparent'}, tension:.35 });
+    fanBands.push({ label:'P90',  data:mcFan.p90, borderColor:'rgba(28,61,90,.15)', borderWidth:1, pointRadius:0, fill:{target:b+3, above:'rgba(28,61,90,.06)', below:'transparent'}, tension:.35 });
   }
 
   // Curva "Reale" = Base deflazionata per HICP live (o inflBottom se non disponibile)
@@ -1792,14 +1792,14 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
 
   const ds = [
     { label:'Ott.', data:best, borderColor:'#36d490', borderWidth:2, pointRadius:0, fill:false, tension:.35 },
-    { label:'Base', data:normal, borderColor:'#96151d', borderWidth:3, pointRadius:0, fill:false, tension:.35 },
+    { label:'Base', data:normal, borderColor:'#1c3d5a', borderWidth:3, pointRadius:0, fill:false, tension:.35 },
     { label:'Pess.', data:worst, borderColor:'#e37400', borderWidth:2, pointRadius:0, fill:false, tension:.35 },
-    ...(seqNorm ? [{ label:'Seq.', data:seqNorm, borderColor:'#9334e6', borderWidth:2.2, borderDash:[7,4], pointRadius:0, fill:false, tension:.35 }] : []),
+    ...(seqNorm ? [{ label:'Seq.', data:seqNorm, borderColor:'#6a4a7c', borderWidth:2.2, borderDash:[7,4], pointRadius:0, fill:false, tension:.35 }] : []),
     ...fanBands,
     { label:`Reale (${inflSource})`, data:realBase, borderColor:'rgba(0,0,0,.28)', borderWidth:1.5, borderDash:[4,3], pointRadius:0, fill:false, tension:.35 },
     { label:'PIC', data:ptPic, borderColor:'transparent', backgroundColor:'#36d490', pointRadius:6, showLine:false },
     { label:'Exp', data:ptExp, borderColor:'transparent', backgroundColor:'#d93025', pointRadius:6, showLine:false },
-    { label:'PacChg', data:ptPac, borderColor:'transparent', backgroundColor:'rgba(150,21,29,.9)', pointRadius:7, pointStyle:'rectRot', showLine:false },
+    { label:'PacChg', data:ptPac, borderColor:'transparent', backgroundColor:'rgba(28,61,90,.9)', pointRadius:7, pointStyle:'rectRot', showLine:false },
   ];
 
   const gC = 'rgba(0,0,0,.05)', tC = 'rgba(0,0,0,.45)';
@@ -1841,16 +1841,16 @@ function buildChart(best, normal, worst, seqNorm, ages, opt, crashAge, crossAge,
           const xi = ages.indexOf(crossAge);
           if (xi >= 0) {
             const xp = x.getPixelForValue(crossAge);
-            ctx.save(); ctx.setLineDash([5, 3]); ctx.strokeStyle = 'rgba(147,52,230,.6)'; ctx.lineWidth = 1.5;
+            ctx.save(); ctx.setLineDash([5, 3]); ctx.strokeStyle = 'rgba(106,74,124,.6)'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.moveTo(xp, y.top); ctx.lineTo(xp, y.bottom); ctx.stroke();
-            ctx.setLineDash([]); ctx.font = '10px DM Mono,monospace'; ctx.fillStyle = 'rgba(147,52,230,.9)';
+            ctx.setLineDash([]); ctx.font = '10px DM Mono,monospace'; ctx.fillStyle = 'rgba(106,74,124,.9)';
             ctx.fillText(' crossover', xp + 4, y.top + 14); ctx.restore();
           }
         }
         if (crashAge) {
           const xp = x.getPixelForValue(crashAge);
           if (xp) {
-            ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(147,52,230,.4)'; ctx.lineWidth = 1.5;
+            ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(106,74,124,.4)'; ctx.lineWidth = 1.5;
             ctx.beginPath(); ctx.moveTo(xp, y.top); ctx.lineTo(xp, y.bottom); ctx.stroke();
             ctx.setLineDash([]); ctx.restore();
           }
@@ -1878,9 +1878,9 @@ function renderInflation(vN, vW, vBt, inv, years, dN) {
   // Scenari inflazione: bassa/centrale/alta + stocastici
   const inflScenarios = [
     { l: 'Bassa inflazione', rate: Math.max(0, inflBase - inflSig * 2), c: '#1e8e3e', bg: '#e8f5e9' },
-    { l: 'Centrale (' + state.inflBottom.toFixed(1) + '%)', rate: inflBase, c: '#96151d', bg: '#e8f0fe' },
+    { l: 'Centrale (' + state.inflBottom.toFixed(1) + '%)', rate: inflBase, c: '#1c3d5a', bg: '#eef2f6' },
     { l: 'Alta inflazione', rate: inflBase + inflSig * 2, c: '#e37400', bg: '#fff3e0' },
-    { l: 'Stocastica (σ=' + state.inflVol.toFixed(1) + '%)', rate: inflBase + inflSig, c: '#9334e6', bg: '#f3e8ff' },
+    { l: 'Stocastica (σ=' + state.inflVol.toFixed(1) + '%)', rate: inflBase + inflSig, c: '#6a4a7c', bg: '#f0ecf4' },
   ];
 
   document.getElementById('inflScenarios').innerHTML = inflScenarios.map(s => {
@@ -1959,7 +1959,7 @@ function render() {
   const oB = oA(dB), oN = oA(dN), oW = oA(dW);
   const md = [
     { l: `Pessimistico — età ${endAge}`, v: fmt(vW[years]), s: 'opt: ' + (oW || '>' + endAge), c: 'var(--orange)' },
-    { l: `Base — età ${endAge}`, v: fmt(vN[years]), s: 'opt: ' + (oN || '>' + endAge), c: 'var(--blue)' },
+    { l: `Base — età ${endAge}`, v: fmt(vN[years]), s: 'opt: ' + (oN || '>' + endAge), c: 'var(--data)' },
     { l: `Ottimistico — età ${endAge}`, v: fmt(vB[years]), s: 'opt: ' + (oB || '>' + endAge), c: 'var(--green)' },
     ...(dS ? [{ l: `+Seq.Risk — età ${endAge}`, v: fmt(vS[years]), s: (vS[years] > vN[years] ? '+' : '') + fmt(vS[years] - vN[years]), c: 'var(--purple)' }] : []),
     { l: 'Totale versato', v: fmt(dN[years].invested), s: pac > 0 ? fmt(pac * 12) + '/anno' : 'solo PIC', c: 'var(--text)' },
@@ -1978,14 +1978,14 @@ function render() {
   if (state.showLiq) {
     lb.innerText = 'Nascondi'; lb.style.background = 'var(--bg)'; lb.style.color = 'var(--blue)'; ld.style.display = 'block';
     const lC = (t, g, n, col) => { const gain = Math.max(0, g - tI), tax = gain * txF; return `<div class="liq-card"><div class="liq-card-title">${t}</div><div class="liq-row"><span style="color:var(--text2)">Lordo Nominale</span><strong>${fmt(g)}</strong></div><div class="liq-row"><span style="color:var(--text2)">Capitale versato</span><span>${fmt(tI)}</span></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txF * 100).toFixed(1)}%)</span><span>−${fmt(tax)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:${col}">Netto Nominale</strong><strong style="color:${col};font-size:15px">${fmt(n)}</strong></div></div>`; };
-    ld.innerHTML = `<div class="grid-3" style="gap:14px">${lC('Pessimistico', vW[years], nP, 'var(--orange)')}${lC('Scenario Base', vN[years], nB, 'var(--blue)')}${lC('Ottimistico', vB[years], nO, 'var(--green)')}</div><div style="font-size:11.5px;color:var(--text3);margin-top:12px">Aliquota ponderata finale: <strong>${(txF * 100).toFixed(1)}%</strong> (solo sulla plusvalenza).</div>`;
+    ld.innerHTML = `<div class="grid-3" style="gap:14px">${lC('Pessimistico', vW[years], nP, 'var(--orange)')}${lC('Scenario Base', vN[years], nB, 'var(--data)')}${lC('Ottimistico', vB[years], nO, 'var(--green)')}</div><div style="font-size:11.5px;color:var(--text3);margin-top:12px">Aliquota ponderata finale: <strong>${(txF * 100).toFixed(1)}%</strong> (solo sulla plusvalenza).</div>`;
   } else { lb.innerText = 'Simula Vendita Totale (Netto)'; lb.style.background = 'var(--blue-dim)'; lb.style.color = 'var(--blue)'; ld.style.display = 'none'; }
 
   // Frazione media di plusvalenza sul valore finale (approx. per prelievi parziali proporzionali)
   const gainFrac = tI > 0 && vN[years] > tI ? Math.min(1, (vN[years] - tI) / vN[years]) : 0;
   // Aliquota effettiva sul prelievo lordo: solo la quota gain è tassata
   const eT = gainFrac * txF;
-  const swrI = [{ r: .03, l: '3%', s: 'Conservativo', c: 'var(--blue)' }, { r: .035, l: '3.5%', s: 'Moderato', c: 'var(--green)' }, { r: .04, l: '4%', s: 'Regola del 4%', c: 'var(--green)' }];
+  const swrI = [{ r: .03, l: '3%', s: 'Conservativo', c: 'var(--data)' }, { r: .035, l: '3.5%', s: 'Moderato', c: 'var(--green)' }, { r: .04, l: '4%', s: 'Regola del 4%', c: 'var(--green)' }];
   document.getElementById('swrData').innerHTML = `<div style="font-size:12.5px;color:var(--text2);margin-bottom:12px">Montante base <strong>${fmt(vN[years])}</strong>. Tassa effettiva prelievo: <strong>${(eT * 100).toFixed(1)}%</strong>.</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px">${swrI.map(s => { const gA = vN[years] * s.r, nA = gA * (1 - eT), vP = pac > 0 ? ` — ${(nA / (pac * 12) * 100).toFixed(0)}% del PAC` : ''; return `<div class="liq-card"><div class="liq-card-title">SWR ${s.l} · ${s.s}</div><div class="liq-row"><span style="color:var(--text2)">Lorda/anno</span><strong>${fmt(gA)}</strong></div><div class="liq-row"><span style="color:var(--text2)">Lorda/mese</span><span>${fmt(gA / 12)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:${s.c}">Netta/anno</strong><strong style="color:${s.c}">${fmt(nA)}${vP}</strong></div></div>`; }).join('')}</div>`;
 
   // INFLAZIONE AVANZATA
@@ -2003,7 +2003,7 @@ function render() {
   const iP = tot > 0 ? Math.max(2, (inv2 / tot * 100)).toFixed(1) : 100;
   const rP = tot > 0 ? Math.max(0, (ret / tot * 100)).toFixed(1) : 0;
   document.getElementById('barTrack').innerHTML = `<div class="bar-inv" style="width:${iP}%"></div><div class="bar-ret" style="width:${rP}%"></div>`;
-  document.getElementById('barStats').innerHTML = `<div><span class="bar-dot" style="background:var(--blue)"></span>Versato: <strong>${fmt(inv2)}</strong> (${iP}%)</div><div><span class="bar-dot" style="background:var(--green)"></span>Plusvalenza: <strong style="color:var(--green)">${fmt(ret)}</strong> (${rP}%)</div><div style="color:var(--text3)">Moltiplicatore: <strong style="color:var(--text)">${tot > 0 && inv2 > 0 ? (tot / inv2).toFixed(2) : '—'}×</strong></div>`;
+  document.getElementById('barStats').innerHTML = `<div><span class="bar-dot" style="background:var(--data)"></span>Versato: <strong>${fmt(inv2)}</strong> (${iP}%)</div><div><span class="bar-dot" style="background:var(--green)"></span>Plusvalenza: <strong style="color:var(--green)">${fmt(ret)}</strong> (${rP}%)</div><div style="color:var(--text3)">Moltiplicatore: <strong style="color:var(--text)">${tot > 0 && inv2 > 0 ? (tot / inv2).toFixed(2) : '—'}×</strong></div>`;
 
   // TABELLA
   const eY = new Set([0, years]);
@@ -2072,7 +2072,7 @@ function renderEcoScenarios() {
   const winLabel = dur >= 99 ? 'permanente' : `anni ${win.s}–${win.e} su ${state.years}`;
   const durLabel = dur >= 99 ? 'permanente (baseline)' : `~${dur} anni (poi ritorno a Crescita Normale)`;
   document.getElementById('ecoSelectedDesc').innerHTML = `
-    <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap"> <div style="flex:1"> <div style="font-size:15px;font-weight:700;color:${eco.color};margin-bottom:6px">${eco.label}</div> <div style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:10px">${eco.desc}</div> <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace"> <span><b>Durata regime:</b> ${durLabel}</span> <span style="color:var(--purple);font-weight:600">${timingLabel} · regime attivo: ${winLabel}</span> <span>Az. ×${eco.eqMult}</span> <span>Ob. ×${eco.obMult}</span> <span>Oro ×${eco.goldMult}</span> <span>Inflaz. ${eco.inflMean}% (σ=${eco.inflSigma}%)</span> <span>Vol. ×${eco.volMult}</span> <span>Cash ${(eco.cashRet * 100).toFixed(1)}%</span> </div> </div> <div style="display:flex;gap:10px;flex-wrap:wrap"> <div class="mcard"><div class="ml">Scenario Economico</div><div class="mv" style="color:${eco.color};font-size:16px">${fmt(vEco[state.years])}</div><div class="ms">Valore finale</div></div> <div class="mcard"><div class="ml">Scenario Base</div><div class="mv" style="color:var(--blue);font-size:16px">${fmt(vBase[state.years])}</div><div class="ms">Riferimento</div></div> <div class="mcard"><div class="ml">Differenza</div><div class="mv" style="color:${vEco[state.years] > vBase[state.years] ? 'var(--green)' : 'var(--red)'};font-size:16px">${vEco[state.years] > vBase[state.years] ? '+' : ''}${fmt(vEco[state.years] - vBase[state.years])}</div><div class="ms">${((vEco[state.years] / vBase[state.years] - 1) * 100).toFixed(1)}%</div></div> </div> </div>`;
+    <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap"> <div style="flex:1"> <div style="font-size:15px;font-weight:700;color:${eco.color};margin-bottom:6px">${eco.label}</div> <div style="font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:10px">${eco.desc}</div> <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;font-family:'DM Mono',monospace"> <span><b>Durata regime:</b> ${durLabel}</span> <span style="color:var(--purple);font-weight:600">${timingLabel} · regime attivo: ${winLabel}</span> <span>Az. ×${eco.eqMult}</span> <span>Ob. ×${eco.obMult}</span> <span>Oro ×${eco.goldMult}</span> <span>Inflaz. ${eco.inflMean}% (σ=${eco.inflSigma}%)</span> <span>Vol. ×${eco.volMult}</span> <span>Cash ${(eco.cashRet * 100).toFixed(1)}%</span> </div> </div> <div style="display:flex;gap:10px;flex-wrap:wrap"> <div class="mcard"><div class="ml">Scenario Economico</div><div class="mv" style="color:${eco.color};font-size:16px">${fmt(vEco[state.years])}</div><div class="ms">Valore finale</div></div> <div class="mcard"><div class="ml">Scenario Base</div><div class="mv" style="color:var(--data);font-size:16px">${fmt(vBase[state.years])}</div><div class="ms">Riferimento</div></div> <div class="mcard"><div class="ml">Differenza</div><div class="mv" style="color:${vEco[state.years] > vBase[state.years] ? 'var(--green)' : 'var(--red)'};font-size:16px">${vEco[state.years] > vBase[state.years] ? '+' : ''}${fmt(vEco[state.years] - vBase[state.years])}</div><div class="ms">${((vEco[state.years] / vBase[state.years] - 1) * 100).toFixed(1)}%</div></div> </div> </div>`;
 
   if (chartEco) { chartEco.destroy(); chartEco = null; }
   const gC = 'rgba(0,0,0,.05)', tC = 'rgba(0,0,0,.45)';
@@ -2081,7 +2081,7 @@ function renderEcoScenarios() {
     data: {
       labels: ages,
       datasets: [
-        { label: 'Base', data: vBase, borderColor: '#96151d', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .35 },
+        { label: 'Base', data: vBase, borderColor: '#1c3d5a', borderWidth: 2.5, pointRadius: 0, fill: false, tension: .35 },
         { label: eco.label, data: vEco, borderColor: eco.color, borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
         { label: 'Reale (deflatato)', data: vReal, borderColor: eco.color, borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0, fill: false, tension: .35 },
       ]
@@ -2145,7 +2145,7 @@ function renderEcoScenarios() {
   document.getElementById('ecoTable').innerHTML = dEco.filter((_, i) => i % stp === 0 || i === state.years).map(d => {
     const bv = dBase[d.year]?.value ?? 0;
     const delta = d.value - bv;
-    return `<tr> <td><strong>${d.age}</strong></td> <td>+${d.year}a</td> <td style="color:var(--blue)">${fmt(bv)}</td> <td style="color:${eco.color};font-weight:600">${fmt(d.value)}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> <td style="color:${d.inflYear > 4 ? 'var(--red)' : d.inflYear < 0 ? 'var(--blue)' : 'var(--text2)'}">${d.inflYear.toFixed(1)}%</td> <td style="color:var(--teal)">${fmt(d.real)}</td> </tr>`;
+    return `<tr> <td><strong>${d.age}</strong></td> <td>+${d.year}a</td> <td style="color:var(--data)">${fmt(bv)}</td> <td style="color:${eco.color};font-weight:600">${fmt(d.value)}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> <td style="color:${d.inflYear > 4 ? 'var(--red)' : d.inflYear < 0 ? 'var(--data)' : 'var(--text2)'}">${d.inflYear.toFixed(1)}%</td> <td style="color:var(--teal)">${fmt(d.real)}</td> </tr>`;
   }).join('');
 }
 
@@ -2387,7 +2387,7 @@ function renderMultiRegime() {
     .join(' · ');
 
   document.getElementById('mrKpi').innerHTML = `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"> <div class="mcard"> <div class="ml">Mediana finale (P50)</div> <div class="mv" style="color:var(--text);font-size:17px">${fmt(res.p50[years])}</div> <div class="ms">1.000 percorsi multi-regime</div> </div> <div class="mcard"> <div class="ml">Range P10–P90</div> <div class="mv" style="font-size:14px;color:var(--text2)">${fmt(res.p10[years])} – ${fmt(res.p90[years])}</div> <div class="ms">intervallo 80% dei percorsi</div> </div> <div class="mcard"> <div class="ml">Prob. successo</div> <div class="mv" style="color:${succColor};font-size:17px">${succTxt}</div> <div class="ms">${optNote}</div> </div> <div class="mcard"> <div class="ml">Baseline (deterministico)</div> <div class="mv" style="color:var(--blue);font-size:17px">${fmt(vBase[years])}</div> <div class="ms">crescita normale senza regime</div> </div> </div> <div style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px">Regimi più frequenti nella simulazione: <strong style="color:var(--text2)">${topRegimes}</strong> </div>`;
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px"> <div class="mcard"> <div class="ml">Mediana finale (P50)</div> <div class="mv" style="color:var(--text);font-size:17px">${fmt(res.p50[years])}</div> <div class="ms">1.000 percorsi multi-regime</div> </div> <div class="mcard"> <div class="ml">Range P10–P90</div> <div class="mv" style="font-size:14px;color:var(--text2)">${fmt(res.p10[years])} – ${fmt(res.p90[years])}</div> <div class="ms">intervallo 80% dei percorsi</div> </div> <div class="mcard"> <div class="ml">Prob. successo</div> <div class="mv" style="color:${succColor};font-size:17px">${succTxt}</div> <div class="ms">${optNote}</div> </div> <div class="mcard"> <div class="ml">Baseline (deterministico)</div> <div class="mv" style="color:var(--data);font-size:17px">${fmt(vBase[years])}</div> <div class="ms">crescita normale senza regime</div> </div> </div> <div style="font-size:12px;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:4px">Regimi più frequenti nella simulazione: <strong style="color:var(--text2)">${topRegimes}</strong> </div>`;
 
   // ── Grafico ──────────────────────────────────────────────────
   if (chartMultiRegime) { chartMultiRegime.destroy(); chartMultiRegime = null; }
@@ -2409,7 +2409,7 @@ function renderMultiRegime() {
         // Media
         { label: 'Media', data: res.mean, borderColor: '#9c27b0', borderWidth: 1.5, borderDash: [5, 4], pointRadius: 0, fill: false, tension: .35 },
         // Baseline deterministica
-        { label: 'Base (crescita normale)', data: vBase, borderColor: '#96151d', borderWidth: 2, pointRadius: 0, fill: false, tension: .35, borderDash: [6, 3] },
+        { label: 'Base (crescita normale)', data: vBase, borderColor: '#1c3d5a', borderWidth: 2, pointRadius: 0, fill: false, tension: .35, borderDash: [6, 3] },
       ]
     },
     options: {
@@ -2488,13 +2488,13 @@ function renderMultiRegime() {
   for (let y = 0; y <= years; y += (y === 0 ? 1 : stp)) {
     const bv    = vBase[y] ?? 0;
     const delta = res.p50[y] - bv;
-    tableRows.push(`<tr> <td><strong>${ages[y]}</strong></td> <td>+${y}a</td> <td style="color:var(--blue)">${fmt(bv)}</td> <td style="color:#b0bec5">${fmt(res.p10[y])}</td> <td style="color:#7986cb">${fmt(res.p25[y])}</td> <td style="font-weight:700;color:#5c6bc0">${fmt(res.p50[y])}</td> <td style="color:#7986cb">${fmt(res.p75[y])}</td> <td style="color:#b0bec5">${fmt(res.p90[y])}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> </tr>`);
+    tableRows.push(`<tr> <td><strong>${ages[y]}</strong></td> <td>+${y}a</td> <td style="color:var(--data)">${fmt(bv)}</td> <td style="color:#b0bec5">${fmt(res.p10[y])}</td> <td style="color:#7986cb">${fmt(res.p25[y])}</td> <td style="font-weight:700;color:#5c6bc0">${fmt(res.p50[y])}</td> <td style="color:#7986cb">${fmt(res.p75[y])}</td> <td style="color:#b0bec5">${fmt(res.p90[y])}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> </tr>`);
   }
   // Assicura che l'anno finale sia sempre presente
   if (years % stp !== 0) {
     const bv    = vBase[years] ?? 0;
     const delta = res.p50[years] - bv;
-    tableRows.push(`<tr> <td><strong>${ages[years]}</strong></td> <td>+${years}a</td> <td style="color:var(--blue)">${fmt(bv)}</td> <td style="color:#b0bec5">${fmt(res.p10[years])}</td> <td style="color:#7986cb">${fmt(res.p25[years])}</td> <td style="font-weight:700;color:#5c6bc0">${fmt(res.p50[years])}</td> <td style="color:#7986cb">${fmt(res.p75[years])}</td> <td style="color:#b0bec5">${fmt(res.p90[years])}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> </tr>`);
+    tableRows.push(`<tr> <td><strong>${ages[years]}</strong></td> <td>+${years}a</td> <td style="color:var(--data)">${fmt(bv)}</td> <td style="color:#b0bec5">${fmt(res.p10[years])}</td> <td style="color:#7986cb">${fmt(res.p25[years])}</td> <td style="font-weight:700;color:#5c6bc0">${fmt(res.p50[years])}</td> <td style="color:#7986cb">${fmt(res.p75[years])}</td> <td style="color:#b0bec5">${fmt(res.p90[years])}</td> <td class="${delta >= 0 ? 'pos' : 'neg'}">${delta >= 0 ? '+' : ''}${fmt(delta)}</td> </tr>`);
   }
 
   document.getElementById('mrTable').innerHTML = `
@@ -2606,15 +2606,15 @@ function renderAB() {
   if (syncEl) syncEl.innerHTML = sharedItems.join(' · ') + (picCount + expCount > 0
     ? `<span style="margin-left:8px;color:var(--orange);font-size:11px">PIC e spese identici per entrambi i portafogli</span>` : '');
 
-  document.getElementById('ab-a-info').innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px"><div><strong>${pA?.label ?? state.portfolio}</strong></div><div>TER: <strong>${state.ter.toFixed(2)}%</strong></div><div>PAC: <strong>${fmt(state.pac)}/m</strong></div>${pA && pA.normal ? `<div>Rend. base: <strong>${((pA.normal - state.ter / 100) * 100).toFixed(2)}%</strong>/a</div>` : ''}</div><div style="margin-top:8px;font-size:12px;color:var(--text2)">Valore finale base: <strong style="color:var(--blue)">${fmt(dAn[years].value)}</strong></div>`;
+  document.getElementById('ab-a-info').innerHTML = `<div style="display:flex;gap:20px;flex-wrap:wrap;font-size:12.5px"><div><strong>${pA?.label ?? state.portfolio}</strong></div><div>TER: <strong>${state.ter.toFixed(2)}%</strong></div><div>PAC: <strong>${fmt(state.pac)}/m</strong></div>${pA && pA.normal ? `<div>Rend. base: <strong>${((pA.normal - state.ter / 100) * 100).toFixed(2)}%</strong>/a</div>` : ''}</div><div style="margin-top:8px;font-size:12px;color:var(--text2)">Valore finale base: <strong style="color:var(--data)">${fmt(dAn[years].value)}</strong></div>`;
   if (chartAB) { chartAB.destroy(); chartAB = null; }
   const ds = [
-    { label: 'A Ott.', data: dA.map(d => d.value), borderColor: 'rgba(150,21,29,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
-    { label: 'A Base', data: dAn.map(d => d.value), borderColor: '#96151d', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
-    { label: 'A Pess.', data: dAw.map(d => d.value), borderColor: 'rgba(150,21,29,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
-    { label: 'B Ott.', data: dBb.map(d => d.value), borderColor: 'rgba(147,52,230,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
-    { label: 'B Base', data: dBn.map(d => d.value), borderColor: '#9334e6', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
-    { label: 'B Pess.', data: dBw.map(d => d.value), borderColor: 'rgba(147,52,230,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'A Ott.', data: dA.map(d => d.value), borderColor: 'rgba(28,61,90,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'A Base', data: dAn.map(d => d.value), borderColor: '#1c3d5a', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
+    { label: 'A Pess.', data: dAw.map(d => d.value), borderColor: 'rgba(28,61,90,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'B Ott.', data: dBb.map(d => d.value), borderColor: 'rgba(106,74,124,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
+    { label: 'B Base', data: dBn.map(d => d.value), borderColor: '#6a4a7c', borderWidth: 3, pointRadius: 0, fill: false, tension: .35 },
+    { label: 'B Pess.', data: dBw.map(d => d.value), borderColor: 'rgba(106,74,124,.4)', borderWidth: 1, pointRadius: 0, fill: false, tension: .35, borderDash: [4, 3] },
   ];
   const gC = 'rgba(0,0,0,.05)', tC = 'rgba(0,0,0,.45)';
   chartAB = new Chart(document.getElementById('chAB'), { type: 'line', data: { labels: ages, datasets: ds }, options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { filter: i => ['A Base', 'B Base'].includes(i.dataset.label), callbacks: { title: c => 'Età ' + c[0].label, label: c => ' ' + c.dataset.label + ': ' + fmt(c.raw) }, backgroundColor: '#fff', borderColor: '#dadce0', borderWidth: 1, titleColor: '#202124', bodyColor: '#5f6368', padding: 10 } }, scales: { x: { ticks: { color: tC, font: { size: 11, family: 'DM Mono' }, maxTicksLimit: 12 }, grid: { color: gC } }, y: { ticks: { color: tC, font: { size: 11, family: 'DM Mono' }, callback: v => fmt(v) }, grid: { color: gC } } } } });
@@ -2636,15 +2636,15 @@ function renderAB() {
     ['Moltiplicatore', '×' + (dAn[years].value / invA).toFixed(2), '×' + (dBn[years].value / invB).toFixed(2), 'Δ ' + ((dBn[years].value / invB - dAn[years].value / invA)).toFixed(2) + 'x'],
     ['Netto fiscale finale', fmt(nA), fmt(nB), (deltaN >= 0 ? '+' : '') + fmt(deltaN)],
   ];
-  document.getElementById('ab-metrics').innerHTML = `<div class="tbl-outer"><table><thead><tr><th style="text-align:left">Metrica</th><th style="color:var(--blue)">A — ${pA?.label ?? state.portfolio}</th><th style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</th><th>Δ (B−A)</th></tr></thead><tbody>${mRows.map(r => `<tr><td style="text-align:left">${r[0]}</td><td style="color:var(--blue);font-weight:600">${r[1]}</td><td style="color:var(--purple);font-weight:600">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
+  document.getElementById('ab-metrics').innerHTML = `<div class="tbl-outer"><table><thead><tr><th style="text-align:left">Metrica</th><th style="color:var(--data)">A — ${pA?.label ?? state.portfolio}</th><th style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</th><th>Δ (B−A)</th></tr></thead><tbody>${mRows.map(r => `<tr><td style="text-align:left">${r[0]}</td><td style="color:var(--data);font-weight:600">${r[1]}</td><td style="color:var(--purple);font-weight:600">${r[2]}</td><td>${r[3]}</td></tr>`).join('')}</tbody></table></div>`;
   const gainA = Math.max(0, dAn[years].value - invA), gainB = Math.max(0, dBn[years].value - invB);
-  document.getElementById('ab-fiscal').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="liq-card" style="border:1px solid rgba(150,21,29,.3)"><div class="liq-card-title" style="color:var(--blue)">A — ${pA?.label ?? state.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dAn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFA * 100).toFixed(1)}%)</span><span>−${fmt(gainA * txFA)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--blue)">Netto</strong><strong style="color:var(--blue);font-size:15px">${fmt(nA)}</strong></div></div><div class="liq-card" style="border:1px solid rgba(147,52,230,.3)"><div class="liq-card-title" style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dBn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFB * 100).toFixed(1)}%)</span><span>−${fmt(gainB * txFB)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--purple)">Netto</strong><strong style="color:var(--purple);font-size:15px">${fmt(nB)}</strong></div></div></div><div style="margin-top:10px;padding:10px 14px;background:${deltaN >= 0 ? 'var(--green-dim)' : 'var(--red-dim)'};border-radius:var(--radius-sm);font-size:13px;color:${deltaN >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${svgDir(deltaN >= 0 ? 'up' : 'down')}Portafoglio B porta ${deltaN >= 0 ? '+' + fmt(deltaN) + ' netti IN PIÙ rispetto ad A' : fmt(Math.abs(deltaN)) + ' netti IN MENO rispetto ad A'} in scenario base.</div>`;
+  document.getElementById('ab-fiscal').innerHTML = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px"><div class="liq-card" style="border:1px solid rgba(28,61,90,.3)"><div class="liq-card-title" style="color:var(--data)">A — ${pA?.label ?? state.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dAn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFA * 100).toFixed(1)}%)</span><span>−${fmt(gainA * txFA)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--data)">Netto</strong><strong style="color:var(--data);font-size:15px">${fmt(nA)}</strong></div></div><div class="liq-card" style="border:1px solid rgba(106,74,124,.3)"><div class="liq-card-title" style="color:var(--purple)">B — ${PORT[stateB.portfolio]?.label ?? stateB.portfolio}</div><div class="liq-row"><span style="color:var(--text2)">Lordo</span><strong>${fmt(dBn[years].value)}</strong></div><div class="liq-row" style="color:var(--red)"><span>Tasse CG (${(txFB * 100).toFixed(1)}%)</span><span>−${fmt(gainB * txFB)}</span></div><div class="liq-row" style="border-top:1px solid var(--border);padding-top:8px;margin-bottom:0"><strong style="color:var(--purple)">Netto</strong><strong style="color:var(--purple);font-size:15px">${fmt(nB)}</strong></div></div></div><div style="margin-top:10px;padding:10px 14px;background:${deltaN >= 0 ? 'var(--green-dim)' : 'var(--red-dim)'};border-radius:var(--radius-sm);font-size:13px;color:${deltaN >= 0 ? 'var(--green)' : 'var(--red)'};font-weight:600">${svgDir(deltaN >= 0 ? 'up' : 'down')}Portafoglio B porta ${deltaN >= 0 ? '+' + fmt(deltaN) + ' netti IN PIÙ rispetto ad A' : fmt(Math.abs(deltaN)) + ' netti IN MENO rispetto ad A'} in scenario base.</div>`;
   const step = Math.max(1, Math.floor(years / 12));
   const rowsAB = []; for (let i = 0; i <= years; i += step) rowsAB.push(i);
   document.getElementById('ab-table').innerHTML = rowsAB.map(i => {
     const vA = dAn[i].value, vBv = dBn[i].value, d = vBv - vA, dp = vA > 0 ? (d / vA * 100) : 0;
     const cls = d > 0 ? 'pos' : d < 0 ? 'neg' : 'neutral';
-    return `<tr><td><strong>${state.age + i}</strong></td><td>+${i}a</td><td style="color:var(--blue);font-weight:600">${fmt(vA)}</td><td style="color:var(--purple);font-weight:600">${fmt(vBv)}</td><td class="${cls}">${d >= 0 ? '+' : ''}${fmt(d)}</td><td class="${cls}">${d >= 0 ? '+' : ''}${dp.toFixed(1)}%</td></tr>`;
+    return `<tr><td><strong>${state.age + i}</strong></td><td>+${i}a</td><td style="color:var(--data);font-weight:600">${fmt(vA)}</td><td style="color:var(--purple);font-weight:600">${fmt(vBv)}</td><td class="${cls}">${d >= 0 ? '+' : ''}${fmt(d)}</td><td class="${cls}">${d >= 0 ? '+' : ''}${dp.toFixed(1)}%</td></tr>`;
   }).join('');
 }
 document.getElementById('abAllocBtns').onclick = e => { const b = e.target.closest('[data-k]'); if (!b) return; stateB.portfolio = b.dataset.k; document.querySelectorAll('#abAllocBtns .gbtn').forEach(x => x.classList.remove('a-purple')); b.classList.add('a-purple'); renderAB(); };
@@ -2703,7 +2703,7 @@ function runSuccessMC() {
     const desc = sr >= 90 ? `Il portafoglio rimane positivo in ${successes}/1.000 scenari. Robusto (soglia professionale: >90%).` : sr >= 80 ? `Fallisce in ${N - successes}/1.000 scenari. Accettabile ma con margine ridotto.` : `Fallisce in ${N - successes}/1.000 scenari. Considera di ridurre il prelievo o aumentare il patrimonio.`;
     lastMCSuccessResult = { sr, successes, N, label, desc, avgRuinYear, p10: finalVals[Math.floor(N * .10)], p50: finalVals[Math.floor(N * .50)], p90: finalVals[Math.floor(N * .90)], withdrawal, wY, wI, years, portfolio, ter };
     document.getElementById('mc-success-result').innerHTML = `
-      <div class="success-display sec" style="border-color:${col};background:${sr >= 90 ? 'var(--green-dim)' : sr >= 80 ? 'var(--orange-dim)' : sr >= 70 ? 'rgba(230,81,0,.08)' : 'var(--red-dim)'}"> <div class="success-pct" style="color:${col}">${sr.toFixed(1)}%</div> <div style="font-size:16px;font-weight:600;margin-top:8px;color:${col}">${label}</div> <div style="font-size:13px;margin-top:6px;color:var(--text2)">${desc}</div> <div class="success-bar"><div class="success-bar-fill" style="width:${sr}%;background:${col}">${sr.toFixed(0)}%</div></div> </div> <div class="grid-3" style="margin-bottom:10px"> <div class="mc-box"><div class="mc-lbl">Successi</div><div class="mc-val" style="color:var(--green)">${successes}/1.000</div></div> <div class="mc-box"><div class="mc-lbl">Fallimenti</div><div class="mc-val" style="color:var(--red)">${N - successes}/1.000</div></div> <div class="mc-box"><div class="mc-lbl">Anno rovina (med.)</div><div class="mc-val" style="color:var(--orange)">${avgRuinYear ? 'Anno ' + avgRuinYear : '—'}</div></div> </div> <div class="sec"><div class="sec-label">Patrimonio residuo a fine prelievo</div> <div class="mc-grid"> <div class="mc-box"><div class="mc-lbl">10° percentile</div><div class="mc-val" style="color:var(--orange)">${fmt(finalVals[Math.floor(N * .10)])}</div></div> <div class="mc-box"><div class="mc-lbl">Mediana</div><div class="mc-val" style="color:var(--blue)">${fmt(finalVals[Math.floor(N * .50)])}</div></div> <div class="mc-box"><div class="mc-lbl">90° percentile</div><div class="mc-val" style="color:var(--green)">${fmt(finalVals[Math.floor(N * .90)])}</div></div> </div> </div>`;
+      <div class="success-display sec" style="border-color:${col};background:${sr >= 90 ? 'var(--green-dim)' : sr >= 80 ? 'var(--orange-dim)' : sr >= 70 ? 'rgba(230,81,0,.08)' : 'var(--red-dim)'}"> <div class="success-pct" style="color:${col}">${sr.toFixed(1)}%</div> <div style="font-size:16px;font-weight:600;margin-top:8px;color:${col}">${label}</div> <div style="font-size:13px;margin-top:6px;color:var(--text2)">${desc}</div> <div class="success-bar"><div class="success-bar-fill" style="width:${sr}%;background:${col}">${sr.toFixed(0)}%</div></div> </div> <div class="grid-3" style="margin-bottom:10px"> <div class="mc-box"><div class="mc-lbl">Successi</div><div class="mc-val" style="color:var(--green)">${successes}/1.000</div></div> <div class="mc-box"><div class="mc-lbl">Fallimenti</div><div class="mc-val" style="color:var(--red)">${N - successes}/1.000</div></div> <div class="mc-box"><div class="mc-lbl">Anno rovina (med.)</div><div class="mc-val" style="color:var(--orange)">${avgRuinYear ? 'Anno ' + avgRuinYear : '—'}</div></div> </div> <div class="sec"><div class="sec-label">Patrimonio residuo a fine prelievo</div> <div class="mc-grid"> <div class="mc-box"><div class="mc-lbl">10° percentile</div><div class="mc-val" style="color:var(--orange)">${fmt(finalVals[Math.floor(N * .10)])}</div></div> <div class="mc-box"><div class="mc-lbl">Mediana</div><div class="mc-val" style="color:var(--data)">${fmt(finalVals[Math.floor(N * .50)])}</div></div> <div class="mc-box"><div class="mc-lbl">90° percentile</div><div class="mc-val" style="color:var(--green)">${fmt(finalVals[Math.floor(N * .90)])}</div></div> </div> </div>`;
     btn.disabled = false; btn.textContent = 'Calcola Probabilità';
   }, 80);
 }
@@ -2961,7 +2961,7 @@ function runDecHistorical() {
         .filter(x => x !== undefined);
 
       const html = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px"> <div class="dec-stat"> <div class="dec-stat-label">Tasso Sopravvivenza</div> <div class="dec-stat-value" style="color:${succColor};font-size:24px">${succPct}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${r.nSurvived}/${r.nTotal} anni di partenza</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Capitale Finale Mediano</div> <div class="dec-stat-value" style="color:var(--blue)">${fmt(median?.finalCap || 0)}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">P10: ${fmt(p10?.finalCap || 0)} · P90: ${fmt(p90?.finalCap || 0)}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Worst Year (peggior partenza)</div> <div class="dec-stat-value" style="color:var(--red);font-size:20px">${worstYr ? worstYr.startYear : 'Nessun fail'}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${worstYr ? `Esaurito anno ${worstYr.exhaustYear}` : 'Tutti gli anni hanno retto'}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Calo Max Capitale (mediano)</div> <div class="dec-stat-value" style="color:var(--orange)">${(median?.maxDrawdown*100 || 0).toFixed(0)}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">Picco-fondo, include i prelievi</div> </div> </div> ${failedList.length > 0 ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px"> <div class="dec-stat"> <div class="dec-stat-label">Tasso Sopravvivenza</div> <div class="dec-stat-value" style="color:${succColor};font-size:24px">${succPct}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${r.nSurvived}/${r.nTotal} anni di partenza</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Capitale Finale Mediano</div> <div class="dec-stat-value" style="color:var(--data)">${fmt(median?.finalCap || 0)}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">P10: ${fmt(p10?.finalCap || 0)} · P90: ${fmt(p90?.finalCap || 0)}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Worst Year (peggior partenza)</div> <div class="dec-stat-value" style="color:var(--red);font-size:20px">${worstYr ? worstYr.startYear : 'Nessun fail'}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${worstYr ? `Esaurito anno ${worstYr.exhaustYear}` : 'Tutti gli anni hanno retto'}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Calo Max Capitale (mediano)</div> <div class="dec-stat-value" style="color:var(--orange)">${(median?.maxDrawdown*100 || 0).toFixed(0)}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">Picco-fondo, include i prelievi</div> </div> </div> ${failedList.length > 0 ? `
           <div class="info-box" style="background:var(--red-dim);border-color:var(--red);color:var(--red);margin-bottom:12px"> <strong>Anni di partenza che hanno ESAURITO il capitale:</strong><br> ${failedList.join(' · ')}
           </div>` : `
           <div class="info-box" style="background:var(--green-dim);border-color:var(--green);color:var(--green);margin-bottom:12px"> <strong>Tutti gli ${r.nTotal} anni di partenza hanno completato il piano senza esaurire il capitale</strong> </div>`}
@@ -3015,7 +3015,7 @@ function renderDecumulo() {
   const totalExtractedNet = dBase.reduce((s, d) => s + (d.withdrawalNet ?? d.withdrawal), 0);
   const totalTax = dBase.reduce((s, d) => s + (d.tax || 0), 0);
   document.getElementById('dec-stats').innerHTML = [
-    { l: 'Patrimonio finale (base)', v: fmt(endBase), c: endBase > 0 ? 'var(--blue)' : 'var(--red)' },
+    { l: 'Patrimonio finale (base)', v: fmt(endBase), c: endBase > 0 ? 'var(--data)' : 'var(--red)' },
     { l: 'Patrimonio finale (ott.)', v: fmt(endBest), c: 'var(--green)', ic: 'up' },
     { l: 'Patrimonio finale (pess.)', v: fmt(endWorst), c: endWorst > 0 ? 'var(--orange)' : 'var(--red)', ic: 'down' },
     { l: 'Totale prelevato lordo (base)', v: fmt(totalExtracted), c: 'var(--text)' },
@@ -3029,7 +3029,7 @@ function renderDecumulo() {
   chartDec = new Chart(document.getElementById('chDec'), {
     type: 'line', data: { labels, datasets: [
       { label: 'Ottimistico', data: dBest.map(d => d.end), borderColor: '#36d490', borderWidth: 2, pointRadius: 0, fill: false, tension: .35 },
-      { label: 'Base', data: dBase.map(d => d.end), borderColor: '#96151d', borderWidth: 3, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(150,21,29,.06)', tension: .35 },
+      { label: 'Base', data: dBase.map(d => d.end), borderColor: '#1c3d5a', borderWidth: 3, pointRadius: 0, fill: 'origin', backgroundColor: 'rgba(28,61,90,.06)', tension: .35 },
       { label: 'Pessimistico', data: dWorst.map(d => d.end), borderColor: '#e37400', borderWidth: 2, pointRadius: 0, fill: false, tension: .35 },
     ] },
     options: { responsive: true, maintainAspectRatio: false, interaction: { mode: 'index', intersect: false }, plugins: { legend: { display: false }, tooltip: { callbacks: { title: c => c[0].label, label: c => ' ' + c.dataset.label + ': ' + fmt(c.raw) }, backgroundColor: '#fff', borderColor: '#dadce0', borderWidth: 1, titleColor: '#202124', bodyColor: '#5f6368', padding: 10 } }, scales: { x: { ticks: { color: 'rgba(0,0,0,.45)', font: { size: 11, family: 'DM Mono' }, maxTicksLimit: 12 }, grid: { color: 'rgba(0,0,0,.05)' } }, y: { ticks: { color: 'rgba(0,0,0,.45)', font: { size: 11, family: 'DM Mono' }, callback: v => fmt(v) }, grid: { color: 'rgba(0,0,0,.05)' } } } },
@@ -3038,7 +3038,7 @@ function renderDecumulo() {
   document.getElementById('dec-table').innerHTML = dBase.map(d => {
     const rateCls = d.rate > .06 ? 'neg' : d.rate > .04 ? 'neutral' : 'pos';
     const endCls = d.end <= 0 ? 'neg' : d.end < decState.startPortfolio * .5 ? 'neutral' : 'pos';
-    const ecoStyle = d.eco ? 'background:rgba(147,52,230,.05);border-left:2px solid rgba(147,52,230,.4)' : '';
+    const ecoStyle = d.eco ? 'background:rgba(106,74,124,.05);border-left:2px solid rgba(106,74,124,.4)' : '';
     const taxStr = d.tax > 0 ? `<span style="color:var(--orange);font-size:11px">−${fmt(d.tax)}</span>` : '—';
     const netStr = d.withdrawalNet != null ? `<strong style="color:var(--teal)">${fmt(d.withdrawalNet)}</strong>` : fmt(d.withdrawal);
     return `<tr style="${ecoStyle}"><td style="text-align:left"><strong>${d.year}</strong></td><td>${fmt(d.start)}</td><td class="${d.ret >= 0 ? 'pos' : 'neg'}">${fmt(d.ret)}</td><td style="color:var(--red)">${fmt(d.withdrawal)}</td><td>${taxStr}</td><td>${netStr}</td><td class="${endCls}"><strong>${fmt(d.end)}</strong></td><td class="${rateCls}">${(d.rate * 100).toFixed(2)}%</td><td style="font-size:11.5px;color:var(--text3)">${d.note || ''}</td></tr>`;
@@ -3114,7 +3114,7 @@ function buildValuationDashboard(portKey) {
   // Stima rendimento reale atteso (fwd nominale - HICP)
   const inflExp = d.hicp_eu ?? (state.inflBottom / 100);
   const realFwd = fwdPort - inflExp;
-  const realFwdColor = realFwd > 0.04 ? 'var(--green)' : realFwd > 0.02 ? 'var(--blue)' : realFwd > 0 ? 'var(--orange)' : 'var(--red)';
+  const realFwdColor = realFwd > 0.04 ? 'var(--green)' : realFwd > 0.02 ? 'var(--data)' : realFwd > 0 ? 'var(--orange)' : 'var(--red)';
 
   const chips = [];
   if (d.cape_sp500) chips.push(`
@@ -3128,7 +3128,7 @@ function buildValuationDashboard(portKey) {
     <span style="display:inline-flex;align-items:center;gap:5px;font-size:11px;font-family:'DM Mono',monospace;background:var(--bg);border:1px solid var(--border2);border-radius:5px;padding:3px 8px" title="Rendimento reale atteso = forward nominale − HICP Eurozona corrente.">Fwd reale <strong style="color:${realFwdColor}">${(realFwd*100).toFixed(1)}%</strong>/a
     </span>`);
 
-  return `<div style="margin-top:10px;padding:10px;background:rgba(150,21,29,.04);border:1px solid rgba(150,21,29,.15);border-radius:8px"> <div style="font-size:10.5px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Valutazioni Live · ${new Date(d.fetchedAt).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</div> <div style="display:flex;flex-wrap:wrap;gap:6px">${chips.join('')}</div> </div>`;
+  return `<div style="margin-top:10px;padding:10px;background:#f4f5f7;border:1px solid #d9d9d9;border-radius:8px"> <div style="font-size:10.5px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px">Valutazioni Live · ${new Date(d.fetchedAt).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'})}</div> <div style="display:flex;flex-wrap:wrap;gap:6px">${chips.join('')}</div> </div>`;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -3147,7 +3147,7 @@ function updatePortDetailBox() {
   const fxExp = getFxExposure(state.portfolio, state.age);
   const fxHedged = !!state.fxHedge;
   const fxBadge = fxExp > 0.01
-    ? `<span style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(147,52,230,.3);padding:2px 8px;border-radius:4px" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD. Click per attivare/disattivare copertura valutaria (hedging)">FX ${(fxExp*100).toFixed(0)}% ${fxHedged?'<span style=\'color:var(--green)\'>hedged ✓</span>':'unhedged'}</span>`
+    ? `<span style="cursor:pointer;display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-family:'DM Mono',monospace;font-weight:600;color:var(--purple);background:var(--purple-dim);border:1px solid rgba(106,74,124,.3);padding:2px 8px;border-radius:4px" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD. Click per attivare/disattivare copertura valutaria (hedging)">FX ${(fxExp*100).toFixed(0)}% ${fxHedged?'<span style=\'color:var(--green)\'>hedged ✓</span>':'unhedged'}</span>`
     : '';
   const fxCostNote = fxHedged && fxExp > 0.01
     ? `<div style="margin-top:6px;font-size:11px;color:var(--text3)">Copertura valutaria attiva: costo stimato −${(fxExp * state.fxHedgeCost * 100).toFixed(2)}%/a sul rendimento netto.</div>`
@@ -3192,7 +3192,7 @@ function renderCustomBuilder() {
   const cp = calcCustomParams();
   const _totalState = totalOk && notionalOk ? 'ok' : !totalOk ? 'err' : 'warn';
   document.getElementById('portDetailBox').innerHTML = `
-    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Parametri calcolati in tempo reale sulla composizione sotto.</div> <div class="custom-params"> <span class="custom-param-chip" style="color:var(--blue)">Base: <strong>${(cp.normal*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip" style="color:var(--green)">Ott.: <strong>${(cp.best*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip" style="color:var(--orange)">Pess.: <strong>${(cp.worst*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip">σ: <strong>${(cp.vol*100).toFixed(1)}%</strong></span> <span class="custom-param-chip" style="color:var(--red)" title="Volatilità in regime di crisi (correlazioni → 1)">σ-crisi: <strong>${(cp.volStress*100).toFixed(1)}%</strong></span> <span class="custom-param-chip" style="color:${cp.inflBeta>0.2?'var(--green)':cp.inflBeta>0?'var(--orange)':'var(--red)'}">β-infl: <strong>${cp.inflBeta>0?'+':''}${cp.inflBeta.toFixed(2)}</strong></span> <span class="custom-param-chip" style="color:var(--orange)" title="TER medio ponderato sugli ETF selezionati — applicato automaticamente alla simulazione">TER applicato: <strong>${cp.ter.toFixed(2)}%</strong></span> <span class="custom-param-chip" style="color:var(--purple);cursor:pointer" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD e altre valute. Click per attivare/disattivare la copertura">FX: <strong>${(cp.fxExposure*100).toFixed(0)}% ${cp.fxHedged?'(hedged)':'(unhedged)'}</strong></span> <span class="custom-param-chip">Az: <strong>${(cp.eq*100).toFixed(0)}%</strong></span> <span class="custom-param-chip">Ob: <strong>${(cp.ob*100).toFixed(0)}%</strong></span> ${cp.goldW>0?`<span class="custom-param-chip">Oro: <strong>${(cp.goldW*100).toFixed(0)}%</strong></span>`:''}
+    <div style="font-size:12px;color:var(--text2);margin-bottom:6px">Parametri calcolati in tempo reale sulla composizione sotto.</div> <div class="custom-params"> <span class="custom-param-chip" style="color:var(--data)">Base: <strong>${(cp.normal*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip" style="color:var(--green)">Ott.: <strong>${(cp.best*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip" style="color:var(--orange)">Pess.: <strong>${(cp.worst*100).toFixed(2)}%/a</strong></span> <span class="custom-param-chip">σ: <strong>${(cp.vol*100).toFixed(1)}%</strong></span> <span class="custom-param-chip" style="color:var(--red)" title="Volatilità in regime di crisi (correlazioni → 1)">σ-crisi: <strong>${(cp.volStress*100).toFixed(1)}%</strong></span> <span class="custom-param-chip" style="color:${cp.inflBeta>0.2?'var(--green)':cp.inflBeta>0?'var(--orange)':'var(--red)'}">β-infl: <strong>${cp.inflBeta>0?'+':''}${cp.inflBeta.toFixed(2)}</strong></span> <span class="custom-param-chip" style="color:var(--orange)" title="TER medio ponderato sugli ETF selezionati — applicato automaticamente alla simulazione">TER applicato: <strong>${cp.ter.toFixed(2)}%</strong></span> <span class="custom-param-chip" style="color:var(--purple);cursor:pointer" onclick="toggleFxHedge()" title="Esposizione cambio EUR/USD e altre valute. Click per attivare/disattivare la copertura">FX: <strong>${(cp.fxExposure*100).toFixed(0)}% ${cp.fxHedged?'(hedged)':'(unhedged)'}</strong></span> <span class="custom-param-chip">Az: <strong>${(cp.eq*100).toFixed(0)}%</strong></span> <span class="custom-param-chip">Ob: <strong>${(cp.ob*100).toFixed(0)}%</strong></span> ${cp.goldW>0?`<span class="custom-param-chip">Oro: <strong>${(cp.goldW*100).toFixed(0)}%</strong></span>`:''}
       ${cp.cashW>0?`<span class="custom-param-chip">Cash: <strong>${(cp.cashW*100).toFixed(0)}%</strong></span>`:''}
       ${cp.otherFullW>0?`<span class="custom-param-chip" title="Trend following, carry, commodities, REIT, fattori — tassati al 26%">Alt: <strong>${(cp.otherFullW*100).toFixed(0)}%</strong></span>`:''}
     </div>`;
