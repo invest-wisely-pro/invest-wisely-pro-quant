@@ -163,6 +163,7 @@ input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
 .gbtn.a-purple{border-color:var(--purple);background:var(--purple-dim);color:var(--purple)}
 .gbtn.a-amber{border-color:var(--amber);background:var(--amber-dim);color:var(--orange)}
 .gbtn.a-green{border-color:var(--green);background:var(--green-dim);color:var(--green)}
+.gbtn.a-solid{border-color:#374151;background:#374151;color:#fff;font-weight:600}.gbtn.a-solid:hover{background:#1c2a38;border-color:#1c2a38;color:#fff}
 .gbtn.a-teal{border-color:var(--teal);background:var(--teal-dim);color:var(--teal)}
 
 /* ── TOGGLES ── */

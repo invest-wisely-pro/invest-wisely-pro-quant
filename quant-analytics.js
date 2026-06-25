@@ -1828,7 +1828,7 @@ function _renderOptimizerView() {
               ? 'Rendimenti forward conservativi + volatilità storiche → Sharpe più bassi ma realistici per il futuro.'
               : 'Coerenza rendimento-volatilità storica → Sharpe più alti, ma i CAGR passati sono spesso non ripetibili (tassi in calo 1981-2021, de-rating valutazioni).'}
           </div> </div> <button id="optRunBtn" onclick="optRunOptimization()"
-          style="width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13.5px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;transition:.15s">Esegui Ottimizzazione
+          class="gbtn a-solid" style="width:100%;padding:12px;font-size:13.5px">Esegui Ottimizzazione
         </button> <div id="optStatus" style="margin-top:10px;font-size:11.5px;color:var(--text3);text-align:center;min-height:16px"></div> </div> </div> <!-- Output --> <div id="optResultContainer"></div> <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:14px;margin-top:16px;font-size:12px;color:var(--text3);line-height:1.7"> <strong>Metodologia:</strong> 8.000 portafogli casuali Dirichlet che rispettano i vincoli, seguiti da 300 iterazioni di local search adattiva (random perturbation greedy). Per Risk Parity: iterazione fixed-point con damping 0.5 e proiezione sui vincoli (max 300 iter). Rendimenti attesi e covarianze basati su dati storici 1970-2024 calibrati. Il risultato è ottimale dato il modello statistico — la realtà può differire (instabilità di Markowitz, errore di stima sui rendimenti attesi).
     </div> `;
 
