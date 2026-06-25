@@ -83,7 +83,7 @@
   <button class="tab-btn" data-tab="goal" onclick="switchTab('goal')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Obiettivo Inverso</button>
   <button class="tab-btn" data-tab="quant" onclick="switchTab('quant')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>Quant Analytics</button>
 </div> <!-- ══════════════════════════════════════════════════════ TAB 1: MAIN -->
-<div class="tab-content active" id="tab-main"> <!-- OPTIONALITY: tooltip inline sul label dello slider, non box sempre visibile --> <div class="sec" data-info-id="info-params-base"> <div class="sec-label" data-info-id="info-params-base"> <svg class="sec-icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Parametri Base (Valori Nominali)</span> <span id="blendedTaxBadge" style="margin-left:auto;font-size:10.5px;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(147,52,230,.3);padding:3px 8px;border-radius:4px;font-family:'DM Mono',monospace">—</span> </div> <div class="grid-2"> <div class="pblock"><div class="plabel"><span>Patrimonio iniziale</span><span class="pval" id="lW">€0</span></div><input type="range" id="sW" min="0" max="5000000" step="1000" value="0"><div class="range-hints"><span>€0</span><span>€5M</span></div></div> <div class="pblock"><div class="plabel"><span>PAC mensile (base)</span><span class="pval" id="lP">€0/m</span></div><input type="range" id="sP" min="0" max="15000" step="50" value="0"><div class="range-hints"><span>€0</span><span>€15.000</span></div></div> <div class="pblock"><div class="plabel"><span>Età iniziale</span><span class="pval" id="lA">0 anni</span></div><input type="range" id="sA" min="0" max="80" step="1" value="0"><div class="range-hints"><span>0</span><span>80</span></div></div> <div class="pblock"><div class="plabel"><span>Orizzonte temporale</span><span class="pval" id="lY">35 anni</span></div><input type="range" id="sY" min="1" max="50" step="1" value="35"><div class="range-hints"><span>1 anno</span><span>50 anni</span></div></div> <div class="pblock"><div class="plabel"><span class="opt-tooltip-wrap">Soglia Optionality <span class="opt-tooltip-icon" tabindex="0">?<span class="opt-tooltip-bubble"><strong style="color:var(--blue)">Cos'è la Soglia di Optionality?</strong><br>Livello patrimoniale a cui il portafoglio ti dà <em>opzioni di vita reali</em> — part-time, sabbatico, cambio carriera — prima della libertà finanziaria totale (FIRE). Distinta dal FIRE (100% copertura): questa è il punto di <strong>"abbastanza per avere scelta"</strong>. Il grafico mostra la linea tratteggiata per vedere quando ogni scenario la raggiunge.</span></span></span><span class="pval" id="lO">€450.000</span></div><input type="range" id="sO" min="50000" max="3000000" step="25000" value="450000"><div class="range-hints"><span>€50k</span><span>€3M</span></div></div> <div class="pblock"><div class="plabel"><span>TER ETF <span class="ter-badge"> costo fondo</span></span><span class="pval" id="lTer">0.20%</span></div><input type="range" id="sTer" min="0" max="2.0" step="0.05" value="0.20"><div class="range-hints"><span>0%</span><span>2.0%</span></div></div> <div class="pblock"><div class="plabel"><span>Tasse Azionario</span><span class="pval" id="lTeq">26.0%</span></div><input type="range" id="sTeq" min="0" max="40" step="0.5" value="26.0"><div class="range-hints"><span>0%</span><span>40%</span></div></div> <div class="pblock"><div class="plabel"><span>Tasse Obbligaz. (Gov.)</span><span class="pval" id="lTob">12.5%</span></div><input type="range" id="sTob" min="0" max="40" step="0.5" value="12.5"><div class="range-hints"><span>0%</span><span>40%</span></div></div> </div>
+<div class="tab-content active" id="tab-main"> <!-- OPTIONALITY: tooltip inline sul label dello slider, non box sempre visibile --> <div class="sec" data-info-id="info-params-base"> <div class="sec-label" data-info-id="info-params-base"> <svg class="sec-icon" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg><span>Parametri Base (Valori Nominali)</span> <span id="blendedTaxBadge" style="margin-left:auto;font-size:10.5px;background:var(--purple-dim);color:var(--purple);border:1px solid rgba(147,52,230,.3);padding:3px 8px;border-radius:4px;font-family:'DM Mono',monospace">—</span> </div> <div class="grid-2"> <div class="pblock"><div class="plabel"><span>Patrimonio iniziale</span><span class="pval" id="lW">€0</span></div><input type="range" id="sW" min="0" max="5000000" step="1000" value="0"><div class="range-hints"><span>€0</span><span>€5M</span></div></div> <div class="pblock"><div class="plabel"><span>PAC mensile (base)</span><span class="pval" id="lP">€0/m</span></div><input type="range" id="sP" min="0" max="15000" step="50" value="0"><div class="range-hints"><span>€0</span><span>€15.000</span></div></div> <div class="pblock"><div class="plabel"><span>Età iniziale</span><span class="pval" id="lA">0 anni</span></div><input type="range" id="sA" min="0" max="80" step="1" value="0"><div class="range-hints"><span>0</span><span>80</span></div></div> <div class="pblock"><div class="plabel"><span>Orizzonte temporale</span><span class="pval" id="lY">35 anni</span></div><input type="range" id="sY" min="1" max="50" step="1" value="35"><div class="range-hints"><span>1 anno</span><span>50 anni</span></div></div> <div class="pblock"><div class="plabel"><span class="opt-tooltip-wrap">Soglia Optionality <span class="opt-tooltip-icon">?<span class="opt-tooltip-bubble"><strong style="color:var(--blue)">Cos'è la Soglia di Optionality?</strong><br>Livello patrimoniale a cui il portafoglio ti dà <em>opzioni di vita reali</em> — part-time, sabbatico, cambio carriera — prima della libertà finanziaria totale (FIRE). Distinta dal FIRE (100% copertura): questa è il punto di <strong>"abbastanza per avere scelta"</strong>. Il grafico mostra la linea tratteggiata per vedere quando ogni scenario la raggiunge.</span></span></span><span class="pval" id="lO">€450.000</span></div><input type="range" id="sO" min="50000" max="3000000" step="25000" value="450000"><div class="range-hints"><span>€50k</span><span>€3M</span></div></div> <div class="pblock"><div class="plabel"><span>TER ETF <span class="ter-badge"> costo fondo</span></span><span class="pval" id="lTer">0.20%</span></div><input type="range" id="sTer" min="0" max="2.0" step="0.05" value="0.20"><div class="range-hints"><span>0%</span><span>2.0%</span></div></div> <div class="pblock"><div class="plabel"><span>Tasse Azionario</span><span class="pval" id="lTeq">26.0%</span></div><input type="range" id="sTeq" min="0" max="40" step="0.5" value="26.0"><div class="range-hints"><span>0%</span><span>40%</span></div></div> <div class="pblock"><div class="plabel"><span>Tasse Obbligaz. (Gov.)</span><span class="pval" id="lTob">12.5%</span></div><input type="range" id="sTob" min="0" max="40" step="0.5" value="12.5"><div class="range-hints"><span>0%</span><span>40%</span></div></div> </div>
 </div> <!-- LIVE MARKET DATA BANNER -->
 <div id="liveDataBanner" style="margin-bottom:10px"></div> <!-- ══════════════════════════ GESTORE SCENARI ══════════════════════════ -->
 <div class="scenario-panel sec" id="scenarioPanel"> <div class="scenario-panel-header" onclick="toggleScenarioPanel()" style="cursor:pointer;user-select:none;display:flex;align-items:center"> <span class="sec-label" data-info-id="info-scenari-salvati" style="margin-bottom:0;cursor:pointer;flex:1"><svg class="sec-icon" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>Scenari Salvati
@@ -274,45 +274,61 @@
 <script src="quant-analytics.js"></script>
 <script src="tier-system.js"></script>
 <script>
-/* ── InfoHelper tooltip: fix mobile tap-stuck ── */
+/* ── InfoHelper tooltip: mobile tap fix (Chrome Android) ── */
 (function() {
   var active = null;
 
   function closeActive() {
     if (active) {
       active.classList.remove('tooltip-active');
-      active.blur();
       active = null;
     }
   }
 
+  function openIcon(icon) {
+    if (active && active !== icon) closeActive();
+    icon.classList.add('tooltip-active');
+    active = icon;
+  }
+
+  // touchstart: handles all tap interactions on mobile
   document.addEventListener('touchstart', function(e) {
+    // The bubble is a child of the icon, so closest() works for both
     var icon = e.target.closest('.opt-tooltip-icon');
     if (icon) {
-      e.preventDefault(); // prevent ghost click
+      e.preventDefault(); // block ghost click + focus
       if (active === icon) {
-        closeActive();
+        closeActive(); // second tap = close
       } else {
-        closeActive();
-        icon.classList.add('tooltip-active');
-        active = icon;
+        openIcon(icon);
       }
     } else {
-      // tap outside: close any open tooltip
-      closeActive();
+      closeActive(); // tap outside = close
     }
   }, { passive: false });
 
-  // Also handle click for desktop (already covered by :hover/:focus-visible,
-  // but needed if someone uses keyboard Enter)
+  // Prevent the ghost click that follows touchstart from re-triggering focus
   document.addEventListener('click', function(e) {
-    var icon = e.target.closest('.opt-tooltip-icon');
-    if (!icon) closeActive();
-  });
+    if (e.target.closest('.opt-tooltip-icon')) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, true);
 
-  // Close on Escape
+  // Keyboard: Enter/Space to toggle, Escape to close
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeActive();
+    if (e.key === 'Escape') { closeActive(); return; }
+    if (e.key === 'Enter' || e.key === ' ') {
+      var icon = document.activeElement && document.activeElement.closest
+        ? document.activeElement.closest('.opt-tooltip-icon') 
+        : null;
+      if (!icon && document.activeElement && document.activeElement.classList.contains('opt-tooltip-icon'))
+        icon = document.activeElement;
+      if (icon) {
+        e.preventDefault();
+        active === icon ? closeActive() : openIcon(icon);
+      }
+    }
   });
 })();
 </script>
