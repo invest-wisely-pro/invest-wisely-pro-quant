@@ -525,7 +525,8 @@ const INFO_TEXTS = {
     btn.innerHTML = 'ℹ';
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
-      e.preventDefault(); // evita il toggle dei <details> quando il label è un <summary> toggleInfoPopover(btn, info);
+      e.preventDefault(); // evita il toggle dei <details> quando il label è un <summary>
+      toggleInfoPopover(btn, info);
     });
     // Inserisci prima del ::after del sec-label (prima dell'eventuale badge a destra)
     label.insertBefore(btn, label.children[1] || null);

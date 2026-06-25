@@ -738,9 +738,9 @@ function renderAdvMCResults() {
   document.getElementById('advMcStats').innerHTML = [
     {l:'P5 (coda sx)', v:fmt(P.p5), c:'var(--red)'},
     {l:'P10', v:fmt(P.p10), c:'var(--orange)'},
-    {l:'P25', v:fmt(P.p25), c:'var(--orange)'},
-    {l:'Mediana (P50)', v:fmt(P.p50), c:'var(--blue)'},
-    {l:'Media', v:fmt(mean), c:'var(--blue)'},
+    {l:'P25', v:fmt(P.p25), c:'var(--text2)'},
+    {l:'Mediana (P50)', v:fmt(P.p50), c:'var(--data)'},
+    {l:'Media', v:fmt(mean), c:'var(--data)'},
     {l:'P75', v:fmt(P.p75), c:'var(--green)'},
     {l:'P90', v:fmt(P.p90), c:'var(--green)'},
     {l:'P95 (coda dx)', v:fmt(P.p95), c:'var(--green)'},
@@ -759,12 +759,12 @@ function renderAdvMCResults() {
   const ages=Array.from({length:years+1},(_,i)=>state.age+i);
   const gC='rgba(0,0,0,.05)',tC='rgba(0,0,0,.45)';
   chartAdvMC=new Chart(document.getElementById('chAdvMC'),{type:'line',data:{labels:ages,datasets:[
-    {label:'P10',data:p10,borderColor:'rgba(217,48,37,.22)',borderWidth:1,pointRadius:0,fill:false,tension:.35},
-    {label:'P25',data:p25,borderColor:'rgba(217,48,37,.32)',borderWidth:1,pointRadius:0,fill:{target:0,above:'rgba(217,48,37,.10)',below:'transparent'},tension:.35},
-    {label:'P50',data:p50,borderColor:'#96151d',borderWidth:2.5,pointRadius:0,fill:{target:1,above:'rgba(150,21,29,.09)',below:'transparent'},tension:.35},
-    {label:'P75',data:p75,borderColor:'rgba(30,142,62,.32)',borderWidth:1,pointRadius:0,fill:{target:2,above:'rgba(30,142,62,.10)',below:'transparent'},tension:.35},
-    {label:'P90',data:p90,borderColor:'rgba(30,142,62,.22)',borderWidth:1,pointRadius:0,fill:{target:3,above:'rgba(30,142,62,.07)',below:'transparent'},tension:.35},
-    {label:'Media',data:mArr,borderColor:'rgba(150,21,29,.5)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:.35},
+    {label:'P10',data:p10,borderColor:'rgba(180,180,180,.45)',borderWidth:1,pointRadius:0,fill:false,tension:.35},
+    {label:'P25',data:p25,borderColor:'rgba(150,150,150,.55)',borderWidth:1,pointRadius:0,fill:{target:0,above:'rgba(180,180,180,.12)',below:'transparent'},tension:.35},
+    {label:'P50',data:p50,borderColor:'#1c3d5a',borderWidth:2.5,pointRadius:0,fill:{target:1,above:'rgba(28,61,90,.08)',below:'transparent'},tension:.35},
+    {label:'P75',data:p75,borderColor:'rgba(30,142,62,.45)',borderWidth:1,pointRadius:0,fill:{target:2,above:'rgba(30,142,62,.10)',below:'transparent'},tension:.35},
+    {label:'P90',data:p90,borderColor:'rgba(30,142,62,.30)',borderWidth:1,pointRadius:0,fill:{target:3,above:'rgba(30,142,62,.07)',below:'transparent'},tension:.35},
+    {label:'Media',data:mArr,borderColor:'rgba(28,61,90,.45)',borderWidth:1.5,borderDash:[4,3],pointRadius:0,fill:false,tension:.35},
   ]},options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},plugins:{legend:{display:true,labels:{font:{size:11}}},tooltip:{callbacks:{title:c=>'Età '+c[0].label,label:c=>' '+c.dataset.label+': '+fmt(c.raw)},backgroundColor:'#fff',borderColor:'#dadce0',borderWidth:1,titleColor:'#202124',bodyColor:'#5f6368',padding:10}},scales:{x:{ticks:{color:tC,font:{size:11,family:'DM Mono'},maxTicksLimit:12},grid:{color:gC}},y:{ticks:{color:tC,font:{size:11,family:'DM Mono'},callback:v=>fmt(v)},grid:{color:gC}}}}});
 
   // GARCH vol chart
@@ -983,7 +983,7 @@ function renderAdvMCComparison() {
     p50s[model] = Array.from({length:years+1},(_,y)=>pct(ts[y],.50));
     const finalVals = ts[years].sort((a,b)=>a-b);
     compRows.push(
-      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap"> <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--red);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--data);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div> </div>`
+      `<div style="display:flex;gap:12px;margin-bottom:8px;align-items:center;flex-wrap:wrap"> <span style="font-size:12px;font-weight:700;color:${modelColors[model]};width:150px;font-family:'DM Mono',monospace">${modelLabels[model]}</span> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P10</div><div style="font-size:14px;font-weight:700;color:var(--orange);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.10))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P50</div><div style="font-size:14px;font-weight:700;color:var(--data);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.50))}</div></div> <div class="mcard" style="padding:8px 12px;flex:1"><div class="ml">P90</div><div style="font-size:14px;font-weight:700;color:var(--green);font-family:'DM Mono',monospace">${fmt(pct(finalVals,.90))}</div></div> </div>`
     );
   }
   document.getElementById('advMcComparison').innerHTML = compRows.join('');
