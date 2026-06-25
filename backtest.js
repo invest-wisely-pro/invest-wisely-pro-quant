@@ -67,7 +67,7 @@ function capeBtLabel(cape) {
   if (!cape) return '';
   if (cape < 12) return { txt: 'Molto economico', col: 'var(--green)' };
   if (cape < 17) return { txt: 'Economico',        col: 'var(--green)' };
-  if (cape < 22) return { txt: 'Fair value',        col: 'var(--blue)'  };
+  if (cape < 22) return { txt: 'Fair value',        col: 'var(--data)'  };
   if (cape < 28) return { txt: 'Caro',              col: 'var(--orange)'};
   if (cape < 35) return { txt: 'Molto caro',        col: 'var(--red)'   };
   return               { txt: 'Estremo',            col: 'var(--red)'   };
@@ -75,15 +75,15 @@ function capeBtLabel(cape) {
 
 const BT_PERIODS = {
   1970: { label: '1970 \u2192 Stagflazione OPEC (crisi 1973-74)', color: '#e37400', bg: 'rgba(227,116,0,.08)', context: 'Inizio nel 1970: 3 anni di accumulo, poi embargo petrolifero OPEC (ottobre 1973) che colpisce un capitale gia formato. Inflazione al 12%, azioni \u221248% in 2 anni \u2014 oro +162%. Stress test: la crisi morde dopo la fase di accumulo, non subito.', crisis: [1973, 1974] },
-  1977: { label: '1977 \u2192 Volcker shock (crisi 1980-81)', color: '#d93025', bg: 'rgba(217,48,37,.08)', context: 'Inizio nel 1977: si accumula capitale, poi Paul Volcker porta i tassi al 20% per schiacciare inflazione (1980-81). Azioni \u221228%, obbligazioni devastate. Poi il piu lungo bull market della storia (1982-2000).', crisis: [1980, 1981] },
+  1977: { label: '1977 \u2192 Volcker shock (crisi 1980-81)', color: '#1565c0', bg: 'rgba(21,101,192,.08)', context: 'Inizio nel 1977: si accumula capitale, poi Paul Volcker porta i tassi al 20% per schiacciare inflazione (1980-81). Azioni \u221228%, obbligazioni devastate. Poi il piu lungo bull market della storia (1982-2000).', crisis: [1980, 1981] },
   1984: { label: '1984 \u2192 Black Monday (crisi 1987)', color: '#6a4a7c', bg: 'rgba(106,74,124,.08)', context: 'Inizio nel 1984: 3 anni di accumulo, poi il Black Monday del 19 ottobre 1987 (azioni \u221222% in UN giorno) colpisce il capitale formato. Il mercato recupero entro 2 anni \u2014 crash violento ma breve.', crisis: [1987] },
   1995: { label: '1995 \u2192 Bolla dot-com (crisi 2000-02)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nella fase espansiva pre-bolla internet. Rendimenti eccezionali 1995-1999 accumulano un grande capitale, poi il crash 2000-2002 lo falcidia. Stress test della euforia seguita dal crollo.', crisis: [2000, 2001, 2002] },
-  1997: { label: '1997 \u2192 Burst dot-com (crisi 2000-02)', color: '#d93025', bg: 'rgba(217,48,37,.08)', context: 'Inizio nel 1997: 3 anni di forte accumulo nella bolla, poi il crollo internet. Azioni \u221249% in 3 anni (2000-2002), NASDAQ \u221278%. Chi aveva accumulato vide il capitale dimezzarsi \u2014 poi recupero fino al 2007.', crisis: [2000, 2001, 2002] },
+  1997: { label: '1997 \u2192 Burst dot-com (crisi 2000-02)', color: '#283593', bg: 'rgba(40,53,147,.08)', context: 'Inizio nel 1997: 3 anni di forte accumulo nella bolla, poi il crollo internet. Azioni \u221249% in 3 anni (2000-2002), NASDAQ \u221278%. Chi aveva accumulato vide il capitale dimezzarsi \u2014 poi recupero fino al 2007.', crisis: [2000, 2001, 2002] },
   2004: { label: '2004 \u2192 Crisi finanziaria (crisi 2008-09)', color: '#96151d', bg: 'rgba(150,21,29,.08)', context: 'Inizio nel 2004: bull market 2004-2007 accumula capitale, poi il peggior crash dal 1929. Lo stress test vero: il capitale formato incontra la crisi finanziaria globale nel mezzo del piano.', crisis: [2008, 2009] },
-  2005: { label: '2005 \u2192 Lehman (crisi 2008-09)', color: '#d93025', bg: 'rgba(217,48,37,.1)', context: 'Inizio nel 2005: 3 anni di accumulo prima del crollo. S&P500 \u221257%, MSCI World \u221254% nel 2008-09, le correlazioni azioni-obbligazioni implosero. Il capitale gia formato subisce il pieno impatto \u2014 poi triplica in 10 anni.', crisis: [2008, 2009] },
-  2009: { label: '2009 \u2192 Crisi Euro sovrana (crisi 2011-12)', color: '#e37400', bg: 'rgba(227,116,0,.08)', context: 'Inizio nel 2009: si accumula nella ripresa, poi la crisi dei debiti sovrani europei (2011-2012). Spread BTP-Bund a 500bp. Draghi (whatever it takes, luglio 2012) segna il bottom. Poi bull market fino al 2022.', crisis: [2011, 2012] },
-  2017: { label: '2017 \u2192 COVID-19 (crisi 2020)', color: '#1e8e3e', bg: 'rgba(30,142,62,.08)', context: 'Inizio nel 2017: 3 anni di accumulo, poi il crollo COVID-19 (febbraio-marzo 2020): azioni \u221234% in 33 giorni sul capitale formato. Recovery completata in meno di 6 mesi \u2014 il crash piu veloce della storia.', crisis: [2020] },
-  2019: { label: '2019 \u2192 Inflazione & tassi (crisi 2022)', color: '#00897b', bg: 'rgba(0,137,123,.08)', context: 'Inizio nel 2019: si accumula capitale, poi il 2022 unico nella storia \u2014 azioni \u221220% E obbligazioni \u221215% contemporaneamente. Il 60/40 perde \u221217%: il peggior anno dal 1937 per portafogli bilanciati. Lo stress test colpisce il capitale formato.', crisis: [2022] },
+  2005: { label: '2005 \u2192 Lehman (crisi 2008-09)', color: '#c2185b', bg: 'rgba(194,24,91,.08)', context: 'Inizio nel 2005: 3 anni di accumulo prima del crollo. S&P500 \u221257%, MSCI World \u221254% nel 2008-09, le correlazioni azioni-obbligazioni implosero. Il capitale gia formato subisce il pieno impatto \u2014 poi triplica in 10 anni.', crisis: [2008, 2009] },
+  2009: { label: '2009 \u2192 Crisi Euro sovrana (crisi 2011-12)', color: '#f9a825', bg: 'rgba(249,168,37,.08)', context: 'Inizio nel 2009: si accumula nella ripresa, poi la crisi dei debiti sovrani europei (2011-2012). Spread BTP-Bund a 500bp. Draghi (whatever it takes, luglio 2012) segna il bottom. Poi bull market fino al 2022.', crisis: [2011, 2012] },
+  2017: { label: '2017 \u2192 COVID-19 (crisi 2020)', color: '#00838f', bg: 'rgba(0,131,143,.08)', context: 'Inizio nel 2017: 3 anni di accumulo, poi il crollo COVID-19 (febbraio-marzo 2020): azioni \u221234% in 33 giorni sul capitale formato. Recovery completata in meno di 6 mesi \u2014 il crash piu veloce della storia.', crisis: [2020] },
+  2019: { label: '2019 \u2192 Inflazione & tassi (crisi 2022)', color: '#004d40', bg: 'rgba(0,77,64,.08)', context: 'Inizio nel 2019: si accumula capitale, poi il 2022 unico nella storia \u2014 azioni \u221220% E obbligazioni \u221215% contemporaneamente. Il 60/40 perde \u221217%: il peggior anno dal 1937 per portafogli bilanciati. Lo stress test colpisce il capitale formato.', crisis: [2022] },
 };
 
 // Inflazione storica annua (CPI USA approssimato) per periodo, per deflatare
@@ -592,7 +592,7 @@ function runBacktest() {
   const capePct   = result.capeStart ? capeHistPercentile(result.capeStart) : null;
 
   const statsCards = [
-    { l: `Valore finale (${startYear}→${startYear+result.years})`, v: fmt(result.finalValue), c: 'var(--blue)' },
+    { l: `Valore finale (${startYear}→${startYear+result.years})`, v: fmt(result.finalValue), c: result.finalValue >= result.finalInvested ? 'var(--green)' : 'var(--red)' },
     { l: 'Totale versato', v: fmt(result.finalInvested), c: 'var(--text)' },
     { l: 'Ritorno nominale totale', v: (result.totalReturn >= 0 ? '+' : '') + (result.totalReturn * 100).toFixed(1) + '%', c: result.totalReturn >= 0 ? 'var(--green)' : 'var(--red)' },
     { l: 'Rendim. annuo del piano (IRR)', v: (result.irr >= 0 ? '+' : '') + (result.irr * 100).toFixed(2) + '%/a', c: result.irr >= 0 ? 'var(--green)' : 'var(--red)' },
@@ -855,7 +855,7 @@ function runSequenceRiskStress() {
     // Perdita in euro = drawdown applicato al capitale esposto al crollo
     const lossEur = Math.round(s.w0 * s.r.maxDD);
     const row = (label, val, color) => `<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--text2)">${label}</span><strong style="font-family:'DM Mono',monospace${color?`;color:${color}`:''}">${val}</strong></div>`;
-    return `<div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"> <div style="font-size:13px;font-weight:700;margin-bottom:4px">${s.label}</div> <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${s.desc}</div> ${row('Capitale al crollo', fmt(s.w0), 'var(--blue)')}
+    return `<div style="padding:14px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-sm)"> <div style="font-size:13px;font-weight:700;margin-bottom:4px">${s.label}</div> <div style="font-size:11px;color:var(--text3);margin-bottom:10px">${s.desc}</div> ${row('Capitale al crollo', fmt(s.w0), 'var(--data)')}
       ${row('Max Drawdown', (s.r.maxDD*100).toFixed(1)+'%', ddColor)}
       ${row('Perdita al bottom', fmt(lossEur), 'var(--red)')}
       ${row('Valore finale', fmt(s.r.finalValue))}
