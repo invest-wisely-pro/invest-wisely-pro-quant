@@ -290,7 +290,7 @@
 <div class="tab-content" id="tab-quant">
 <details class="adv-section-wrap">
 <summary class="adv-section-summary"><svg class="adv-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg><svg class="sec-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg><span>VaR & Analisi Quantitativa Avanzata</span><span class="adv-badge">Avanzato</span></summary>
-<div class="sec"> <div class="sec-label" data-info-id="info-quant-markowitz"><svg class="sec-icon" viewBox="0 0 24 24"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>Quant Analytics — Frontiera Efficiente &amp; VaR/CVaR</div> <div class="info-box" style="margin-bottom:14px">Analisi quantitativa avanzata del portafoglio. Frontiera Efficiente di Markowitz con posizionamento del portafoglio corrente, e misure di rischio professionali (VaR/CVaR) con tre metodi: Gaussiano, t-Student (fat tails), Monte Carlo.
+<div class="sec"> <div class="sec-label" data-info-id="info-quant-markowitz"><svg class="sec-icon" viewBox="0 0 24 24"><path d="M6 18h8"/><path d="M3 22h18"/><path d="M14 22a7 7 0 1 0 0-14h-1"/><path d="M9 14h2"/><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z"/><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3"/></svg>Quant Analytics — Frontiera Efficiente, VaR/CVaR &amp; Correlazioni</div> <div class="info-box" style="margin-bottom:14px">Analisi quantitativa avanzata del portafoglio. Frontiera Efficiente di Markowitz con posizionamento del portafoglio corrente, e misure di rischio professionali (VaR/CVaR) con tre metodi: Gaussiano, t-Student (fat tails), Monte Carlo. Il pulsante <strong>Correlazioni</strong> apre la <strong>Matrice di Correlazione</strong> (heatmap) tra tutte le 31 asset class, calibrata su serie 1970&ndash;2024 e premi fattoriali Fama-French: blu = si muovono insieme, rosso = si oppongono (copertura). Sotto la heatmap, una sezione dedicata <strong>analizza il portafoglio impostato</strong> mostrando correlazione media pesata, punteggio di diversificazione e le coppie di asset pi&ugrave; diversificanti o ridondanti. I valori sono a scopo informativo e divulgativo, non costituiscono raccomandazione di investimento.
   </div>
   <!-- Selezione modalità: bottoni separati dal contenuto per evitare layout shift -->
   <div style="margin-bottom:16px">
@@ -299,6 +299,7 @@
       <button class="gbtn" data-qm="var" onclick="switchQuantMode('var')">VaR / CVaR</button>
       <button class="gbtn" data-qm="factor" onclick="switchQuantMode('factor')">Factor Decomposition</button>
       <button class="gbtn" data-qm="optimizer" onclick="switchQuantMode('optimizer')">Optimizer</button>
+      <button class="gbtn" data-qm="correlation" onclick="switchQuantMode('correlation')">Correlazioni</button>
     </div>
   </div>
   <!-- Sezioni contenuto: tutte allo stesso livello, visibilità toggle via JS -->
@@ -328,6 +329,7 @@
 </div>
 </details>
 <!-- Sezione Factor Decomposition --> <div id="quantFactorSection" style="display:none"> <div id="quantFactorContent"></div> </div> <!-- Sezione Portfolio Optimizer --> <div id="quantOptimizerSection" style="display:none"> <div id="quantOptimizerContent"></div> </div>
+<!-- Sezione Matrice di Correlazione --> <div id="quantCorrelationSection" style="display:none"> <div id="quantCorrelationContent"></div> </div>
 </div><!-- /tab-quant --> </div><!-- /view-app --> <script src="live-data.js"></script>
 <script src="main.js"></script>
 <script src="guide-pdf.js"></script>
