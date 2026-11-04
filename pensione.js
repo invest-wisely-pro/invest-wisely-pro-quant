@@ -432,7 +432,12 @@ function calcPensione() {
   }
 
   const pensioneLordaMens = pensioneLordaAnn / 12;
-  const irpefAnn          = calcIRPEF(pensioneLordaAnn);
+  // La pensione e' in euro NOMINALI dell'anno di pensionamento, tra decenni: scaglioni e detrazioni si
+  // applicano in euro di oggi (ipotesi: aggiornati con l'inflazione), come per il risparmio IRPEF del
+  // fondo pensione. Con soglie ferme per 30 anni la sola inflazione porterebbe la pensione quasi tutta
+  // al 43% e sottostimerebbe la pensione netta (fiscal drag).
+  const _deflIrpef = Math.pow(1 + infl, yearsToRet);
+  const irpefAnn          = calcIRPEF(pensioneLordaAnn / _deflIrpef) * _deflIrpef;
   const pensioneNettaAnn  = pensioneLordaAnn - irpefAnn;
   const pensioneNettaMens = pensioneNettaAnn / 12;
   const ralFinale         = ralPath[yearsToRet];
@@ -583,7 +588,7 @@ function calcPensione() {
 function calcIRPEF(reddito, detr = 'pensione') {
   const scaglioni = [
     { max: 28000,    aliq: 0.23 },
-    { max: 50000,    aliq: 0.35 },
+    { max: 50000,    aliq: 0.33 },
     { max: Infinity, aliq: 0.43 },
   ];
   let imposta = 0, prev = 0;
@@ -604,7 +609,7 @@ function calcIRPEF(reddito, detr = 'pensione') {
 
 function calcAliqMargIRPEF(ral) {
   if (ral <= 28000) return 0.23;
-  if (ral <= 50000) return 0.35;
+  if (ral <= 50000) return 0.33; // 2° scaglione 33% dal 2026 (L. 199/2025)
   return 0.43;
 }
 
