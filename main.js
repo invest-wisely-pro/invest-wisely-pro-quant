@@ -3062,6 +3062,7 @@ function runDecumuloHistorical() {
   const _initDrawH = Math.max(0, w0 - ((pl && pl.startIdx === 0) ? pl.inpsStart + pl.fpStart : 0));
   for (const startYr of startYears) {
     const plCur = pl ? { inps: pl.inpsStart, fp: pl.fpStart } : null;
+    let _cumInfl = 1; // inflazione storica cumulata dall'anno di partenza
     const startIdx = (startYr - 1970) * 12;
     let cap = sP, wd = w0, prevYearRet = null;
     let survived = true, exhaustYear = null;
@@ -3102,6 +3103,7 @@ function runDecumuloHistorical() {
       // Inflazione storica reale dell'anno
       const histInfl = (HIST_INFLATION[startYr + yi] ?? 2.5) / 100;
       const inflRate = histInfl; // usa sempre inflazione storica per realismo
+      _cumInfl *= (1 + inflRate);
 
       // Adatta prelievo per anno successivo (strategia)
       let nextWd = wd;
@@ -3125,6 +3127,7 @@ function runDecumuloHistorical() {
       survived,
       exhaustYear,
       finalCap: Math.round(cap),
+      finalCapReal: Math.round(cap / _cumInfl), // stesso capitale in euro dell'anno di partenza
       annualEndCap,
       maxDrawdown: maxDrawdownArr(annualEndCap),
     });
@@ -3176,6 +3179,8 @@ function runDecHistorical() {
       const median = sorted[Math.floor(sorted.length/2)];
       const p10 = sorted[Math.floor(sorted.length*0.10)];
       const p90 = sorted[Math.floor(sorted.length*0.90)];
+      const sortedR = [...r.results].sort((a,b) => (a.finalCapReal||0) - (b.finalCapReal||0));
+      const medianR = sortedR[Math.floor(sortedR.length/2)];
 
       // Identifica anni famosi nel dataset
       const famousYears = [1970, 1973, 1980, 1987, 1990, 2000, 2008];
@@ -3184,12 +3189,14 @@ function runDecHistorical() {
         .filter(x => x !== undefined);
 
       const html = `
-        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px"> <div class="dec-stat"> <div class="dec-stat-label">Tasso Sopravvivenza</div> <div class="dec-stat-value" style="color:${succColor};font-size:24px">${succPct}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${r.nSurvived}/${r.nTotal} anni di partenza</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Capitale Finale Mediano</div> <div class="dec-stat-value" style="color:var(--data)">${fmt(median?.finalCap || 0)}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">P10: ${fmt(p10?.finalCap || 0)} · P90: ${fmt(p90?.finalCap || 0)}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Worst Year (peggior partenza)</div> <div class="dec-stat-value" style="color:var(--red);font-size:20px">${worstYr ? worstYr.startYear : 'Nessun fail'}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${worstYr ? `Esaurito anno ${worstYr.exhaustYear}` : 'Tutti gli anni hanno retto'}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Calo Max Capitale (mediano)</div> <div class="dec-stat-value" style="color:var(--orange)">${(median?.maxDrawdown*100 || 0).toFixed(0)}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">Picco-fondo, include i prelievi</div> </div> </div> ${failedList.length > 0 ? `
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px"> <div class="dec-stat"> <div class="dec-stat-label">Tasso Sopravvivenza</div> <div class="dec-stat-value" style="color:${succColor};font-size:24px">${succPct}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${r.nSurvived}/${r.nTotal} anni di partenza</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Capitale finale mediano (nominale)</div> <div class="dec-stat-value" style="color:var(--data)">${fmt(median?.finalCap || 0)}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">P10: ${fmt(p10?.finalCap || 0)} · P90: ${fmt(p90?.finalCap || 0)}</div>
+            <div style="font-size:10.5px;color:var(--text3)">In euro dell'anno di partenza: ${fmt(medianR?.finalCapReal || 0)}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Worst Year (peggior partenza)</div> <div class="dec-stat-value" style="color:var(--red);font-size:20px">${worstYr ? worstYr.startYear : 'Nessun fail'}</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">${worstYr ? `Esaurito anno ${worstYr.exhaustYear}` : 'Tutti gli anni hanno retto'}</div> </div> <div class="dec-stat"> <div class="dec-stat-label">Calo Max Capitale (mediano)</div> <div class="dec-stat-value" style="color:var(--orange)">${(median?.maxDrawdown*100 || 0).toFixed(0)}%</div> <div style="font-size:10.5px;color:var(--text3);margin-top:3px">Picco-fondo, include i prelievi</div> </div> </div> ${failedList.length > 0 ? `
           <div class="info-box" style="background:var(--red-dim);border-color:var(--red);color:var(--red);margin-bottom:12px"> <strong>Anni di partenza che hanno ESAURITO il capitale:</strong><br> ${failedList.join(' · ')}
           </div>` : `
           <div class="info-box" style="background:var(--green-dim);border-color:var(--green);color:var(--green);margin-bottom:12px"> <strong>Tutti gli ${r.nTotal} anni di partenza hanno completato il piano senza esaurire il capitale</strong> </div>`}
 
-        <div class="sec-label" style="margin-top:14px">Esiti per anni notevoli (eventi storici)</div> <div class="tbl-outer"> <table> <thead><tr> <th style="text-align:left">Anno Start</th> <th style="text-align:left">Evento</th> <th>Esito</th> <th>Capitale Finale</th> <th>Calo Max Capitale</th> </tr></thead> <tbody> ${famousResults.map(x => {
+        <div class="sec-label" style="margin-top:14px">Esiti per anni notevoli (eventi storici)</div> <div class="tbl-outer"> <table> <thead><tr> <th style="text-align:left">Anno Start</th> <th style="text-align:left">Evento</th> <th>Esito</th> <th>Capitale finale (nominale)</th>
+              <th title="Stesso capitale riportato al potere d'acquisto dell'anno di partenza con l'inflazione storica">In euro di partenza</th> <th>Calo Max Capitale</th> </tr></thead> <tbody> ${famousResults.map(x => {
                 const events = {
                   1970: 'Pre oil shock',
                   1973: 'Stagflazione & oil shock',
@@ -3201,7 +3208,8 @@ function runDecHistorical() {
                 };
                 const evtName = events[x.startYear] || '';
                 const status = x.survived ? `<span class="pos">Successo</span>` : `<span class="neg">Fallito anno ${x.exhaustYear}</span>`;
-                return `<tr> <td>${x.startYear}</td> <td>${evtName}</td> <td>${status}</td> <td>${fmt(x.finalCap)}</td> <td><span class="neg">${(x.maxDrawdown*100).toFixed(0)}%</span></td> </tr>`;
+                return `<tr> <td>${x.startYear}</td> <td>${evtName}</td> <td>${status}</td> <td>${fmt(x.finalCap)}</td>
+                  <td>${fmt(x.finalCapReal || 0)}</td> <td><span class="neg">${(x.maxDrawdown*100).toFixed(0)}%</span></td> </tr>`;
               }).join('')}
             </tbody> </table> </div> <div style="font-size:11.5px;color:var(--text3);margin-top:10px;line-height:1.5"> <strong>Note metodologiche:</strong> usa la serie mensile storica (totali annui e mesi-crisi ancorati ai dati reali, infra-annuale ricostruito) e l'inflazione effettiva di ogni anno. Il portafoglio è ribilanciato implicitamente ai pesi target ogni mese. La strategia di prelievo applicata è quella selezionata sopra. <strong>Il "Calo Max Capitale" misura la riduzione massima del patrimonio dal suo picco e include sia i cali di mercato sia i prelievi periodici</strong>: in fase di decumulo è fisiologicamente più ampio del drawdown di solo mercato, perché il capitale scende anche per effetto dei prelievi che servono a vivere. Risultati confrontabili con il Trinity Study (Cooley, Hubbard, Walz 1998), che riprende la regola del 4% di Bengen (1994), e successivi aggiornamenti (Pfau, Kitces).
         </div>`;
@@ -4597,12 +4605,13 @@ async function exportExcel() {
     try {
       const dh = runDecumuloHistorical();
       if (dh && dh.results && dh.results.length > 0) {
-        const hdrDH = ['Anno Inizio Decumulo', 'Sopravvive?', 'Capitale Finale (€)', 'Anno Esaurimento', 'Calo Max Capitale % (mercato+prelievi)'];
+        const hdrDH = ['Anno Inizio Decumulo', 'Sopravvive?', 'Capitale Finale nominale (€)', 'Capitale Finale in euro di partenza (€)', 'Anno Esaurimento', 'Calo Max Capitale % (mercato+prelievi)'];
         const sorted = [...dh.results].sort((a, b) => a.startYear - b.startYear);
         const rowsDH = sorted.map(x => [
           x.startYear,
           x.survived ? 'SI' : 'NO',
           x.finalCap,
+          x.finalCapReal || 0,
           x.exhaustYear || '',
           (x.maxDrawdown * 100).toFixed(1) + '%',
         ]);
@@ -4617,6 +4626,7 @@ async function exportExcel() {
           ['Capitale finale mediano', sortedByCap[Math.floor(N * 0.5)]?.finalCap || 0, '', '', ''],
           ['Capitale finale P10 (peggiore)', sortedByCap[Math.floor(N * 0.10)]?.finalCap || 0, '', '', ''],
           ['Capitale finale P90 (migliore)', sortedByCap[Math.floor(N * 0.90)]?.finalCap || 0, '', '', ''],
+          ['Capitale finale mediano in euro di partenza', [...dh.results].sort((a, b) => (a.finalCapReal || 0) - (b.finalCapReal || 0))[Math.floor(N * 0.5)]?.finalCapReal || 0, '', '', ''],
           ['Worst start year', dh.worstStart ? dh.worstStart.startYear : 'Nessun fail', '', '', ''],
           ['', '', '', '', ''],
           ['── DETTAGLIO PER ANNO DI PARTENZA ──', '', '', '', ''],
@@ -5625,7 +5635,7 @@ async function generatePDF() {
       const famous = famousYrs.map(y => dh.results.find(x => x.startYear === y)).filter(Boolean);
       doc.autoTable({
         startY: y,
-        head: [['Anno Start', 'Evento Storico', 'Esito', 'Capitale Finale', 'Max DD %']],
+        head: [['Anno Start', 'Evento Storico', 'Esito', 'Capitale finale (nominale)', 'In euro di partenza', 'Max DD %']],
         body: famous.map(x => {
           const evts = { 1970: 'Pre oil shock', 1973: 'Oil shock + stagflazione', 1980: 'Volcker disinflazione',
                          1987: 'Black Monday', 1990: 'Bolla Giappone', 2000: 'Dot-com bust', 2008: 'Crisi finanziaria' };
@@ -5634,6 +5644,7 @@ async function generatePDF() {
             evts[x.startYear] || '',
             x.survived ? 'Successo' : `Fallito anno ${x.exhaustYear}`,
             fmt(x.finalCap),
+            fmt(x.finalCapReal || 0),
             (x.maxDrawdown * 100).toFixed(0) + '%',
           ];
         }),
@@ -5642,13 +5653,14 @@ async function generatePDF() {
         columnStyles: {
           2: { fontStyle: 'bold' },
           3: { halign: 'right' },
-          4: { halign: 'right', textColor: RED, fontStyle: 'bold' },
+          4: { halign: 'right' },
+          5: { halign: 'right', textColor: RED, fontStyle: 'bold' },
         },
         margin: { left: ML, right: MR },
       });
       y = doc.lastAutoTable.finalY + 4;
       narrative(
-        `Statistiche aggregate: capitale finale mediano ${fmt(median?.finalCap || 0)}, ` +
+        `Statistiche aggregate: capitale finale mediano ${fmt(median?.finalCap || 0)} nominali (${fmt(([...dh.results].sort((a, b) => (a.finalCapReal || 0) - (b.finalCapReal || 0))[Math.floor(dh.results.length * 0.5)]?.finalCapReal) || 0)} in euro dell'anno di partenza), ` +
         `P10 ${fmt(p10?.finalCap || 0)}, P90 ${fmt(p90?.finalCap || 0)}. ` +
         'Confronto: il Trinity Study (1998) trova circa il 95% di sopravvivenza con prelievo del 4% su un 60/40 a 30 anni. Questo simulatore usa dati, periodo e valuta diversi (serie in euro 1970-2025): i risultati sono confrontabili come ordine di grandezza, non sovrapponibili.'
       );
